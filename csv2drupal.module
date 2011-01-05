@@ -1,16 +1,15 @@
 <?php
 // $Id: csv2drupal.module, v 2.0 2010-11-22 ashipunova $
 /*
+ * Form for eml settings, required by views_bonus_eml_export
  * ?q=csv2drupal
 */
-
-require_once('csv2drupal.inc');
 
 function csv2drupal_menu() {
 
   $items = array();
   $items['csv2drupal'] = array (
-    'title' => t('Create an EML config file'),
+    'title' => t('Export CSV files into predefined custom content types for the LTER project'),
     'page callback' => 'csv2drupal_page',
     'access arguments' => array('administer nodes'),
     'type' => MENU_SUGGESTED_ITEM,
@@ -20,6 +19,169 @@ function csv2drupal_menu() {
 }
 
 function csv2drupal_page() {
-  $content = get_info_from_file();
-  create_nodes($content);
+dpr("HERE!!!");
+module_load_include('php', 'excel_reader', 'includes/PHPExcel/IOFactory');
+//$a = get_include_path(); //= ".:/usr/lib/php"
+//$a = PATH_SEPARATOR; // :
+//$a =
+//$objReader = PHPExcel_IOFactory::createReader('Excel2007');
+//$objReader->setReadDataOnly(true);
+
+$file = "/Users/anna/work/drupal/lter/new/today/csv_examples_hor/1982_2000gs81tusbm_2_CSVb.xls";
+
+//$objReader = PHPExcel_IOFactory::createReader('Excel2003XML');
+//$objReader = PHPExcel_IOFactory::createReader('Excel2007');
+//$objPHPExcel = $objReader->load($file);
+//!!!
+$objPHPExcel = PHPExcel_IOFactory::load($file);
+//$objReader = new PHPExcel_Reader_Excel5();
+//take only one spreadsheet
+//$objReader = PHPExcel_IOFactory::createReader('Excel2007');
+//$objReader->setLoadSheetsOnly( array("Oridrinal Metadata.txt") );
+//$objPHPExcel = $objReader->load($file);
+
+//!
+//$a = $objPHPExcel->getProperties();
+//dpr($a);
+//dpr($objPHPExcel);
+
+$objWorksheet = $objPHPExcel->getActiveSheet();
+//dpr($objWorksheet);
+
+////--------------
+//echo '<table>' . "\n";
+//foreach ($objPHPExcel->getRowIterator() as $row) {
+//  echo '<tr>' . "\n";
+//
+//  $cellIterator = $row->getCellIterator();
+////  $cellIterator->setIterateOnlyExistingCells(false); // This loops all cells,
+//                                                     // even if it is not set.
+//                                                     // By default, only cells
+//                                                     // that are set will be
+//                                                     // iterated.
+//  foreach ($cellIterator as $cell) {
+//    echo '<td>' . $cell->getValue() . '</td>' . "\n";
+//  }
+//
+//  echo '</tr>' . "\n";
+//}
+//echo '</table>' . "\n";
+//=-------------
+
+//$objWorksheet = $objPHPExcel->getActiveSheet();
+//dpr($objWorksheet);
+$highestRow = $objWorksheet->getHighestRow();
+dpr($highestRow);
+//
+////==============
+//$objReader = PHPExcel_IOFactory::createReader('Excel2007');
+//$objReader->setReadDataOnly(true);
+//
+//$objPHPExcel = $objReader->load($file);
+//$objWorksheet = $objPHPExcel->getActiveSheet();
+
+
+//$highestRow = $objPHPExcel->getHighestRow(); // e.g. 10
+//dpr($highestRow);
+$highestColumn = $objWorksheet->getHighestColumn(); // e.g 'F'
+dpr($highestColumn);
+//
+$highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn); // e.g. 5
+//
+echo '<table>' . "\n";
+for ($row = 1; $row <= $highestRow; ++$row) {
+  echo '<tr>' . "\n";
+
+  for ($col = 0; $col <= $highestColumnIndex; ++$col) {
+    echo '<td>' . $objWorksheet->getCellByColumnAndRow($col, $row)->getValue() . '</td>' . "\n";
+  }
+
+  echo '</tr>' . "\n";
 }
+echo '</table>' . "\n";
+
+//============
+
+//
+//
+////$highestRow = $objWorksheet->getHighestRow();
+//$highestColumn = $objWorksheet->getHighestColumn(); // e.g 'F'
+//
+//$highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn); // e.g. 5
+////dpr($highestColumnIndex);
+//for ($row = 1; $row <= $highestRow; ++$row) {
+//    for ($col = 0; $col <= $highestColumnIndex; ++$col) {
+//      print "\$highestRow = " . $highestRow . "<br/>";
+//      print "\$row = " . $row . "<br/>";
+//      print "\$col = " . $col . "<br/>";
+//      dpr($objWorksheet->getCellByColumnAndRow($col, $row)->getValue());
+//  }
+//}
+
+//echo '<table>' . "\n";
+//for ($row = 1; $row <= $highestRow; ++$row) {
+//  echo '<tr>' . "\n";
+//
+//  for ($col = 0; $col <= $highestColumnIndex; ++$col) {
+//    echo '<td>' . $objWorksheet->getCellByColumnAndRow($col, $row)->getValue() . '</td>' . "\n";
+//  }
+//
+//  echo '</tr>' . "\n";
+//}
+//echo '</table>' . "\n";
+
+
+//$a = $objWorksheet->getCellByColumnAndRow('B', '20')->getValue();
+//dpr($a);
+//foreach ($my_arr as $value1) {
+//  foreach (array($value1) as $value2) {
+//          dpr($value2);
+//  }
+//}
+//dpr($objPHPExcel);
+
+
+//$objPHPExcel = $objReader->load($file);
+//
+//$objWorksheet = $objPHPExcel->getActiveSheet();
+//
+//$highestRow = $objWorksheet->getHighestRow(); // e.g. 10
+//$highestColumn = $objWorksheet->getHighestColumn(); // e.g 'F'
+//
+////dpr($highestColumn);
+//
+//$highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn); // e.g. 5
+//
+//echo '<table>' . "\n";
+//for ($row = 1; $row <= $highestRow; ++$row) {
+//  echo '<tr>' . "\n";
+//
+//  for ($col = 0; $col <= $highestColumnIndex; ++$col) {
+//    echo '<td>' . $objWorksheet->getCellByColumnAndRow($col, $row)->getValue() . '</td>' . "\n";
+//  }
+//
+//  echo '</tr>' . "\n";
+//}
+//echo '</table>' . "\n";
+
+
+
+//  set_include_path(get_include_path() . PATH_SEPARATOR . 'PhpExcel/Classes/');
+//
+//include("PHPExcel.php");
+//include_once 'PHPExcel/IOFactory.php';
+//$objPHPExcel = PHPExcel_IOFactory::load("template2.xls");
+//$objPHPExcel->setActiveSheetIndex(0);
+//$aSheet = $objPHPExcel->getActiveSheet();
+//
+//$aSheet->setCellValue('D23',$index[0]);
+//$aSheet->setCellValue('E23',$index[1]);
+////… здесь делаем какие-то записи
+//
+////создаем объект класса-писателя
+//include("PHPExcel/Writer/Excel5.php");
+//$objWriter = new PHPExcel_Writer_Excel5($objPHPExcel);
+////сохраняем в тот-же файл
+//$objWriter->save('template2.xls');
+}
+
