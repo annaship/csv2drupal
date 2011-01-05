@@ -1,0 +1,25 @@
+<?php
+// $Id: csv2drupal.module, v 2.0 2010-11-22 ashipunova $
+/*
+ * ?q=csv2drupal
+*/
+
+require_once('csv2drupal.inc');
+
+function csv2drupal_menu() {
+
+  $items = array();
+  $items['csv2drupal'] = array (
+    'title' => t('Create an EML config file'),
+    'page callback' => 'csv2drupal_page',
+    'access arguments' => array('administer nodes'),
+    'type' => MENU_SUGGESTED_ITEM,
+//    'file' => 'csv2drupal_form.inc',
+    );
+  return $items;
+}
+
+function csv2drupal_page() {
+  $content = get_info_from_file();
+  create_nodes($content);
+}

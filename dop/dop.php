@@ -1,0 +1,785 @@
+<?php
+
+function get_info_from_file() {
+  dpr("get_info_from_file");
+}
+function create_nodes() {
+  dpr("create_nodes");
+}
+
+
+function caaa() {
+
+
+
+
+  global $user;
+  $uid = $user->uid;
+
+//  home
+//  $file = "/Users/ashipunova/work/drupal/lter/new/today/dataset.csv";
+
+  $file = "/Users/anna/work/drupal/lter/new/today/variable_h.csv";
+  create_variable_node($file, $uid);
+
+//  $file = "/Users/anna/work/drupal/lter/new/today/csv_examples/1982_2000gs81tusbm_DataSet.csv";
+//  create_datafile_node($file);
+
+  $file = "/Users/anna/work/drupal/lter/new/today/csv_examples_hor/1982_2000gs81tusbm_DataSet.csv";
+  create_dataset_node($file, $uid);
+
+//  $file = "/Users/anna/work/drupal/lter/new/today/csv_examples/1982_2000gs81tusbm_DataSet.csv";
+//  create_person_node($file);
+//
+//  $file = "/Users/anna/work/drupal/lter/new/today/csv_examples/1982_2000gs81tusbm_DataSet.csv";
+//  create_site_node($file);
+//
+//  $file = "/Users/anna/work/drupal/lter/new/today/csv_examples/1982_2000gs81tusbm_DataSet.csv";
+//  create_keywords_node($file);
+
+//  dpr("HERE URRA!");
+//  dpr($content_a);
+
+
+
+//Name
+//Label
+//Definition
+//Missing Values
+//unit
+//Maximum Value
+//Minimum Value
+//precision
+//Date Format
+//Code-Definition
+//Associated Data Files
+
+//    $node = new stdClass();
+//    $node->is_new = 1;
+//    $node->title = ;
+//    $node->body = "";
+//    $node->type = "book";
+//    $node->uid = 1;
+//    $node->teaser = "";
+//    $node->filter = 1;
+//    $node->status = 1;
+//    $node->comment = 2;
+//    $node->created = time();
+//    $node->changed = time();
+//    $node->field_publisher[0]['value']='Gutenberg';
+//    $node->field_author[0]['value']='Gutenberg';
+//    $now = microtime(true);
+//    node_save($node);
+//
+//
+//field_attribute_label_value
+//field_var_definition_value
+//field_attribute_unit_value
+//field_attribute_maximum_value
+//field_attribute_minimum_value
+//field_attribute_precision_value
+//field_attribute_formatstring_value
+
+
+
+    $q = db_query('SELECT nid FROM node WHERE type="data_set" LIMIT 1;');
+
+  while ($nid = db_result($q)) {
+    $n = node_load($nid);
+//    dpr("data_set node = ");
+//    dpr($n);
+//    $n->title = $n->field_person_first_name[0]['value']." ".$n->field_person_last_name[0]['value'];
+//    $node = node_submit($n);
+//    node_save($node);
+
+//    var_dump
+  }
+
+}
+
+//TODO add file name as a parametr, get throgh form or from predifined folder
+//function getdataset() {
+//  $file = "/Users/ashipunova/work/drupal/lter/new/today/dataset.csv";
+//  if (($handle = fopen($file, "r")) === FALSE) return;
+//  while (($cols = fgetcsv($handle, 1000, ",")) !== FALSE) {
+//    print("\$cols\n");
+//    dpr($cols);
+////      foreach( $cols as $key => $val ) {
+//        $dataset_array += $cols;
+////      }
+////      echo print_r($cols, 1);
+//  }
+//  if (($handle = fopen($file, "r")) !== FALSE) {
+//      while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+//          $num = count($data);
+////          echo "<p> $num fields in line $row: <br /></p>\n";
+//          $row++;
+//          for ($c = 0; $c < $num; $c++) {
+////              echo $data[$c] . "<br />\n";
+//              $dataset_array += $data;
+//          }
+//      }
+//      fclose($handle);
+//  }
+//      return $dataset_array;
+//}
+
+//works great with title in row
+  function csv_to_array($filename='', $delimiter=',')
+{
+    if(!file_exists($filename) || !is_readable($filename)) {
+        return FALSE;
+    }
+
+    $header = NULL;
+    $data = array();
+    if (($handle = fopen($filename, 'r')) !== FALSE)
+    {
+        while (($row = fgetcsv($handle, 1000, $delimiter)) !== FALSE)
+        {
+//          dpr($row);
+            if(!$header) {
+                $header = $row;
+                chop_field_names($header);
+            }
+            else {
+                $data[] = array_combine($header, $row);
+            }
+        }
+        fclose($handle);
+    }
+    return $data;
+}
+
+//vertical title
+  function csv_to_array_ver($filename='', $delimiter=',')
+{
+//    dpr("HERE!!!");
+////    if(!file_exists($filename) || !is_readable($filename)) {
+////        return FALSE;
+////    }
+//
+////    $header = NULL;
+//    $data = array();
+//    $csvData = file_get_contents($filename);
+//        dpr($csvData);
+//
+////    $csvNumColumns = 22;
+////    $csvDelim = ";";
+//    $data = str_getcsv($csvData);
+//    dpr($data);
+//    return $data;
+}
+
+function chop_field_names(&$header) {
+  foreach ($header as $key => $value) {
+    $header[$key] = rtrim($value, " ");
+  }
+  return $header;
+}
+
+//function person_node_create($person_settings) {
+//
+//  global $user;
+//
+//  $uid = $user->uid;
+//  $node = new StdClass();
+//  $node->type = "person";
+//  $node->uid = $uid;
+//  $node->field_person_organization = Array (0 => Array ('value' => $person_settings['organization']));
+//  $node->field_person_address = Array (0 => Array ('value' => $person_settings['address']));
+//  $node->field_person_city = Array (0 => Array ('value' => $person_settings['city']));
+//  $node->field_person_state = Array (0 => Array ('value' => $person_settings['state']));
+//  $node->field_person_zipcode = Array (0 => Array ('value' => $person_settings['zipcode']));
+//  $node->field_person_country = Array (0 => Array ('value' => $person_settings['country']));
+//  $node->field_person_phone = Array (0 => Array ('value' => $person_settings['phone']));
+//  $node->field_person_fax = Array (0 => Array ('value' => $person_settings['fax']));
+//  $node->field_person_role = Array (0 => Array ('value' => $person_settings['role']));
+//  $node->field_person_email = Array (0 => Array ('email' => $person_settings['email']));
+//
+//  // Commented fields are here in case we will need them
+//  // $node->field_person_title = Array (0 => Array ('value' => ''));
+//  // $node->field_person_first_name = Array (0 => Array ('value' => ''));
+//  // $node->field_person_last_name = Array (0 => Array ('value' => ''));
+//  // $node->field_person_personid = Array (0 => Array ('value' => $personid));
+//
+//  node_save($node);
+//
+//  return $node->nid;
+//}
+
+function create_variable_node($file, $uid) {
+  $content = csv_to_array($file);
+
+  foreach ($content as $value) {
+      $node = new StdClass();
+      $node->type = "variable";
+      $node->uid = $uid;
+//        $node->is_new = 1;
+      $node->title = $value['Name'];
+      $node->field_attribute_label[0]['value'] = $value['Label'];
+      $node->field_var_definition[0]['value'] = $value['Definition'];
+      $node->field_var_missingvalues[0]['value'] = $value['Missing Values'];
+      $node->field_attribute_unit[0]['value'] = $value['unit'];
+      $node->field_attribute_maximum[0]['value'] = $value['Maximum Value'];
+      $node->field_attribute_minimum[0]['value'] = $value['Minimum Value'];
+      $node->field_attribute_precision[0]['value'] = $value['precision'];
+      $node->field_attribute_formatstring[0]['value'] = $value['Date Format'];
+      $node->field_code_definition[0]['value'] = $value['Code-Definition'];
+      $node->field_attribute_assoc_datafile[0]['value'] = $value['Associated Data Files'];
+//      dpr($node);
+//      dpr('NEW\n');
+  }
+}
+
+function create_dataset_node($file, $uid) {
+  $content = csv_to_array($file);
+//  dpr($content);
+
+  foreach ($content as $value) {
+      $node = new StdClass();
+      $node->type = "data_set";
+      $node->uid = $uid;
+//        $node->is_new = 1;
+      $node->title = $value['Title'];
+      $node->field_beg_end_date[0]['value']             = $value['Date Range'];
+      $node->field_dataset_abstract[0]['value']         = $value['Abstract'];
+      $node->field_dataset_add_info[0]['value']         = $value['Additional Information'];
+//      $node->field_dataset_biblio_ref[0]['value']       = $value['Related Bibliography'];
+//      $node->field_dataset_contact_ref[0]['value']      = $value['Contact'];
+//      $node->field_dataset_datafile_ref[0]['value']     = $value['Data File Structure'];
+//      $node->field_dataset_datamanager_ref[0]['value']  = $value['Data Manager'];
+//      $node->field_dataset_ext_assoc_ref[0]['value']    = $value['Associated Researcher'];
+//      $node->field_dataset_fieldcrew_ref[0]['value']    = $value['Field Crew'];
+      $node->field_dataset_id[0]['value']               = $value['Dataset ID'];
+//      $node->field_dataset_labcrew_ref[0]['value']      = $value['Lab Crew'];
+      $node->field_dataset_maintenance[0]['value']      = $value['Maintenance'];
+//      $node->field_dataset_owner_ref[0]['value']        = $value['Owner'];
+      $node->field_dataset_publication_date[0]['value'] = $value['Publication Date'];
+      $node->field_dataset_purpose[0]['value']          = $value['Purpose'];
+      $node->field_dataset_related_links[0]['value']    = $value['Related Links'];
+      $node->field_dataset_short_name[0]['value']       = $value['Short Name'];
+//      $node->field_dataset_site_ref[0]['value']         = $value['Site'];
+      $node->field_instrumentation[0]['value']          = $value['Instrumentation'];
+      $node->field_methods[0]['value']                  = $value['Methods'];
+      $node->field_quality[0]['value']                  = $value['Quality Assurance'];
+      dpr($node);
+      dpr('NEW\n');
+
+  }
+}
+//-----------------
+function csv2drupal_page() {
+
+  global $user;
+  $uid = $user->uid;
+
+//  home
+//  $file = "/Users/ashipunova/work/drupal/lter/new/today/dataset.csv";
+
+  $file = "/Users/anna/work/drupal/lter/new/today/variable_h.csv";
+  create_variable_node($file, $uid);
+
+//  $file = "/Users/anna/work/drupal/lter/new/today/csv_examples/1982_2000gs81tusbm_DataSet.csv";
+//  create_datafile_node($file);
+
+  $file = "/Users/anna/work/drupal/lter/new/today/csv_examples_hor/1982_2000gs81tusbm_DataSet.csv";
+  create_dataset_node($file, $uid);
+
+//  $file = "/Users/anna/work/drupal/lter/new/today/csv_examples/1982_2000gs81tusbm_DataSet.csv";
+//  create_person_node($file);
+//
+//  $file = "/Users/anna/work/drupal/lter/new/today/csv_examples/1982_2000gs81tusbm_DataSet.csv";
+//  create_site_node($file);
+//
+//  $file = "/Users/anna/work/drupal/lter/new/today/csv_examples/1982_2000gs81tusbm_DataSet.csv";
+//  create_keywords_node($file);
+
+//  dpr("HERE URRA!");
+//  dpr($content_a);
+
+
+
+//Name
+//Label
+//Definition
+//Missing Values
+//unit
+//Maximum Value
+//Minimum Value
+//precision
+//Date Format
+//Code-Definition
+//Associated Data Files
+
+//    $node = new stdClass();
+//    $node->is_new = 1;
+//    $node->title = ;
+//    $node->body = "";
+//    $node->type = "book";
+//    $node->uid = 1;
+//    $node->teaser = "";
+//    $node->filter = 1;
+//    $node->status = 1;
+//    $node->comment = 2;
+//    $node->created = time();
+//    $node->changed = time();
+//    $node->field_publisher[0]['value']='Gutenberg';
+//    $node->field_author[0]['value']='Gutenberg';
+//    $now = microtime(true);
+//    node_save($node);
+//
+//
+//field_attribute_label_value
+//field_var_definition_value
+//field_attribute_unit_value
+//field_attribute_maximum_value
+//field_attribute_minimum_value
+//field_attribute_precision_value
+//field_attribute_formatstring_value
+
+
+
+    $q = db_query('SELECT nid FROM node WHERE type="data_set" LIMIT 1;');
+
+  while ($nid = db_result($q)) {
+    $n = node_load($nid);
+//    dpr("data_set node = ");
+//    dpr($n);
+//    $n->title = $n->field_person_first_name[0]['value']." ".$n->field_person_last_name[0]['value'];
+//    $node = node_submit($n);
+//    node_save($node);
+
+//    var_dump
+  }
+
+}
+
+//TODO add file name as a parametr, get throgh form or from predifined folder
+//function getdataset() {
+//  $file = "/Users/ashipunova/work/drupal/lter/new/today/dataset.csv";
+//  if (($handle = fopen($file, "r")) === FALSE) return;
+//  while (($cols = fgetcsv($handle, 1000, ",")) !== FALSE) {
+//    print("\$cols\n");
+//    dpr($cols);
+////      foreach( $cols as $key => $val ) {
+//        $dataset_array += $cols;
+////      }
+////      echo print_r($cols, 1);
+//  }
+//  if (($handle = fopen($file, "r")) !== FALSE) {
+//      while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+//          $num = count($data);
+////          echo "<p> $num fields in line $row: <br /></p>\n";
+//          $row++;
+//          for ($c = 0; $c < $num; $c++) {
+////              echo $data[$c] . "<br />\n";
+//              $dataset_array += $data;
+//          }
+//      }
+//      fclose($handle);
+//  }
+//      return $dataset_array;
+//}
+
+//works great with title in row
+  function csv_to_array($filename='', $delimiter=',')
+{
+    if(!file_exists($filename) || !is_readable($filename)) {
+        return FALSE;
+    }
+
+    $header = NULL;
+    $data = array();
+    if (($handle = fopen($filename, 'r')) !== FALSE)
+    {
+        while (($row = fgetcsv($handle, 1000, $delimiter)) !== FALSE)
+        {
+//          dpr($row);
+            if(!$header) {
+                $header = $row;
+                chop_field_names($header);
+            }
+            else {
+                $data[] = array_combine($header, $row);
+            }
+        }
+        fclose($handle);
+    }
+    return $data;
+}
+
+function chop_field_names(&$header) {
+  foreach ($header as $key => $value) {
+    $header[$key] = rtrim($value, " ");
+  }
+  return $header;
+}
+
+//function person_node_create($person_settings) {
+//
+//  global $user;
+//
+//  $uid = $user->uid;
+//  $node = new StdClass();
+//  $node->type = "person";
+//  $node->uid = $uid;
+//  $node->field_person_organization = Array (0 => Array ('value' => $person_settings['organization']));
+//  $node->field_person_address = Array (0 => Array ('value' => $person_settings['address']));
+//  $node->field_person_city = Array (0 => Array ('value' => $person_settings['city']));
+//  $node->field_person_state = Array (0 => Array ('value' => $person_settings['state']));
+//  $node->field_person_zipcode = Array (0 => Array ('value' => $person_settings['zipcode']));
+//  $node->field_person_country = Array (0 => Array ('value' => $person_settings['country']));
+//  $node->field_person_phone = Array (0 => Array ('value' => $person_settings['phone']));
+//  $node->field_person_fax = Array (0 => Array ('value' => $person_settings['fax']));
+//  $node->field_person_role = Array (0 => Array ('value' => $person_settings['role']));
+//  $node->field_person_email = Array (0 => Array ('email' => $person_settings['email']));
+//
+//  // Commented fields are here in case we will need them
+//  // $node->field_person_title = Array (0 => Array ('value' => ''));
+//  // $node->field_person_first_name = Array (0 => Array ('value' => ''));
+//  // $node->field_person_last_name = Array (0 => Array ('value' => ''));
+//  // $node->field_person_personid = Array (0 => Array ('value' => $personid));
+//
+//  node_save($node);
+//
+//  return $node->nid;
+//}
+
+function create_variable_node($file, $uid) {
+  $content = csv_to_array($file);
+
+  foreach ($content as $value) {
+      $node = new StdClass();
+      $node->type = "variable";
+      $node->uid = $uid;
+//        $node->is_new = 1;
+      $node->title = $value['Name'];
+      $node->field_attribute_label[0]['value'] = $value['Label'];
+      $node->field_var_definition[0]['value'] = $value['Definition'];
+      $node->field_var_missingvalues[0]['value'] = $value['Missing Values'];
+      $node->field_attribute_unit[0]['value'] = $value['unit'];
+      $node->field_attribute_maximum[0]['value'] = $value['Maximum Value'];
+      $node->field_attribute_minimum[0]['value'] = $value['Minimum Value'];
+      $node->field_attribute_precision[0]['value'] = $value['precision'];
+      $node->field_attribute_formatstring[0]['value'] = $value['Date Format'];
+      $node->field_code_definition[0]['value'] = $value['Code-Definition'];
+      $node->field_attribute_assoc_datafile[0]['value'] = $value['Associated Data Files'];
+//      dpr($node);
+//      dpr('NEW\n');
+  }
+}
+
+function create_dataset_node($file, $uid) {
+  $content = csv_to_array($file);
+
+  $ext_assoc_names = array();
+  foreach ($content as $value) {
+//    TODO all !!! value collect as $associated_researcher
+    isset ($title)                   ? $title = $title                                      : $title                   = $value['Title'];
+    isset ($date_range)              ? $date_range = $date_range                            : $date_range              = $value['Date Range'];
+    isset ($abstract)                ? $abstract = $abstract                                : $abstract                = $value['Abstract'];
+    isset ($additional_information)  ? $additional_information = $additional_information    : $additional_information  = $value['Additional Information'];
+    isset ($related_bibliography)    ? $related_bibliography = $related_bibliography        : $related_bibliography    = $value['Related Bibliography'];
+    isset ($contact)                 ? $contact = $contact                                  : $contact                 = $value['Contact'];
+    isset ($data_file_structure)     ? $data_file_structure = $data_file_structure          : $data_file_structure     = $value['Data File Structure'];
+    isset ($data_manager)            ? $data_manager = $data_manager                        : $data_manager            = $value['Data Manager'];
+    $associated_researcher[] = $value['Associated Researcher'];
+    isset ($field_crew)              ? $field_crew = $field_crew                            : $field_crew              = $value['Field Crew'];
+    isset ($dataset_id)              ? $dataset_id = $dataset_id                            : $dataset_id              = $value['Dataset ID'];
+    isset ($lab_crew)                ? $lab_crew = $lab_crew                                : $lab_crew                = $value['Lab Crew'];
+    isset ($maintenance)             ? $maintenance = $maintenance                          : $maintenance             = $value['Maintenance'];
+    isset ($owner)                   ? $owner = $owner                                      : $owner                   = $value['Owner'];
+    isset ($publication_date)        ? $publication_date = $publication_date                : $publication_date        = $value['Publication Date'];
+    isset ($purpose)                 ? $purpose = $purpose                                  : $purpose                 = $value['Purpose'];
+    isset ($related_links)           ? $related_links = $related_links                      : $related_links           = $value['Related Links'];
+    isset ($short_name)              ? $short_name = $short_name                            : $short_name              = $value['Short Name'];
+    isset ($site)                    ? $site = $site                                        : $site                    = $value['Site'];
+    isset ($instrumentation)         ? $instrumentation = $instrumentation                  : $instrumentation         = $value['Instrumentation'];
+    isset ($methods)                 ? $methods = $methods                                  : $methods                 = $value['Methods'];
+    isset ($quality_assurance)       ? $quality_assurance = $quality_assurance              : $quality_assurance       = $value['Quality Assurance'];
+  }
+
+  $ext_assoc_arr = taking_person_ids($associated_researcher);
+//
+//
+//      dpr($ext_assoc_arr);
+
+//  $value = "Laoreet Nulla Hos Saluto Minim Si Gilvus";
+//  $sql = "SELECT nid FROM node WHERE type = 'person' and title = '%s'";
+//  $q = db_query($sql, $value);
+////
+//  while ($nid = db_result($q)) {
+//    $n = node_load($nid);
+//    dpr($nid);
+////    dpr("data_set node = ");
+////    dpr($n);
+////    $n->title = $n->field_person_first_name[0]['value']." ".$n->field_person_last_name[0]['value'];
+////    $node = node_submit($n);
+////    node_save($node);
+//
+////    var_dump
+//  }
+
+
+      $node = new StdClass();
+      $node->type                                       = "data_set";
+      $node->uid                                        = $uid;
+      $node->title                                      = $title;
+      $node->field_beg_end_date[0]['value']             = $date_range; //!!!
+      $node->field_dataset_abstract[0]['value']         = $abstract;
+      $node->field_dataset_add_info[0]['value']         = $additional_information;
+      $node->field_dataset_biblio_ref[0]['value']       = $related_bibliography; //!!!
+      $node->field_dataset_contact_ref[0]['value']      = $contact; //!!!
+      $node->field_dataset_datafile_ref[0]['value']     = $data_file_structure; //!!!
+      $node->field_dataset_datamanager_ref[0]['value']  = $data_manager; //!!!
+      $node->field_dataset_ext_assoc_ref                = $ext_assoc_arr; //!!!
+      $node->field_dataset_fieldcrew_ref[0]['value']    = $field_crew; //!!!
+      $node->field_dataset_id[0]['value']               = $dataset_id;
+      $node->field_dataset_labcrew_ref[0]['value']      = $lab_crew; //!!!
+      $node->field_dataset_maintenance[0]['value']      = $maintenance;
+      $node->field_dataset_owner_ref[0]['value']        = $owner; //!!!
+      $node->field_dataset_publication_date[0]['value'] = $publication_date;
+      $node->field_dataset_purpose[0]['value']          = $purpose;
+      $node->field_dataset_related_links[0]['value']    = $related_links; //!!!
+      $node->field_dataset_short_name[0]['value']       = $short_name;
+      $node->field_dataset_site_ref[0]['value']         = $site; //!!!
+      $node->field_instrumentation[0]['value']          = $instrumentation; //!!!
+      $node->field_methods[0]['value']                  = $methods; //!!!
+      $node->field_quality[0]['value']                  = $quality_assurance;
+
+      dpr($node);
+      dpr('NEW\n');
+
+
+}
+
+//taking person id (they should be created first)
+// TODO the same for files and other refs (bib, sites)
+function taking_person_ids($persons) {
+  if (isset ($persons)) {
+    $persons_arr = array();
+    foreach ($persons as $persons_value) {
+      $sql = "SELECT nid FROM node WHERE type = 'person' and title = '%s'";
+      $q = db_query($sql, $persons_value);
+        while ($nid = db_result($q)) {
+        $persons_arr[][nid] = $nid;
+      }
+    }
+    return $persons_arr;
+  }
+}
+
+======
+if (!empty ($value['Date Range'])) $date_range[] = $value['Date Range'];
+$abstract = get_value($value, 'Abstract');
+$additional_information = get_value($value, 'Additional Information');
+if (!empty ($value['Related Bibliography'])) $related_bibliography[] = $value['Related Bibliography']
+if (!empty ($value['Contact'])) $contact[] = $value['Contact'];
+if (!empty ($value['Data File Structure'])) $data_file_structure[] = $value['Data File Structure'];
+if (!empty ($value['Data Manager'])) $data_manager[] = $value['Data Manager'];
+if (!empty ($value['Associated Researcher'])) $associated_researcher[] = $value['Associated Researcher'];
+if (!empty ($value['Field Crew'])) $field_crew[] = $value['Field Crew'];
+$dataset_id = get_value($value, 'Dataset ID');
+if (!empty ($value['Lab Crew'])) $lab_crew[] = $value['Lab Crew'];
+$maintenance = get_value($value, 'Maintenance');
+if (!empty ($value['Owner'])) $owner[] = $value['Owner'];
+if (!empty ($value['Publication Date'])) $publication_date[] = $value['Publication Date'];
+$purpose = get_value($value, 'Purpose');
+if (!empty ($value['Related Links'])) $related_links[] = $value['Related Links'];
+if (!empty ($value['Short Name'])) $short_name[] = $value['Short Name'];
+if (!empty ($value['Site'])) $site[] = $value['Site'];
+if (!empty ($value['Instrumentation'])) $instrumentation[] = $value['Instrumentation'];
+if (!empty ($value['Methods'])) $methods[] = $value['Methods'];
+
+
+===============
+
+<?php
+// $Id: csv2drupal.module, v 2.0 2010-11-22 ashipunova $
+/*
+ * ?q=csv2drupal
+*/
+
+//require_once('csv2drupal.inc');
+
+//function eml_config_menu() {
+//
+//  $items = array();
+//  $items['eml_config'] = array (
+//    'title' => t('Create an EML config file'),
+//    'page callback' => 'eml_config_page',
+//    'access arguments' => array('administer nodes'),
+//    'type' => MENU_SUGGESTED_ITEM,
+//    'file' => 'eml_config_form.inc',
+//    );
+//  return $items;
+//}
+//
+//function eml_config_page() {
+//  return drupal_get_form('eml_config_form');
+//}
+
+
+
+function csv2drupal_menu() {
+  $items = array();
+//  $items = array();
+//  $items['csv2drupal'] = array (
+//    'title' => t('Create an EML config file'),
+//    'page callback' => 'csv2drupal_page',
+//    'access arguments' => array('administer nodes'),
+//    'type' => MENU_SUGGESTED_ITEM,
+////    'file' => 'csv2drupal_form.inc',
+//    );
+//  return $items;
+//}
+//
+//function csv2drupal_page() {
+//  $content = get_info_from_file();
+//  create_nodes($content);
+//}
+  $items['csv2drupal'] = array(
+    'title' => 'Excel Import',
+    'page callback' => 'csv2drupal_page',
+    'page arguments' => array('csv2drupal_form'),
+    'access arguments' => array('administer nodes'),
+    'type' => MENU_SUGGESTED_ITEM,
+  );
+
+  return $items;
+}
+
+function csv2drupal_page() {
+//  $content = get_info_from_file();
+//  create_nodes($content);
+  print "HERE!!!";
+  return drupal_get_form('csv2drupal_form');
+}
+
+function csv2drupal_form() {
+  $form = array();
+  $form['import'] = array('#type' => 'fieldset',
+    '#title' => t('Import Excel File'),
+  );
+  $form['import']['file'] = array('#type' => 'file',
+    '#title' => t('Excel file'),
+    '#size' => 50,
+    '#description' => t('An Excel file.'),
+  );
+  $form['import']['submit'] = array('#type' => 'submit', '#value' => t('Import'));
+  $form['#attributes']['enctype'] = 'multipart/form-data';
+
+  return $form;
+
+}
+
+//
+//function csv2drupal_form_submit($form,&$form_state) {
+//  // Ensure we have the file uploaded
+//  if ($file = file_save_upload('file')) {
+//
+//    // Convert file to PHPExcel object.
+//    $excel_obj = excel_reader_parse($file);
+//
+//    // Get info about the excel file.
+//    $excel_info =_csv2drupal_get_excel_info($excel_obj);
+//
+//    $headers = $excel_info['header'];
+//    // Define header rows as list items for later display to user.
+//    $header_items = array();
+//    foreach ($headers as $column) {
+//      $header_items[] = array('data' => check_plain($column), 'class' => 'cell');
+//    }
+//
+//    // Get data values from PHPExcel object.
+//    $data = _csv2drupal_build_content($excel_obj);
+//    foreach($data as $row) {
+//      foreach($row as $key=>$value){
+//        echo $key.": ".$value['value']; //Please remove this line and write the db_query to insert the data into table in the database.
+//        echo "<br />";                  //Remove this line too
+//      }
+//    echo "============<br />";          //Remove this line too
+//    }
+//  }
+//}
+//
+///**
+// * Helper function to get the header, column count, row count and first five rows from a PHPExcel object.
+// *
+// * @param $objPHPExcel
+// *   The PHPExcel object
+// * @return
+// *   An array containing header cells, column count, row count, and first five rows in document
+// */
+//function _csv2drupal_get_excel_info($objPHPExcel) {
+//  $info = array();
+//
+//  $active_sheet = $objPHPExcel->getActiveSheet();
+//  $max_col = $active_sheet->getHighestColumn();
+//
+//  // Get the row & column count.
+//  $info['colcount'] = PHPExcel_Cell::columnIndexFromString($max_col);
+//  $info['rowcount'] = $active_sheet->getHighestRow();
+//
+//  $header = PHPExcel_Cell::extractAllCellReferencesInRange('A1:' . $max_col . '1');
+//  foreach($header as $cell) {
+//    $info['header'][] = $active_sheet->getCell($cell)->getCalculatedValue();
+//  }
+//
+//  $first_five = PHPExcel_Cell::extractAllCellReferencesInRange('A2:' . $max_col . '5');
+//  foreach($first_five as $cell) {
+//    $info['firstfive'][$active_sheet->getCell($cell)->getRow()][] = $active_sheet->getCell($cell)->getCalculatedValue();
+//  }
+//
+//  return $info;
+//}
+//
+///**
+// * Helper function to get all the data from the spreadsheet without the first header row, which is required
+// *
+// * @param $objPHPExcel
+// *   The PHPExcel object
+// * @return
+// *   A large array containing the content of the spreadsheet with row index and column header as keys
+// */
+//function _csv2drupal_build_content($objPHPExcel) {
+//  $content = array();
+//  foreach ($objPHPExcel->getWorksheetIterator() as $worksheet) {
+//    foreach ($worksheet->getRowIterator() as $row) {
+//      $rowindex = $row->getRowIndex();
+//      $cellIterator = $row->getCellIterator();
+//      $cellIterator->setIterateOnlyExistingCells(false); // Loop all cells, even if it is not set.
+//      foreach ($cellIterator as $cell) {
+//        if (!is_null($cell) && $rowindex > 1) {
+//          $col_header = $worksheet->getCell($cell->getColumn() . '1')->getCalculatedValue();
+//          $row_index = $worksheet->getCell('A' . $rowindex)->getCalculatedValue();
+//          $content[$row_index][$col_header] = array(
+//            'type' => $cell->getDataType(),
+//            'value' => $cell->getCalculatedValue(),
+//          );
+//        }
+//      }
+//    }
+//  }
+//  dpr($content);
+//  return $content;
+//}
+
+//function csv2drupal_menu() {
+//
+//  $items = array();
+//  $items['csv2drupal'] = array (
+//    'title' => t('Create an EML config file'),
+//    'page callback' => 'csv2drupal_page',
+//    'access arguments' => array('administer nodes'),
+//    'type' => MENU_SUGGESTED_ITEM,
+////    'file' => 'csv2drupal_form.inc',
+//    );
+//  return $items;
+//}
+//
+//function csv2drupal_page() {
+//  $content = get_info_from_file();
+//  create_nodes($content);
+//}
