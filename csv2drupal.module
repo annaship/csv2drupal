@@ -103,7 +103,7 @@ A1:L1
             $res = $objWorksheet->getCellByColumnAndRow($col, $row)->getValue();
 //            dpr($res);
             if (!empty($res)) {
-              $dataset[$ititles[$col]] = $res;
+              $dataset[$ititles[$col]][] = $res;
             }
               break;
           case "DataFile-csv":
@@ -111,7 +111,7 @@ A1:L1
             $res = $objWorksheet->getCellByColumnAndRow($col, $row)->getValue();
             dpr($res);
             if (!empty($res)) {
-              $datafile[$ititles[$col]] = $res;
+              $datafile[$ititles[$col]][] = $res;
             }
 //              echo "i is DataFile";
               break;
