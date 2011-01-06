@@ -61,14 +61,18 @@ $loadedSheetNames = $objPHPExcel->getSheetNames();
 //  dpr($objPHPExcel->getSheetByName('DataSet-csv')->copy());
 //    dpr($countrySheet);
 foreach ($loadedSheetNames as $sheetIndex => $loadedSheetName) {
-//    echo $sheetIndex, ' -> ', $loadedSheetName, '<br />';
+    echo $sheetIndex, ' -> ', $loadedSheetName, '<br />';
 //    $cella = $objWorksheet->getCell('B5');
 //    dpr($cella);
 //    $objWorksheet = $objPHPExcel->setActiveSheetIndexByName($loadedSheetName);
 
-    $objWorksheet = $objPHPExcel->setActiveSheetIndex($sheetIndex);
-    $dim = $objWorksheet->calculateWorksheetDimension();
-    dpr($dim);
+  $objWorksheet = $objPHPExcel->setActiveSheetIndex($sheetIndex);
+  $dim = $objWorksheet->calculateWorksheetDimension();
+  dpr($dim);
+  $highestRow = $objWorksheet->getHighestRow();
+  dpr($highestRow);
+  $highestColumn = $objWorksheet->getHighestColumn();
+  dpr($highestColumn);
     /*
      * A1:N308
 A1:F22
@@ -149,7 +153,7 @@ A1:L1
 
 //$objWorksheet = $objPHPExcel->getActiveSheet();
 //dpr($objWorksheet);
-$highestRow = $objWorksheet->getHighestRow();
+//$highestRow = $objWorksheet->getHighestRow();
 //dpr($highestRow);
 //
 ////==============
@@ -162,10 +166,10 @@ $highestRow = $objWorksheet->getHighestRow();
 
 //$highestRow = $objPHPExcel->getHighestRow(); // e.g. 10
 //dpr($highestRow);
-$highestColumn = $objWorksheet->getHighestColumn(); // e.g 'F'
+//$highestColumn = $objWorksheet->getHighestColumn(); // e.g 'F'
 //dpr($highestColumn);
 //
-$highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn); // e.g. 5
+//$highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn); // e.g. 5
 //
 //echo '<table>' . "\n";
 //for ($row = 1; $row <= $highestRow; ++$row) {
