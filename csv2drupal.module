@@ -50,7 +50,7 @@ $objPHPExcel = PHPExcel_IOFactory::load($file);
 //
 //$objPHPExcel = $objReader->load("data/" . $file_name);
 
-echo $objPHPExcel->getSheetCount(), ' worksheets<hr/>';
+//echo $objPHPExcel->getSheetCount(), ' worksheets<hr/>';
 $loadedSheetNames = $objPHPExcel->getSheetNames();
 //foreach ($loadedSheetNames as $sheetIndex => $loadedSheetName) {
 //    echo $sheetIndex, ' -> ', $loadedSheetName, '<br />';
@@ -61,7 +61,7 @@ $loadedSheetNames = $objPHPExcel->getSheetNames();
 //  dpr($objPHPExcel->getSheetByName('DataSet-csv')->copy());
 //    dpr($countrySheet);
 foreach ($loadedSheetNames as $sheetIndex => $loadedSheetName) {
-    echo $sheetIndex, ' -> ', $loadedSheetName, '<br />';
+//    echo $sheetIndex, ' -> ', $loadedSheetName, '<br />';
 //    $cella = $objWorksheet->getCell('B5');
 //    dpr($cella);
 //    $objWorksheet = $objPHPExcel->setActiveSheetIndexByName($loadedSheetName);
@@ -85,50 +85,64 @@ A1:L1
 
   $highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);
 //  dpr($highestColumnIndex);
-  ${$loadedSheetName} = array();
+  $sheet_names = array(
+    'DataSet-csv'   => 'dataset',
+    'DataFile-csv'  => 'datafile',
+    'Site-csv'      => 'site',
+    'Person-csv'    => 'person',
+    'Variable-csv'  => 'variable',
+    'Keywords'      => 'keywords',
+  );
+//  ${$loadedSheetName} = array();
   $ititles = array();
 //get titles
   for ($col = 0; $col <= $highestColumnIndex; ++$col) {
     $ititles[] = trim($objWorksheet->getCellByColumnAndRow($col, "1")->getValue());
   }
 
-  dpr($ititles);
+//  dpr($ititles);
 //  $dataset = array();
   for ($row = 2; $row <= $highestRow; ++$row) {
     for ($col = 0; $col <= $highestColumnIndex; ++$col) {
+//      dpr($sheet_names[$loadedSheetName]);
 //      echo '$row = ' . $row . ', ' . '$col = ' . $col . '<br/>';
-      switch ($loadedSheetName) {
-          case "DataSet-csv":
+//      switch ($loadedSheetName) {
+//          case "DataSet-csv":
+////            echo 'title = ' . $ititles[$col];
+//            $res = $objWorksheet->getCellByColumnAndRow($col, $row)->getValue();
+////            dpr($res);
+//            if (!empty($res)) {
+//              $dataset[$ititles[$col]][] = $res;
+//            }
+//              break;
+//          case "DataFile-csv":
 //            echo 'title = ' . $ititles[$col];
-            $res = $objWorksheet->getCellByColumnAndRow($col, $row)->getValue();
+//            $res = $objWorksheet->getCellByColumnAndRow($col, $row)->getValue();
 //            dpr($res);
-            if (!empty($res)) {
-              $dataset[$ititles[$col]][] = $res;
-            }
-              break;
-          case "DataFile-csv":
-            echo 'title = ' . $ititles[$col];
-            $res = $objWorksheet->getCellByColumnAndRow($col, $row)->getValue();
-            dpr($res);
-            if (!empty($res)) {
-              $datafile[$ititles[$col]][] = $res;
-            }
-//              echo "i is DataFile";
-              break;
-          case "Site-csv":
-//              echo "i is Site";
-              break;
-          case "Person-csv":
-//              echo "i is Person";
-              break;
-          case "Variable-csv":
-//              echo "i is Variable";
-              break;
-          case "Keywords":
-//              echo "i is Keywords";
-              break;
-      }
-//      ${$loadedSheetName}[$ititles[$col]] = $objWorksheet->getCellByColumnAndRow($col, $row)->getValue();
+//            if (!empty($res)) {
+//              $datafile[$ititles[$col]][] = $res;
+//            }
+////              echo "i is DataFile";
+//              break;
+//          case "Site-csv":
+////              echo "i is Site";
+//              break;
+//          case "Person-csv":
+////              echo "i is Person";
+//              break;
+//          case "Variable-csv":
+////              echo "i is Variable";
+//              break;
+//          case "Keywords":
+////              echo "i is Keywords";
+//              break;
+//      }
+//      ${$sheet_names[$loadedSheetName]}[$ititles[$col]] = $objWorksheet->getCellByColumnAndRow($col, $row)->getValue();
+        $res = $objWorksheet->getCellByColumnAndRow($col, $row)->getValue();
+        dpr($res);
+        if (!empty($res)) {
+          ${$sheet_names[$loadedSheetName]}[$ititles[$col]][] = $res;
+        }
 //      echo 'title = ' . $ititles[$col];
 //      $res = $objWorksheet->getCellByColumnAndRow($col, $row)->getValue();
 //      dpr($res);
