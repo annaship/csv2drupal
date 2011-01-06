@@ -55,9 +55,9 @@ function csv2drupal_page() {
     for ($row = 2; $row <= $highestRow; ++$row) {
       for ($col = 0; $col <= $highestColumnIndex; ++$col) {
         $res = $objWorksheet->getCellByColumnAndRow($col, $row)->getValue();
-        if (!empty($res)) {
+//        if (!empty($res)) {
           ${$sheet_names[$loadedSheetName]}[$ititles[$col]][] = $res;
-        }
+//        }
       }
     }
     echo '$dataset = ';
