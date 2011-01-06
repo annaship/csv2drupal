@@ -79,13 +79,20 @@ A1:O6
 A1:L1
      */
   $highestRow = $objWorksheet->getHighestRow();
-  dpr($highestRow);
+//  dpr($highestRow);
   $highestColumn = $objWorksheet->getHighestColumn();
-  dpr($highestColumn);
+//  dpr($highestColumn);
 
-  $highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn); // e.g. 5
-  dpr($highestColumnIndex);
+  $highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);
+//  dpr($highestColumnIndex);
+    ${$loadedSheetName} = array();
 
+  for ($row = 1; $row <= $highestRow; ++$row) {
+    for ($col = 0; $col <= $highestColumnIndex; ++$col) {
+      ${$loadedSheetName}[] = $objWorksheet->getCellByColumnAndRow($col, $row)->getValue();
+    }
+  }
+  dpr(${$loadedSheetName});
 echo '<table>' . "\n";
 for ($row = 1; $row <= $highestRow; ++$row) {
   echo '<tr>' . "\n";
