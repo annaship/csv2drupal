@@ -52,11 +52,50 @@ $objPHPExcel = PHPExcel_IOFactory::load($file);
 
 echo $objPHPExcel->getSheetCount(), ' worksheets<hr/>';
 $loadedSheetNames = $objPHPExcel->getSheetNames();
-foreach ($loadedSheetNames as $sheetIndex => $loadedSheetName) {
-    echo $sheetIndex, ' -> ', $loadedSheetName, '<br />';
-}
-die;
+//foreach ($loadedSheetNames as $sheetIndex => $loadedSheetName) {
+//    echo $sheetIndex, ' -> ', $loadedSheetName, '<br />';
+//}
+//die;
 //------------------
+
+//  dpr($objPHPExcel->getSheetByName('DataSet-csv')->copy());
+//    dpr($countrySheet);
+foreach ($loadedSheetNames as $sheetIndex => $loadedSheetName) {
+//    echo $sheetIndex, ' -> ', $loadedSheetName, '<br />';
+//    $cella = $objWorksheet->getCell('B5');
+//    dpr($cella);
+//    $objWorksheet = $objPHPExcel->setActiveSheetIndexByName($loadedSheetName);
+
+    $objWorksheet = $objPHPExcel->setActiveSheetIndex($sheetIndex);
+    $dim = $objWorksheet->calculateWorksheetDimension();
+    dpr($dim);
+    /*
+     * A1:N308
+A1:F22
+A1:V5
+A1:P70
+A1:M2
+A1:O6
+A1:L1
+     */
+//
+//
+//    $objWorksheet = $objPHPExcel->getSheetByName($loadedSheetName);
+//  		$objPHPExcel->setActiveSheetIndex($sheetIndex);
+//      $currentWorkSheet = $objPHPExcel->getActiveSheet()->getColumnDimension('A');
+//      PHPExcel_Worksheet::getHighestRow()
+//    $currentWorkSheet = $objPHPExcel->getSheet($sheetIndex);
+//    PHPExcel_Worksheet::$_title
+//    getSheet
+//    echo '<br />';
+//  $currentWorkSheet = $objPHPExcel->getActiveSheet($sheetIndex);
+//  dpr($objWorksheet);
+//    $countrySheet = $objPHPExcel->getSheetByName('Sheet1')->copy();
+
+}
+
+//
+//
 //
 //
 //!!!
