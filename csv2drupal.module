@@ -32,20 +32,60 @@ $file = "/Users/anna/work/drupal/lter/new/today/csv_examples_hor/1982_2000gs81tu
 //$objReader = PHPExcel_IOFactory::createReader('Excel2003XML');
 //$objReader = PHPExcel_IOFactory::createReader('Excel2007');
 //$objPHPExcel = $objReader->load($file);
-//!!!
+//$objReader = PHPExcel_IOFactory::createReaderForFile("data/" . $file_name);
+//---------------
+//!!!gives worksheets names
+//7 worksheets
+//0 -> Oridrinal Metadata.txt
+//1 -> DataSet-csv2
+//2 -> DataSet-csv
+//3 -> DataFile-csv
+//4 -> Site-csv
+//5 -> Person-csv
+//6 -> Keywords
+$objReader = PHPExcel_IOFactory::createReaderForFile($file);
+$objReader->setLoadSheetsOnly(0);
+$objReader->setReadDataOnly(true);
 $objPHPExcel = PHPExcel_IOFactory::load($file);
+//
+//$objPHPExcel = $objReader->load("data/" . $file_name);
+
+echo $objPHPExcel->getSheetCount(), ' worksheets<hr/>';
+$loadedSheetNames = $objPHPExcel->getSheetNames();
+foreach ($loadedSheetNames as $sheetIndex => $loadedSheetName) {
+    echo $sheetIndex, ' -> ', $loadedSheetName, '<br />';
+}
+die;
+//------------------
+//
+//
+//!!!
+//$objPHPExcel = PHPExcel_IOFactory::load($file);
+//$objWorksheet = $objPHPExcel->getSheetIndex();
+//dpr($objWorksheet);
 //$objReader = new PHPExcel_Reader_Excel5();
 //take only one spreadsheet
 //$objReader = PHPExcel_IOFactory::createReader('Excel2007');
 //$objReader->setLoadSheetsOnly( array("Oridrinal Metadata.txt") );
+
+
+//$objReader = PHPExcel_IOFactory::createReader('CSV');
+//$objReader->setInputEncoding('ISO-8859-1');
+//$objReader->setDelimiter(',');
+//$objReader->setEnclosure('');
+//$objReader->setLineEnding("\r\n");
+//$objReader->setSheetIndex(0);
+//
+//$objReader->setLoadSheetsOnly( array('Person-csv') );
 //$objPHPExcel = $objReader->load($file);
+//$objReader->setLoadSheetsOnly( array('DataSet-csv') );
 
 //!
 //$a = $objPHPExcel->getProperties();
 //dpr($a);
 //dpr($objPHPExcel);
 
-$objWorksheet = $objPHPExcel->getActiveSheet();
+//$objWorksheet = $objPHPExcel->getActiveSheet();
 //dpr($objWorksheet);
 
 ////--------------
@@ -71,7 +111,7 @@ $objWorksheet = $objPHPExcel->getActiveSheet();
 //$objWorksheet = $objPHPExcel->getActiveSheet();
 //dpr($objWorksheet);
 $highestRow = $objWorksheet->getHighestRow();
-dpr($highestRow);
+//dpr($highestRow);
 //
 ////==============
 //$objReader = PHPExcel_IOFactory::createReader('Excel2007');
@@ -84,21 +124,21 @@ dpr($highestRow);
 //$highestRow = $objPHPExcel->getHighestRow(); // e.g. 10
 //dpr($highestRow);
 $highestColumn = $objWorksheet->getHighestColumn(); // e.g 'F'
-dpr($highestColumn);
+//dpr($highestColumn);
 //
 $highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn); // e.g. 5
 //
-echo '<table>' . "\n";
-for ($row = 1; $row <= $highestRow; ++$row) {
-  echo '<tr>' . "\n";
-
-  for ($col = 0; $col <= $highestColumnIndex; ++$col) {
-    echo '<td>' . $objWorksheet->getCellByColumnAndRow($col, $row)->getValue() . '</td>' . "\n";
-  }
-
-  echo '</tr>' . "\n";
-}
-echo '</table>' . "\n";
+//echo '<table>' . "\n";
+//for ($row = 1; $row <= $highestRow; ++$row) {
+//  echo '<tr>' . "\n";
+//
+//  for ($col = 0; $col <= $highestColumnIndex; ++$col) {
+//    echo '<td>' . $objWorksheet->getCellByColumnAndRow($col, $row)->getValue() . '</td>' . "\n";
+//  }
+//
+//  echo '</tr>' . "\n";
+//}
+//echo '</table>' . "\n";
 
 //============
 
