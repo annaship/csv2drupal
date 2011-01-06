@@ -85,25 +85,79 @@ A1:L1
 
   $highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);
 //  dpr($highestColumnIndex);
-    ${$loadedSheetName} = array();
+  ${$loadedSheetName} = array();
+  $ititles = array();
+//get titles
+  for ($col = 0; $col <= $highestColumnIndex; ++$col) {
+    $ititles[] = trim($objWorksheet->getCellByColumnAndRow($col, "1")->getValue());
+  }
 
-  for ($row = 1; $row <= $highestRow; ++$row) {
+  dpr($ititles);
+//  $dataset = array();
+  for ($row = 2; $row <= $highestRow; ++$row) {
     for ($col = 0; $col <= $highestColumnIndex; ++$col) {
-      ${$loadedSheetName}[] = $objWorksheet->getCellByColumnAndRow($col, $row)->getValue();
+//      echo '$row = ' . $row . ', ' . '$col = ' . $col . '<br/>';
+      switch ($loadedSheetName) {
+          case "DataSet-csv":
+//            echo 'title = ' . $ititles[$col];
+            $res = $objWorksheet->getCellByColumnAndRow($col, $row)->getValue();
+//            dpr($res);
+            if (!empty($res)) {
+              $dataset[$ititles[$col]] = $res;
+            }
+              break;
+          case "DataFile-csv":
+            echo 'title = ' . $ititles[$col];
+            $res = $objWorksheet->getCellByColumnAndRow($col, $row)->getValue();
+            dpr($res);
+            if (!empty($res)) {
+              $datafile[$ititles[$col]] = $res;
+            }
+//              echo "i is DataFile";
+              break;
+          case "Site-csv":
+//              echo "i is Site";
+              break;
+          case "Person-csv":
+//              echo "i is Person";
+              break;
+          case "Variable-csv":
+//              echo "i is Variable";
+              break;
+          case "Keywords":
+//              echo "i is Keywords";
+              break;
+      }
+//      ${$loadedSheetName}[$ititles[$col]] = $objWorksheet->getCellByColumnAndRow($col, $row)->getValue();
+//      echo 'title = ' . $ititles[$col];
+//      $res = $objWorksheet->getCellByColumnAndRow($col, $row)->getValue();
+//      dpr($res);
     }
   }
-  dpr(${$loadedSheetName});
-echo '<table>' . "\n";
-for ($row = 1; $row <= $highestRow; ++$row) {
-  echo '<tr>' . "\n";
+  echo '$dataset = ';
+  dpr($dataset);
 
-  for ($col = 0; $col <= $highestColumnIndex; ++$col) {
-    echo '<td>' . $objWorksheet->getCellByColumnAndRow($col, $row)->getValue() . '</td>' . "\n";
-  }
+  echo '$datafile = ';
+  dpr($datafile);
 
-  echo '</tr>' . "\n";
-}
-echo '</table>' . "\n";
+//  for ($row = 1; $row <= $highestRow; ++$row) {
+//    }
+//    for ($col = 0; $col <= $highestColumnIndex; ++$col) {
+//      ${$loadedSheetName}[] = $objWorksheet->getCellByColumnAndRow($col, $row)->getValue();
+//    }
+//  }
+//  dpr(${$loadedSheetName});
+//echo '<table>' . "\n";
+//for ($row = 1; $row <= $highestRow; ++$row) {
+//  echo '<tr>' . "\n";
+//
+//  for ($col = 0; $col <= $highestColumnIndex; ++$col) {
+//    echo '<td>' . $objWorksheet->getCellByColumnAndRow($col, $row)->getValue() . '</td>' . "\n";
+//  }
+//
+//  echo '</tr>' . "\n";
+//}
+//echo '</table>' . "\n";
 //
 //
 //    $objWorksheet = $objPHPExcel->getSheetByName($loadedSheetName);
