@@ -69,10 +69,6 @@ foreach ($loadedSheetNames as $sheetIndex => $loadedSheetName) {
   $objWorksheet = $objPHPExcel->setActiveSheetIndex($sheetIndex);
   $dim = $objWorksheet->calculateWorksheetDimension();
   dpr($dim);
-  $highestRow = $objWorksheet->getHighestRow();
-  dpr($highestRow);
-  $highestColumn = $objWorksheet->getHighestColumn();
-  dpr($highestColumn);
     /*
      * A1:N308
 A1:F22
@@ -82,6 +78,25 @@ A1:M2
 A1:O6
 A1:L1
      */
+  $highestRow = $objWorksheet->getHighestRow();
+  dpr($highestRow);
+  $highestColumn = $objWorksheet->getHighestColumn();
+  dpr($highestColumn);
+
+  $highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn); // e.g. 5
+  dpr($highestColumnIndex);
+
+echo '<table>' . "\n";
+for ($row = 1; $row <= $highestRow; ++$row) {
+  echo '<tr>' . "\n";
+
+  for ($col = 0; $col <= $highestColumnIndex; ++$col) {
+    echo '<td>' . $objWorksheet->getCellByColumnAndRow($col, $row)->getValue() . '</td>' . "\n";
+  }
+
+  echo '</tr>' . "\n";
+}
+echo '</table>' . "\n";
 //
 //
 //    $objWorksheet = $objPHPExcel->getSheetByName($loadedSheetName);
