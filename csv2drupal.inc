@@ -14,8 +14,6 @@ function get_info_from_excel_file($file) {
 
   module_load_include('php', 'excel_reader', 'includes/PHPExcel/IOFactory');
 
-//  TODO: take file_name from form
-//  $file = "/Users/anna/work/drupal/lter/new/today/csv_examples_hor/1982_2000gs81tusbm_2_CSVb.xls";
   $objReader = PHPExcel_IOFactory::createReaderForFile($file);
   $objReader->setLoadSheetsOnly(0);
   $objReader->setReadDataOnly(true);
@@ -44,11 +42,16 @@ function get_info_from_excel_file($file) {
 //    echo '$datafile = ';
 //    dpr($datafile);
 //dpr(${$sheet_names[$loadedSheetName]});
-    $content[$sheet_names[$loadedSheetName]] = ${$sheet_names[$loadedSheetName]};
 //    echo 'person = ';
-    echo '$sheet_names[$loadedSheetName] = ' . $sheet_names[$loadedSheetName];
-    dpr($sheet_names);
-    echo in_array('dataset', $sheet_names);
+//    echo '$sheet_names[$loadedSheetName] = ' . $sheet_names[$loadedSheetName];
+//    dpr($sheet_names);
+////    $a = 'dataset';
+    $a = $sheet_names[$loadedSheetName];
+//    echo $a . ' is in $sheet_names: ' . in_array($a, $sheet_names) . "<br/>";
+    if (in_array($a, $sheet_names)) {
+      echo 'URRRAAA!';
+      $content[$sheet_names[$loadedSheetName]] = ${$sheet_names[$loadedSheetName]};
+    }
 //    if (in_array($sheet_names[$loadedSheetName], $sheet_names)) {
 //    echo "Got Irix";
 //}
