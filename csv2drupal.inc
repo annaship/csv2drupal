@@ -1,6 +1,9 @@
 <?php
 
-function get_info_from_excel_file($file) {
+require_once("includes/PHPExcel/IOFactory.php");
+
+
+function get_data_from_excel_file($file) {
 //  dpm($file);
 //  drupal_set_message('UUUURRRRAAA');
   $sheet_names = array(
@@ -11,8 +14,6 @@ function get_info_from_excel_file($file) {
     'Variable-csv'  => 'variable',
     'Keywords'      => 'keywords',
   );
-
-  module_load_include('php', 'excel_reader', 'includes/PHPExcel/IOFactory');
 
   $objReader = PHPExcel_IOFactory::createReaderForFile($file);
   $objReader->setLoadSheetsOnly(0);

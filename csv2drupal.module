@@ -50,7 +50,7 @@ function eml_config_form_submit($form, &$form_state) {
 
     if ($result) {
       $filepath = $file->filepath;
-      $ret = get_info_from_excel_file($filepath);
+      $ret = get_data_from_excel_file($filepath);
       dpr($ret);
     }
   }
