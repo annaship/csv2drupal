@@ -168,9 +168,9 @@ Missing Value Code Explanation
       $node->field_code_definition[0]['value'] = $value['Code Information'];
 //      $node->field_attribute_assoc_datafile[0]['value'] = $value['Associated Data Files'];
 //      TODO node_save here
-  dpr($node);
-  }
+//      TODO collect nids into array and return it
 //  dpr($node);
+  }
 //  return $node;
 }
 
@@ -181,12 +181,12 @@ function create_varable_values($content) {
       $varable_values[$number][$key] = $data;
     }
   }
-//  dpr($varable_values);
   return $varable_values;
 }
 
 function create_site_node($content, $uid) {
-  dpr("create_site_node");
+  dpr($content);
+//  dpr("create_site_node");
 }
 
 function create_datafile_node($content, $uid) {
