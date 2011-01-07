@@ -1,8 +1,8 @@
 <?php
 
 function get_info_from_excel_file($file) {
-  dpm($file);
-  drupal_set_message('UUUURRRRAAA');
+//  dpm($file);
+//  drupal_set_message('UUUURRRRAAA');
   $sheet_names = array(
     'DataSet-csv'   => 'dataset',
     'DataFile-csv'  => 'datafile',
@@ -41,68 +41,71 @@ function get_info_from_excel_file($file) {
         ${$sheet_names[$loadedSheetName]}[$ititles[$col]][] = $res;
       }
     }
-    echo '$datafile = ';
-    dpr($datafile);
-
+//    echo '$datafile = ';
+//    dpr($datafile);
+//dpr(${$sheet_names[$loadedSheetName]});
+    $content[$sheet_names[$loadedSheetName]] = ${$sheet_names[$loadedSheetName]};
     echo 'person = ';
-    dpr($person);
   }
+    dpr($content);
+//  dpm(${$sheet_names});
+  return ${$sheet_names};
 }
 
-function get_info_from_file() {
-//  call 5 times for each csv file?
-  $filename = get_file_name();
-  $content = get_content($filename);
+//function get_info_from_file() {
+////  call 5 times for each csv file?
+//  $filename = get_file_name();
+//  $content = get_content($filename);
+//
+////  dpr($content);
+//  return $content;
+//}
+//
+//function get_file_name() {
+////  TODO: form here
+////  variable
+////  $filename = "/Users/anna/work/drupal/lter/new/today/variable_h.csv";
+////  dataset
+//  $filename = "/Users/anna/work/drupal/lter/new/today/csv_examples_hor/1982_2000gs81tusbm_DataSet.csv";
+//
+//  return $filename;
+//}
+//
+//function get_content($filename) {
+//  $content = csv_to_array($filename);
+//  return $content;
+//}
 
-//  dpr($content);
-  return $content;
-}
-
-function get_file_name() {
-//  TODO: form here
-//  variable
-//  $filename = "/Users/anna/work/drupal/lter/new/today/variable_h.csv";
-//  dataset
-  $filename = "/Users/anna/work/drupal/lter/new/today/csv_examples_hor/1982_2000gs81tusbm_DataSet.csv";
-
-  return $filename;
-}
-
-function get_content($filename) {
-  $content = csv_to_array($filename);
-  return $content;
-}
-
- function csv_to_array($filename='', $delimiter=',') {
-    if(!file_exists($filename) || !is_readable($filename)) {
-        return FALSE;
-    }
-
-    $header = NULL;
-    $data = array();
-    if (($handle = fopen($filename, 'r')) !== FALSE)
-    {
-        while (($row = fgetcsv($handle, 1000, $delimiter)) !== FALSE)
-        {
-            if(!$header) {
-                $header = $row;
-                chop_field_names($header);
-            }
-            else {
-                $data[] = array_combine($header, $row);
-            }
-        }
-        fclose($handle);
-    }
-    return $data;
- }
-
- function chop_field_names(&$header) {
-  foreach ($header as $key => $value) {
-    $header[$key] = rtrim($value, " ");
-  }
-  return $header;
-}
+// function csv_to_array($filename='', $delimiter=',') {
+//    if(!file_exists($filename) || !is_readable($filename)) {
+//        return FALSE;
+//    }
+//
+//    $header = NULL;
+//    $data = array();
+//    if (($handle = fopen($filename, 'r')) !== FALSE)
+//    {
+//        while (($row = fgetcsv($handle, 1000, $delimiter)) !== FALSE)
+//        {
+//            if(!$header) {
+//                $header = $row;
+//                chop_field_names($header);
+//            }
+//            else {
+//                $data[] = array_combine($header, $row);
+//            }
+//        }
+//        fclose($handle);
+//    }
+//    return $data;
+// }
+//
+// function chop_field_names(&$header) {
+//  foreach ($header as $key => $value) {
+//    $header[$key] = rtrim($value, " ");
+//  }
+//  return $header;
+//}
 
 function create_nodes($content) {
 //TODO link node references
