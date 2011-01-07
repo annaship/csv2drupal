@@ -1,8 +1,8 @@
 <?php
 
 function get_info_from_excel_file($file) {
-  dpr($file);
-  echo 'UUUURRRRAAA';
+  dpm($file);
+  drupal_set_message('UUUURRRRAAA');
   $sheet_names = array(
     'DataSet-csv'   => 'dataset',
     'DataFile-csv'  => 'datafile',
