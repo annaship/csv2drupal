@@ -41,26 +41,12 @@ function get_info_from_excel_file($file) {
         }
       }
     }
-//    echo '$datafile = ';
-//    dpr($datafile);
-//dpr(${$sheet_names[$loadedSheetName]});
-//    echo 'person = ';
-//    echo '$sheet_names[$loadedSheetName] = ' . $sheet_names[$loadedSheetName];
-//    dpr($sheet_names);
-////    $a = 'dataset';
-    $a = $sheet_names[$loadedSheetName];
-//    echo $a . ' is in $sheet_names: ' . in_array($a, $sheet_names) . "<br/>";
     if (in_array($sheet_names[$loadedSheetName], $sheet_names)) {
       $content[$sheet_names[$loadedSheetName]] = ${$sheet_names[$loadedSheetName]};
     }
-//    if (in_array($sheet_names[$loadedSheetName], $sheet_names)) {
-//    echo "Got Irix";
-//}
-
   }
-    dpr($content);
-//  dpm(${$sheet_names});
-  return ${$sheet_names};
+//    dpr($content);
+  return $content;
 }
 
 //function get_info_from_file() {
@@ -131,7 +117,7 @@ function create_nodes($content) {
   $datafile_nodes  = create_datafile_node($content, $uid);
 //  dpr($datafile_nodes);
   $dataset_nodes   = create_dataset_node($content, $uid);
-  dpr($dataset_nodes);
+//  dpr($dataset_nodes);
 
 //  TODO link referrer
 }
@@ -367,6 +353,6 @@ function put_values_into_node($dataset_values, $uid) {
 // TODO add format
     $node->field_quality                  = array($dataset_values['Quality Assurance']);
 // TODO add format
-    dpr($node);
+//    dpr($node);
 }
 
