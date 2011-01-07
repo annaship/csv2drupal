@@ -4,8 +4,6 @@ require_once("includes/PHPExcel/IOFactory.php");
 
 
 function get_data_from_excel_file($file) {
-//  dpm($file);
-//  drupal_set_message('UUUURRRRAAA');
   $sheet_names = array(
     'DataSet-csv'   => 'dataset',
     'DataFile-csv'  => 'datafile',
@@ -46,7 +44,6 @@ function get_data_from_excel_file($file) {
       $content[$sheet_names[$loadedSheetName]] = ${$sheet_names[$loadedSheetName]};
     }
   }
-//    dpr($content);
   return $content;
 }
 
@@ -107,18 +104,19 @@ function get_data_from_excel_file($file) {
 
 function create_nodes($content) {
 //TODO link node references
-  
-  $uid            = get_uid();
-  $person_nodes    = create_person_node($content, $uid);
+  dpr('HERE!!!');
+  $uid               = get_uid();
+  $person_nodes      = create_person_node($content['person'], $uid);
 //  dpr($person_nodes);
-  $variables_nodes = create_variable_node($content, $uid);
+  $variables_nodes   = create_variable_node($content['variable'], $uid);
 //  dpr($variables_nodes);
-  $site_nodes      = create_site_node($content, $uid);
+  $site_nodes        = create_site_node($content['site'], $uid);
 //  dpr($site_nodes);
-  $datafile_nodes  = create_datafile_node($content, $uid);
+  $datafile_nodes    = create_datafile_node($content['datafile'], $uid);
 //  dpr($datafile_nodes);
-  $dataset_nodes   = create_dataset_node($content, $uid);
+  $dataset_nodes     = create_dataset_node($content['dataset'], $uid);
 //  dpr($dataset_nodes);
+  $keywords_taxonomy = create_keywords_node($content['keywords'], $uid);
 
 //  TODO link referrer
 }
@@ -128,49 +126,57 @@ function get_uid() {
   return $user->uid;
 }
 
-function create_person_node() {
-//  dpr("create_person_node");
+function create_person_node($content, $uid) {
+
+  dpr("create_person_node");
 }
 
 function create_variable_node($content, $uid) {
+  dpr("create_variable_node");
 
-  foreach ($content as $value) {
-      $node = new StdClass();
-      $node->type = "variable";
-      $node->uid = $uid;
-      $node->title = $value['Name'];
-      $node->field_attribute_label[0]['value'] = $value['Label'];
-      $node->field_var_definition[0]['value'] = $value['Definition'];
-      $node->field_var_missingvalues[0]['value'] = $value['Missing Values'];
-      $node->field_attribute_unit[0]['value'] = $value['unit'];
-      $node->field_attribute_maximum[0]['value'] = $value['Maximum Value'];
-      $node->field_attribute_minimum[0]['value'] = $value['Minimum Value'];
-      $node->field_attribute_precision[0]['value'] = $value['precision'];
-      $node->field_attribute_formatstring[0]['value'] = $value['Date Format'];
-      $node->field_code_definition[0]['value'] = $value['Code-Definition'];
-      $node->field_attribute_assoc_datafile[0]['value'] = $value['Associated Data Files'];
-  }
-
-  return $node;
+//  foreach ($content as $value) {
+//      $node = new StdClass();
+//      $node->type = "variable";
+//      $node->uid = $uid;
+//      $node->title = $value['Name'];
+//      $node->field_attribute_label[0]['value'] = $value['Label'];
+//      $node->field_var_definition[0]['value'] = $value['Definition'];
+//      $node->field_var_missingvalues[0]['value'] = $value['Missing Values'];
+//      $node->field_attribute_unit[0]['value'] = $value['unit'];
+//      $node->field_attribute_maximum[0]['value'] = $value['Maximum Value'];
+//      $node->field_attribute_minimum[0]['value'] = $value['Minimum Value'];
+//      $node->field_attribute_precision[0]['value'] = $value['precision'];
+//      $node->field_attribute_formatstring[0]['value'] = $value['Date Format'];
+//      $node->field_code_definition[0]['value'] = $value['Code-Definition'];
+//      $node->field_attribute_assoc_datafile[0]['value'] = $value['Associated Data Files'];
+//  }
+//
+//  return $node;
 }
 
-function create_site_node() {
-//  dpr("create_site_node");
+function create_site_node($content, $uid) {
+  dpr("create_site_node");
 }
 
-function create_datafile_node() {
-//  dpr("create_datafile_node");
+function create_datafile_node($content, $uid) {
+  dpr("create_datafile_node");
 }
 
 function create_dataset_node($content, $uid) {
+    dpr("create_dataset_node");
 
-  $dataset_values = set_dataset_values($content);
-  $node = put_values_into_node($dataset_values, $uid);
-//  dpr($dataset_values);
+//
+//  $dataset_values = set_dataset_values($content);
+//  $node = put_values_into_node($dataset_values, $uid);
+////  dpr($dataset_values);
+//
+////    dpr($node);
+//    return $node;
 
-//    dpr($node);
-    return $node;
+}
 
+function create_keywords_node($content, $uid) {
+    dpr("create_keywords_node");
 }
 
 function set_dataset_values($content) {
