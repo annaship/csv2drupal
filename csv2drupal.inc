@@ -28,15 +28,17 @@ function get_info_from_excel_file($file) {
     $highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);
 
     //get titles
-    $ititles = array();
+    $titles = array();
     for ($col = 0; $col <= $highestColumnIndex; ++$col) {
-      $ititles[] = trim($objWorksheet->getCellByColumnAndRow($col, "1")->getValue());
+      $titles[] = trim($objWorksheet->getCellByColumnAndRow($col, "1")->getValue());
     }
 
     for ($row = 2; $row <= $highestRow; ++$row) {
       for ($col = 0; $col <= $highestColumnIndex; ++$col) {
         $res = $objWorksheet->getCellByColumnAndRow($col, $row)->getValue();
-        ${$sheet_names[$loadedSheetName]}[$ititles[$col]][] = $res;
+        if (!empty($titles[$col])) {
+          ${$sheet_names[$loadedSheetName]}[$titles[$col]][] = $res;
+        }
       }
     }
 //    echo '$datafile = ';
@@ -48,8 +50,7 @@ function get_info_from_excel_file($file) {
 ////    $a = 'dataset';
     $a = $sheet_names[$loadedSheetName];
 //    echo $a . ' is in $sheet_names: ' . in_array($a, $sheet_names) . "<br/>";
-    if (in_array($a, $sheet_names)) {
-      echo 'URRRAAA!';
+    if (in_array($sheet_names[$loadedSheetName], $sheet_names)) {
       $content[$sheet_names[$loadedSheetName]] = ${$sheet_names[$loadedSheetName]};
     }
 //    if (in_array($sheet_names[$loadedSheetName], $sheet_names)) {
