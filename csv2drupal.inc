@@ -12,41 +12,41 @@ function get_info_from_excel_file($file) {
     'Keywords'      => 'keywords',
   );
 
-//  module_load_include('php', 'excel_reader', 'includes/PHPExcel/IOFactory');
-//
-////  TODO: take file_name from form
-////  $file = "/Users/anna/work/drupal/lter/new/today/csv_examples_hor/1982_2000gs81tusbm_2_CSVb.xls";
-//  $objReader = PHPExcel_IOFactory::createReaderForFile($file);
-//  $objReader->setLoadSheetsOnly(0);
-//  $objReader->setReadDataOnly(true);
-//  $objPHPExcel = PHPExcel_IOFactory::load($file);
-//
-//  $loadedSheetNames = $objPHPExcel->getSheetNames();
-//  foreach ($loadedSheetNames as $sheetIndex => $loadedSheetName) {
-//    $objWorksheet = $objPHPExcel->setActiveSheetIndex($sheetIndex);
-//    $dim = $objWorksheet->calculateWorksheetDimension();
-//    $highestRow = $objWorksheet->getHighestRow();
-//    $highestColumn = $objWorksheet->getHighestColumn();
-//    $highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);
-//
-//    //get titles
-//    $ititles = array();
-//    for ($col = 0; $col <= $highestColumnIndex; ++$col) {
-//      $ititles[] = trim($objWorksheet->getCellByColumnAndRow($col, "1")->getValue());
-//    }
-//
-//    for ($row = 2; $row <= $highestRow; ++$row) {
-//      for ($col = 0; $col <= $highestColumnIndex; ++$col) {
-//        $res = $objWorksheet->getCellByColumnAndRow($col, $row)->getValue();
-//        ${$sheet_names[$loadedSheetName]}[$ititles[$col]][] = $res;
-//      }
-//    }
-//    echo '$datafile = ';
-//    dpr($datafile);
-//
-//    echo 'person = ';
-//    dpr($person);
-//  }
+  module_load_include('php', 'excel_reader', 'includes/PHPExcel/IOFactory');
+
+//  TODO: take file_name from form
+//  $file = "/Users/anna/work/drupal/lter/new/today/csv_examples_hor/1982_2000gs81tusbm_2_CSVb.xls";
+  $objReader = PHPExcel_IOFactory::createReaderForFile($file);
+  $objReader->setLoadSheetsOnly(0);
+  $objReader->setReadDataOnly(true);
+  $objPHPExcel = PHPExcel_IOFactory::load($file);
+
+  $loadedSheetNames = $objPHPExcel->getSheetNames();
+  foreach ($loadedSheetNames as $sheetIndex => $loadedSheetName) {
+    $objWorksheet = $objPHPExcel->setActiveSheetIndex($sheetIndex);
+    $dim = $objWorksheet->calculateWorksheetDimension();
+    $highestRow = $objWorksheet->getHighestRow();
+    $highestColumn = $objWorksheet->getHighestColumn();
+    $highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);
+
+    //get titles
+    $ititles = array();
+    for ($col = 0; $col <= $highestColumnIndex; ++$col) {
+      $ititles[] = trim($objWorksheet->getCellByColumnAndRow($col, "1")->getValue());
+    }
+
+    for ($row = 2; $row <= $highestRow; ++$row) {
+      for ($col = 0; $col <= $highestColumnIndex; ++$col) {
+        $res = $objWorksheet->getCellByColumnAndRow($col, $row)->getValue();
+        ${$sheet_names[$loadedSheetName]}[$ititles[$col]][] = $res;
+      }
+    }
+    echo '$datafile = ';
+    dpr($datafile);
+
+    echo 'person = ';
+    dpr($person);
+  }
 }
 
 function get_info_from_file() {
