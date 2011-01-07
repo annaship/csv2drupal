@@ -58,12 +58,16 @@ function eml_config_form_submit($form, &$form_state) {
     $dest_path = file_directory_path() . '/upload';
     $result = file_copy($file, $dest_path, FILE_EXISTS_RENAME);
 //    dpm($file);
-    $filepath = $file->filepath;
-
+    if ($result) {
+      $filepath = $file->filepath;
+      get_info_from_excel_file($filepath);
+    }
+  }
+  else {
+    form_set_error('eml_config_form', t("Failed to save the file."));
   }
 
 //  dpm($filepath);
-  get_info_from_excel_file($filepath);
 //  drupal_goto('admin/content/');
 //      $file->description = $file->filename;
 
