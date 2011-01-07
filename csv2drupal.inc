@@ -105,6 +105,7 @@ function get_data_from_excel_file($file) {
 function create_nodes($content) {
 //TODO link node references
   dpr('HERE!!!');
+//  dpr($content['variable']);
   $uid               = get_uid();
   $person_nodes      = create_person_node($content['person'], $uid);
 //  dpr($person_nodes);
@@ -132,7 +133,8 @@ function create_person_node($content, $uid) {
 }
 
 function create_variable_node($content, $uid) {
-  dpr("create_variable_node");
+  dpr('here in variable');
+  dpr($content);
 
 //  foreach ($content as $value) {
 //      $node = new StdClass();
@@ -164,7 +166,7 @@ function create_datafile_node($content, $uid) {
 
 function create_dataset_node($content, $uid) {
     dpr("create_dataset_node");
-
+    dpr($content);
 //
 //  $dataset_values = set_dataset_values($content);
 //  $node = put_values_into_node($dataset_values, $uid);
