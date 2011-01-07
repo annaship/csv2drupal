@@ -104,7 +104,7 @@ function get_data_from_excel_file($file) {
 
 function create_nodes($content) {
 //TODO link node references
-  dpr('HERE!!!');
+//  dpr('HERE!!!');
 //  dpr($content['variable']);
   $uid               = get_uid();
   $person_nodes      = create_person_node($content['person'], $uid);
@@ -167,12 +167,13 @@ function create_datafile_node($content, $uid) {
 function create_dataset_node($content, $uid) {
     dpr("create_dataset_node");
     dpr($content);
-//
+//TODO: convert [0] into [value] and add parsing where needed
 //  $dataset_values = set_dataset_values($content);
-//  $node = put_values_into_node($dataset_values, $uid);
+//  dpr($dataset_values);
+  $node = put_values_into_node($content, $uid);
 ////  dpr($dataset_values);
 //
-////    dpr($node);
+//  dpr($node);
 //    return $node;
 
 }
@@ -241,8 +242,8 @@ function put_values_into_node($dataset_values, $uid) {
     $node = new StdClass();
     $node->type                                       = "data_set";
     $node->uid                                        = $uid;
-    $node->title                                      = $dataset_values['Title']['value'];
-    $node->field_beg_end_date                         = array($dataset_values['Date Range']); //!!!
+    $node->title                                      = $dataset_values['Title'][0];
+    $node->field_beg_end_date                         = array($dataset_values['Date Range'][0]); 
 // TODO parse and format date
 //    [field_beg_end_date] => Array
 //        (
@@ -264,7 +265,7 @@ function put_values_into_node($dataset_values, $uid) {
 //                )
 //
 //        )
-    $node->field_dataset_abstract         = array($dataset_values['Abstract']);
+    $node->field_dataset_abstract         = array($dataset_values['Abstract'][0]);
 //    TODO add format
 //    field_dataset_abstract] => Array
 //        (
@@ -276,38 +277,20 @@ function put_values_into_node($dataset_values, $uid) {
 //                )
 //
 //        )       
-//    [field_dataset_abstract] => Array
-//        (
-//            [0] => Array
-//                (
-//                    [value] => Above ground plant biomass and leaf area were measured in a moist acidic tussock tundra experimental site. The plots were set up in 1981 and have been harvested in periodical (See Shaver and Chapin Ecological Monographs, 61(1), 1991 pp.1-31.  Mack, et al, Nature 2004 431:440-443)  This file contains the biomass numbers for each harvested quadrat and per cent carbon and nitrogen summaries for harvests through 2000. Leaf area data is presented in other data files (see http://ecosystems.mbl.edu/arc).
-//                )
-//
-//        )
 
 
-    $node->field_dataset_add_info         = array($dataset_values['Additional Information']);
-//    $node->field_dataset_biblio_ref[0]['value']       = $related_bibliography; //!!!
-//    $node->field_dataset_contact_ref[0]['value']      = $contact; //!!!
-//    $node->field_dataset_datafile_ref[0]['value']     = $data_file_structure; //!!!
-//    $node->field_dataset_datamanager_ref[0]['value']  = $data_manager; //!!!
-//    $node->field_dataset_ext_assoc_ref                = $ext_assoc_arr; //!!!
-//    $node->field_dataset_fieldcrew_ref[0]['value']    = $field_crew; //!!!
-    $node->field_dataset_id               = array($dataset_values['Dataset ID']); //good
-//    $node->field_dataset_labcrew_ref[0]['value']      = $lab_crew; //!!!
-    $node->field_dataset_maintenance      = array($dataset_values['Maintenance']);
+
+    $node->field_dataset_add_info         = array($dataset_values['Additional Information'][0]);
+//    $node->field_dataset_biblio_ref[0]['value']       = $related_bibliography; 
+//    $node->field_dataset_contact_ref[0]['value']      = $contact; 
+//    $node->field_dataset_datafile_ref[0]['value']     = $data_file_structure; 
+//    $node->field_dataset_datamanager_ref[0]['value']  = $data_manager; 
+//    $node->field_dataset_ext_assoc_ref                = $ext_assoc_arr; 
+//    $node->field_dataset_fieldcrew_ref[0]['value']    = $field_crew; 
+    $node->field_dataset_id               = array($dataset_values['Dataset ID'][0]); 
+//    $node->field_dataset_labcrew_ref[0]['value']      = $lab_crew; 
+    $node->field_dataset_maintenance      = array($dataset_values['Maintenance'][0]);
 //    TODO add format
-//    [field_dataset_maintenance] => Array
-//        (
-//            [0] => Array
-//                (
-//                    [value] => Merged the 1982 through 2000 harvest files into a single file. JL Oct2005
-//Version 1:  Created and eml document.  Jim 3Oct06
-//Version 2: Added LTERNET Data Access server proxy for Excel and comma delimited data files.
-//Version 3: Upadte LTERNET Data Access server proxy link for Excel and comma delimited data files. Changed from knb to das in url.
-//                )
-//
-//        )
 //    [field_dataset_maintenance] => Array
 //        (
 //            [0] => Array
@@ -320,8 +303,8 @@ function put_values_into_node($dataset_values, $uid) {
 //
 //        )
 
-//    $node->field_dataset_owner_ref[0]['value']        = $owner; //!!!
-    $node->field_dataset_publication_date =  array($dataset_values['Publication Date']);
+//    $node->field_dataset_owner_ref[0]['value']        = $owner; 
+    $node->field_dataset_publication_date =  array($dataset_values['Publication Date'][0]);
 //  TODO  add fields
 //        [field_dataset_publication_date] => Array
 //        (
@@ -334,18 +317,10 @@ function put_values_into_node($dataset_values, $uid) {
 //                )
 //
 //        )
-//    [field_dataset_publication_date] => Array
-//        (
-//            [0] => Array
-//                (
-//                    [value] => 2006
-//                )
-//
-//        )
 
-    $node->field_dataset_purpose          = array($dataset_values['Purpose']);
+    $node->field_dataset_purpose          = array($dataset_values['Purpose'][0]);
 //  TODO add [format] => 1
-    $node->field_dataset_related_links    = array($dataset_values['Related Links']); //!!!
+    $node->field_dataset_related_links    = array($dataset_values['Related Links'][0]); 
     //TODO all empty should not have [0]! check above
 //        [field_dataset_related_links] => Array
 //        (
@@ -355,13 +330,13 @@ function put_values_into_node($dataset_values, $uid) {
 //            [0] =>
 //        )
 
-    $node->field_dataset_short_name       = array($dataset_values['Short Name']); // good
-//    $node->field_dataset_site_ref[0]['value']         = $site; //!!!
-    $node->field_instrumentation          = array($dataset_values['Instrumentation']); //!!!
-    $node->field_methods                  = array($dataset_values['Methods']); //!!!
+    $node->field_dataset_short_name       = array($dataset_values['Short Name'][0]); // 
+//    $node->field_dataset_site_ref[0]['value']         = $site; 
+    $node->field_instrumentation          = array($dataset_values['Instrumentation'][0]); 
+    $node->field_methods                  = array($dataset_values['Methods'][0]); 
 // TODO add format
-    $node->field_quality                  = array($dataset_values['Quality Assurance']);
+    $node->field_quality                  = array($dataset_values['Quality Assurance'][0]);
 // TODO add format
-//    dpr($node);
+    dpr($node);
 }
 
