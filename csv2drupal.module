@@ -35,6 +35,10 @@ function eml_config_form($form_state) {
   '#type' => 'submit',
   '#value' => t('Upload'),
   );
+//  echo file_directory_path();
+//echo base_path();
+
+//  dpr();
   return $form;
 }
 
@@ -49,14 +53,14 @@ function eml_config_form_submit($form, &$form_state) {
   $file = file_save_upload('upload');
   if ($file) {
     drupal_set_message(t('FILE'));
-    $dest_path = 'sites/default/files';
-    $a = $file->filepath;
-    dpm($a);
+    $dest_path = 'sites/default/files/upload';
     $result = file_copy($file, $dest_path, FILE_EXISTS_RENAME);
-    dpm($result);
+    dpm($file);
+    $filepath = $file->filepath;
 
   }
-//  dpm($file);
+
+  dpm($filepath);
   drupal_goto('admin/content/');
 //      $file->description = $file->filename;
 
