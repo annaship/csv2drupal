@@ -37,27 +37,17 @@ function eml_config_form($form_state) {
   '#type' => 'submit',
   '#value' => t('Upload'),
   );
-//  echo file_directory_path();
-//echo base_path();
 
-//  dpr();
   return $form;
 }
 
 function eml_config_form_submit($form, &$form_state) {
-//  dpm($form_state['values']);
-//  dpm($_POST);
-//  echo 'URRAAA! submit';
-//  drupal_set_message(t('Message'));
-//  $validators = array();
-//  $dest = 'sites/all/files/';
-//  dpr($dest);
   $file = file_save_upload('upload');
   if ($file) {
-//    drupal_set_message(t('FILE'));
     $dest_path = file_directory_path() . '/upload';
-    $result = file_copy($file, $dest_path, FILE_EXISTS_RENAME);
-//    dpm($file);
+//    $result = file_copy($file, $dest_path, FILE_EXISTS_RENAME);
+    $result = file_copy($file, $dest_path, FILE_EXISTS_REPLACE);
+
     if ($result) {
       $filepath = $file->filepath;
       $ret = get_info_from_excel_file($filepath);
@@ -67,35 +57,4 @@ function eml_config_form_submit($form, &$form_state) {
   else {
     form_set_error('eml_config_form', t("Failed to save the file."));
   }
-
-//  dpm($filepath);
-//  drupal_goto('admin/content/');
-//      $file->description = $file->filename;
-
-
-
-//  drupal_goto('admin/content/');
 }
-//
-//function eml_config_form_submit($form, &$form_state) {
-//  echo 'URRAAA!';
-////  $validators = array();
-////  $dest = 'upload_directory';
-////  $file = file_save_upload('file_upload', $validators, $dest);
-////  //$file will be 0 if the upload doesn't exist, or the $dest directory
-////  //isn't writable
-////  if ($file != 0) {
-////    $dest_path = 'upload_directory/file';
-////    $result = file_copy($file, $dest_path, FILE_EXISTS_RENAME);
-////    if ($result == 1) {
-////      //Success, $file object will contain a different (renamed)
-////      //filename and filepath if the destination existed
-////    }
-////    else {
-////      //Failure
-////    }
-////  }
-////  else {
-////    form_set_error('eml_config_form', t("Failed to save the file."));
-////  }
-//}

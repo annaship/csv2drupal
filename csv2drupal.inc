@@ -45,7 +45,14 @@ function get_info_from_excel_file($file) {
 //    dpr($datafile);
 //dpr(${$sheet_names[$loadedSheetName]});
     $content[$sheet_names[$loadedSheetName]] = ${$sheet_names[$loadedSheetName]};
-    echo 'person = ';
+//    echo 'person = ';
+    echo '$sheet_names[$loadedSheetName] = ' . $sheet_names[$loadedSheetName];
+    dpr($sheet_names);
+    echo in_array('dataset', $sheet_names);
+//    if (in_array($sheet_names[$loadedSheetName], $sheet_names)) {
+//    echo "Got Irix";
+//}
+
   }
     dpr($content);
 //  dpm(${$sheet_names});
