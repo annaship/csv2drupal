@@ -35,12 +35,28 @@ function eml_config_form($form_state) {
   '#type' => 'submit',
   '#value' => t('Upload'),
   );
-
   return $form;
 }
 
 function eml_config_form_submit($form, &$form_state) {
-  echo 'URRAAA! submit';
+//  dpm($form_state['values']);
+  dpm($_POST);
+//  echo 'URRAAA! submit';
+//  drupal_set_message(t('Message'));
+//  $validators = array();
+//  $dest = 'sites/all/files/';
+//  dpr($dest);
+  $file = file_save_upload('upload');
+  if ($file) {
+    drupal_set_message(t('FILE'));
+    dpm($file);
+  }
+//  dpm($file);
+  drupal_goto('admin/content/');
+//      $file->description = $file->filename;
+
+
+
 //  drupal_goto('admin/content/');
 }
 //
