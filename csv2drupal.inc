@@ -32,6 +32,8 @@ function get_data_from_excel_file($file) {
       $titles[] = trim($objWorksheet->getCellByColumnAndRow($col, "1")->getValue());
     }
 
+//    dpr($titles);
+
     for ($row = 2; $row <= $highestRow; ++$row) {
       for ($col = 0; $col <= $highestColumnIndex; ++$col) {
         $res = $objWorksheet->getCellByColumnAndRow($col, $row)->getValue();
@@ -134,17 +136,31 @@ function create_person_node($content, $uid) {
 
 function create_variable_node($content, $uid) {
   dpr('here in variable');
-  dpr($content);
+//  dpr($content);
+  $varable_values = create_varable_values($content);
+  /*
+Variable Name
+Variable Description
+Units
+Measurement Scale
+Code Information
+Number Type
+DateTime Format
+Missing Value Code
+Missing Value Code Explanation
+
+   */
 
 //  foreach ($content as $value) {
+////    dpr($value);
 //      $node = new StdClass();
 //      $node->type = "variable";
 //      $node->uid = $uid;
-//      $node->title = $value['Name'];
-//      $node->field_attribute_label[0]['value'] = $value['Label'];
-//      $node->field_var_definition[0]['value'] = $value['Definition'];
+//      $node->title = $value['Variable Name'];
+//      $node->field_attribute_label[0]['value'] = $value['Variable Name]'];
+//      $node->field_var_definition[0]['value'] = $value['Variable Description'];
 //      $node->field_var_missingvalues[0]['value'] = $value['Missing Values'];
-//      $node->field_attribute_unit[0]['value'] = $value['unit'];
+//      $node->field_attribute_unit[0]['value'] = $value['Units'];
 //      $node->field_attribute_maximum[0]['value'] = $value['Maximum Value'];
 //      $node->field_attribute_minimum[0]['value'] = $value['Minimum Value'];
 //      $node->field_attribute_precision[0]['value'] = $value['precision'];
@@ -152,8 +168,27 @@ function create_variable_node($content, $uid) {
 //      $node->field_code_definition[0]['value'] = $value['Code-Definition'];
 //      $node->field_attribute_assoc_datafile[0]['value'] = $value['Associated Data Files'];
 //  }
-//
+//  dpr($node);
 //  return $node;
+}
+
+function create_varable_values($content) {
+  $varable_values = array();
+  foreach ($content as $key => $value) {
+//    echo '$key = ';
+//    dpr($key);
+//    echo '<br/> $value = ';
+//    dpr($value);
+    foreach ($value as $number => $data) {
+//      echo '$number = ';
+//      dpr($number);
+//      echo '<br/> $data = ';
+//      dpr($data);
+      $varable_values[$number][$key] = $data;
+    }
+    dpr($varable_values);
+  }
+
 }
 
 function create_site_node($content, $uid) {
