@@ -1,8 +1,8 @@
 <?php
-// $Id: csv2drupal.module, v 2.0 2010-11-22 ashipunova $
+// $Id: eml_config.module, v 2.0 2010-11-22 ashipunova $
 /*
- * Take csv from excel file and put data into Drupal db
- * ?q=csv2drupal
+ * Form for eml settings, required by views_bonus_eml_export
+ * ?q=eml_config
 */
 
 function csv2drupal_menu() {
@@ -19,52 +19,50 @@ function csv2drupal_menu() {
 }
 
 function csv2drupal_page() {
-
-  $sheet_names = array(
-    'DataSet-csv'   => 'dataset',
-    'DataFile-csv'  => 'datafile',
-    'Site-csv'      => 'site',
-    'Person-csv'    => 'person',
-    'Variable-csv'  => 'variable',
-    'Keywords'      => 'keywords',
-  );
-
-  module_load_include('php', 'excel_reader', 'includes/PHPExcel/IOFactory');
-
-//  TODO: take file_name from form
-  $file = "/Users/anna/work/drupal/lter/new/today/csv_examples_hor/1982_2000gs81tusbm_2_CSVb.xls";
-  $objReader = PHPExcel_IOFactory::createReaderForFile($file);
-  $objReader->setLoadSheetsOnly(0);
-  $objReader->setReadDataOnly(true);
-  $objPHPExcel = PHPExcel_IOFactory::load($file);
-  
-  $loadedSheetNames = $objPHPExcel->getSheetNames();
-  foreach ($loadedSheetNames as $sheetIndex => $loadedSheetName) {
-    $objWorksheet = $objPHPExcel->setActiveSheetIndex($sheetIndex);
-    $dim = $objWorksheet->calculateWorksheetDimension();
-    $highestRow = $objWorksheet->getHighestRow();
-    $highestColumn = $objWorksheet->getHighestColumn();
-    $highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);
-
-    //get titles
-    $ititles = array();
-    for ($col = 0; $col <= $highestColumnIndex; ++$col) {
-      $ititles[] = trim($objWorksheet->getCellByColumnAndRow($col, "1")->getValue());
-    }
-
-    for ($row = 2; $row <= $highestRow; ++$row) {
-      for ($col = 0; $col <= $highestColumnIndex; ++$col) {
-        $res = $objWorksheet->getCellByColumnAndRow($col, $row)->getValue();
-//        if (!empty($res)) {
-          ${$sheet_names[$loadedSheetName]}[$ititles[$col]][] = $res;
-//        }
-      }
-    }
-    echo '$dataset = ';
-    dpr($dataset);
-
-    echo 'person = ';
-    dpr($person);
-  }
+  echo 'HERE in page!';
+  return drupal_get_form('eml_config_form');
 }
 
+function eml_config_form($form_state) {
+  echo 'Urra in form';
+  $form['upload'] = array(
+   '#type' => 'file',
+   '#title' => t('Upload Excel file'),
+   '#size' => 40,
+  );
+
+  $form['submit'] = array (
+  '#type' => 'submit',
+  '#value' => t('Upload'),
+  );
+
+  return $form;
+}
+
+function eml_config_form_submit($form, &$form_state) {
+  echo 'URRAAA! submit';
+//  drupal_goto('admin/content/');
+}
+//
+//function eml_config_form_submit($form, &$form_state) {
+//  echo 'URRAAA!';
+////  $validators = array();
+////  $dest = 'upload_directory';
+////  $file = file_save_upload('file_upload', $validators, $dest);
+////  //$file will be 0 if the upload doesn't exist, or the $dest directory
+////  //isn't writable
+////  if ($file != 0) {
+////    $dest_path = 'upload_directory/file';
+////    $result = file_copy($file, $dest_path, FILE_EXISTS_RENAME);
+////    if ($result == 1) {
+////      //Success, $file object will contain a different (renamed)
+////      //filename and filepath if the destination existed
+////    }
+////    else {
+////      //Failure
+////    }
+////  }
+////  else {
+////    form_set_error('eml_config_form', t("Failed to save the file."));
+////  }
+//}
