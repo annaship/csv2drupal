@@ -151,23 +151,25 @@ Missing Value Code Explanation
 
    */
 
-//  foreach ($content as $value) {
-////    dpr($value);
-//      $node = new StdClass();
-//      $node->type = "variable";
-//      $node->uid = $uid;
-//      $node->title = $value['Variable Name'];
-//      $node->field_attribute_label[0]['value'] = $value['Variable Name]'];
-//      $node->field_var_definition[0]['value'] = $value['Variable Description'];
-//      $node->field_var_missingvalues[0]['value'] = $value['Missing Values'];
-//      $node->field_attribute_unit[0]['value'] = $value['Units'];
+  foreach ($varable_values as $value) {
+//    dpr($value);
+      $node = new StdClass();
+      $node->type = "variable";
+      $node->uid = $uid;
+      $node->title = $value['Variable Name'];
+      $node->field_attribute_label[0]['value'] = $value['Variable Name'];
+      $node->field_var_definition[0]['value'] = $value['Variable Description'];
+      $node->field_var_missingvalues[0]['value'] = $value['Missing Value Code'];
+      $node->field_attribute_unit[0]['value'] = $value['Units'];
 //      $node->field_attribute_maximum[0]['value'] = $value['Maximum Value'];
 //      $node->field_attribute_minimum[0]['value'] = $value['Minimum Value'];
 //      $node->field_attribute_precision[0]['value'] = $value['precision'];
-//      $node->field_attribute_formatstring[0]['value'] = $value['Date Format'];
-//      $node->field_code_definition[0]['value'] = $value['Code-Definition'];
+      $node->field_attribute_formatstring[0]['value'] = $value['DateTime Format'];
+      $node->field_code_definition[0]['value'] = $value['Code Information'];
 //      $node->field_attribute_assoc_datafile[0]['value'] = $value['Associated Data Files'];
-//  }
+//      TODO node_save here
+  dpr($node);
+  }
 //  dpr($node);
 //  return $node;
 }
@@ -175,20 +177,12 @@ Missing Value Code Explanation
 function create_varable_values($content) {
   $varable_values = array();
   foreach ($content as $key => $value) {
-//    echo '$key = ';
-//    dpr($key);
-//    echo '<br/> $value = ';
-//    dpr($value);
     foreach ($value as $number => $data) {
-//      echo '$number = ';
-//      dpr($number);
-//      echo '<br/> $data = ';
-//      dpr($data);
       $varable_values[$number][$key] = $data;
     }
-    dpr($varable_values);
   }
-
+//  dpr($varable_values);
+  return $varable_values;
 }
 
 function create_site_node($content, $uid) {
