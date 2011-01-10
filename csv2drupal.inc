@@ -130,9 +130,29 @@ function get_uid() {
 }
 
 function create_person_node($content, $uid) {
-
   dpr("create_person_node");
+  $person_values = create_values($content);
+  foreach ($person_values as $value) {
+    $node->field_person_first_name[0]['value']    = $value['First Name'];
+    $node->field_person_last_name[0]['value']     = $value['Last Name'];
+    $node->field_person_organization[0]['value']  = $value['Organization'];
+    $node->field_person_title[0]['value']         = $value['Title'];
+    $node->field_person_address[0]['value']       = $value['Address'];
+    $node->field_person_city[0]['value']          = $value['City'];
+    $node->field_person_state[0]['value']         = $value['State'];
+    $node->field_person_zipcode[0]['value']       = $value['Zip Code'];
+    $node->field_person_country[0]['value']       = $value['Country'];
+    $node->field_person_phone[0]['value']         = $value['Phone'];
+    $node->field_person_fax[0]['value']           = $value['Fax'];
+    $node->field_person_email[0]['value']         = $value['Email'];
+    $node->field_person_personid[0]['value']      = $value[''];
+    $node->field_person_role[0]['value']          = $value['personid'];
+    $node->field_person_uid[0]['value']           = $value['person_uid'];
+    $node->field_person_pubs[0]['value']          = $value['Publications'];
+    dpr($node);
+  }
 }
+
 
 function create_variable_node($content, $uid) {
   dpr('here in variable');
@@ -153,19 +173,19 @@ Missing Value Code Explanation
 
   foreach ($variable_values as $value) {
 //    dpr($value);
-      $node = new StdClass();
-      $node->type = "variable";
-      $node->uid = $uid;
-      $node->title = $value['Variable Name'];
-      $node->field_attribute_label[0]['value'] = $value['Variable Name'];
-      $node->field_var_definition[0]['value'] = $value['Variable Description'];
-      $node->field_var_missingvalues[0]['value'] = $value['Missing Value Code'];
-      $node->field_attribute_unit[0]['value'] = $value['Units'];
+    $node = new StdClass();
+    $node->type = "variable";
+    $node->uid = $uid;
+    $node->title = $value['Variable Name'];
+    $node->field_attribute_label[0]['value'] = $value['Variable Name'];
+    $node->field_var_definition[0]['value'] = $value['Variable Description'];
+    $node->field_var_missingvalues[0]['value'] = $value['Missing Value Code'];
+    $node->field_attribute_unit[0]['value'] = $value['Units'];
 //      $node->field_attribute_maximum[0]['value'] = $value['Maximum Value'];
 //      $node->field_attribute_minimum[0]['value'] = $value['Minimum Value'];
 //      $node->field_attribute_precision[0]['value'] = $value['precision'];
-      $node->field_attribute_formatstring[0]['value'] = $value['DateTime Format'];
-      $node->field_code_definition[0]['value'] = $value['Code Information'];
+    $node->field_attribute_formatstring[0]['value'] = $value['DateTime Format'];
+    $node->field_code_definition[0]['value'] = $value['Code Information'];
 //      $node->field_attribute_assoc_datafile[0]['value'] = $value['Associated Data Files'];
 //      TODO node_save here
 //      TODO collect nids into array and return it
