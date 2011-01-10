@@ -137,7 +137,7 @@ function create_person_node($content, $uid) {
 function create_variable_node($content, $uid) {
   dpr('here in variable');
 //  dpr($content);
-  $varable_values = create_varable_values($content);
+  $variable_values = create_values($content);
   /*
 Variable Name
 Variable Description
@@ -151,7 +151,7 @@ Missing Value Code Explanation
 
    */
 
-  foreach ($varable_values as $value) {
+  foreach ($variable_values as $value) {
 //    dpr($value);
       $node = new StdClass();
       $node->type = "variable";
@@ -169,19 +169,19 @@ Missing Value Code Explanation
 //      $node->field_attribute_assoc_datafile[0]['value'] = $value['Associated Data Files'];
 //      TODO node_save here
 //      TODO collect nids into array and return it
-//  dpr($node);
+  dpr($node);
   }
 //  return $node;
 }
 
-function create_varable_values($content) {
-  $varable_values = array();
+function create_values($content) {
+  $values = array();
   foreach ($content as $key => $value) {
     foreach ($value as $number => $data) {
-      $varable_values[$number][$key] = $data;
+      $values[$number][$key] = $data;
     }
   }
-  return $varable_values;
+  return $values;
 }
 
 function create_site_node($content, $uid) {
@@ -368,6 +368,6 @@ function create_dataset_node($dataset_values, $uid) {
 // TODO add format
     $node->field_quality[0]['value']                  = $dataset_values['Quality Assurance'][0];
 // TODO add format
-    dpr($node);
+//    dpr($node);
 }
 
