@@ -264,6 +264,7 @@ function taking_person_ids($persons) {
 }
 
 function put_values_into_node($dataset_values, $uid) {
+  
 //  print_r("UUU");
 //Abstract] => Array
 //        (
@@ -272,7 +273,7 @@ function put_values_into_node($dataset_values, $uid) {
     $node->type                                       = "data_set";
     $node->uid                                        = $uid;
     $node->title                                      = $dataset_values['Title'][0];
-    $node->field_beg_end_date                         = array($dataset_values['Date Range'][0]); 
+    $node->field_beg_end_date[0]['value']             = $dataset_values['Date Range'][0]; 
 // TODO parse and format date
 //    [field_beg_end_date] => Array
 //        (
@@ -294,7 +295,7 @@ function put_values_into_node($dataset_values, $uid) {
 //                )
 //
 //        )
-    $node->field_dataset_abstract         = array($dataset_values['Abstract'][0]);
+    $node->field_dataset_abstract[0]['value']         = $dataset_values['Abstract'][0];
 //    TODO add format
 //    field_dataset_abstract] => Array
 //        (
@@ -309,16 +310,16 @@ function put_values_into_node($dataset_values, $uid) {
 
 
 
-    $node->field_dataset_add_info         = array($dataset_values['Additional Information'][0]);
+    $node->field_dataset_add_info[0]['value']         = $dataset_values['Additional Information'][0];
 //    $node->field_dataset_biblio_ref[0]['value']       = $related_bibliography; 
 //    $node->field_dataset_contact_ref[0]['value']      = $contact; 
 //    $node->field_dataset_datafile_ref[0]['value']     = $data_file_structure; 
 //    $node->field_dataset_datamanager_ref[0]['value']  = $data_manager; 
 //    $node->field_dataset_ext_assoc_ref                = $ext_assoc_arr; 
 //    $node->field_dataset_fieldcrew_ref[0]['value']    = $field_crew; 
-    $node->field_dataset_id               = array($dataset_values['Dataset ID'][0]); 
+    $node->field_dataset_id[0]['value']               = $dataset_values['Dataset ID'][0]; 
 //    $node->field_dataset_labcrew_ref[0]['value']      = $lab_crew; 
-    $node->field_dataset_maintenance      = array($dataset_values['Maintenance'][0]);
+    $node->field_dataset_maintenance[0]['value']      = $dataset_values['Maintenance'][0];
 //    TODO add format
 //    [field_dataset_maintenance] => Array
 //        (
@@ -333,7 +334,7 @@ function put_values_into_node($dataset_values, $uid) {
 //        )
 
 //    $node->field_dataset_owner_ref[0]['value']        = $owner; 
-    $node->field_dataset_publication_date =  array($dataset_values['Publication Date'][0]);
+    $node->field_dataset_publication_date[0]['value']   =  $dataset_values['Publication Date'][0];
 //  TODO  add fields
 //        [field_dataset_publication_date] => Array
 //        (
@@ -347,9 +348,9 @@ function put_values_into_node($dataset_values, $uid) {
 //
 //        )
 
-    $node->field_dataset_purpose          = array($dataset_values['Purpose'][0]);
+    $node->field_dataset_purpose[0]['value']          = $dataset_values['Purpose'][0];
 //  TODO add [format] => 1
-    $node->field_dataset_related_links    = array($dataset_values['Related Links'][0]); 
+    $node->field_dataset_related_links[0]['value']    = $dataset_values['Related Links'][0]; 
     //TODO all empty should not have [0]! check above
 //        [field_dataset_related_links] => Array
 //        (
@@ -359,12 +360,12 @@ function put_values_into_node($dataset_values, $uid) {
 //            [0] =>
 //        )
 
-    $node->field_dataset_short_name       = array($dataset_values['Short Name'][0]); // 
+    $node->field_dataset_short_name[0]['value']       = $dataset_values['Short Name'][0]; // 
 //    $node->field_dataset_site_ref[0]['value']         = $site; 
-    $node->field_instrumentation          = array($dataset_values['Instrumentation'][0]); 
-    $node->field_methods                  = array($dataset_values['Methods'][0]); 
+    $node->field_instrumentation[0]['value']          = $dataset_values['Instrumentation'][0]; 
+    $node->field_methods[0]['value']                  = $dataset_values['Methods'][0]; 
 // TODO add format
-    $node->field_quality                  = array($dataset_values['Quality Assurance'][0]);
+    $node->field_quality[0]['value']                  = $dataset_values['Quality Assurance'][0];
 // TODO add format
     dpr($node);
 }
