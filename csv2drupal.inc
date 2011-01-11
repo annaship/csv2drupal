@@ -103,7 +103,7 @@ function create_person_node($content, $uid) {
     $node->field_person_role[0]['value']          = $value['Role'];
     $node->field_person_uid[0]['value']           = $value['person_uid'];
     $node->field_person_pubs[0]['value']          = $value['Publications'];
-    dpr($node);
+//    dpr($node);
   }
 }
 
@@ -226,6 +226,17 @@ function taking_person_ids($persons) {
 }
 
 //function put_values_into_node($dataset_values, $uid) {
+
+function convert_date_range($date_range) {
+  if (preg_match_all("/(\d{1,2}).(\d{1,2}).(\d{2,4})/", $date_range, $matches, PREG_SET_ORDER)) {
+    foreach ($matches as $match) {
+        $date = str_replace('-', '/', $match[0]);
+        $dates[] = strftime("%G-%m-%dT00:00:00", strtotime($date));
+    }
+  }
+  return $dates;
+}
+
 function create_dataset_node($dataset_values, $uid) {
   dpr("create_dataset_node");
 //  print_r("UUU");
@@ -236,75 +247,12 @@ function create_dataset_node($dataset_values, $uid) {
     $node->type                                       = "data_set";
     $node->uid                                        = $uid;
     $node->title                                      = $dataset_values['Title'][0];
-    $node->field_beg_end_date[0]['value']             = $dataset_values['Date Range'][0];
-//    $matches =
-//    Array
-//    (
-//      [0] => 6/1/1982 - 7-31-2010
-//      [1] => 6/1/1982
-//      [2] => 7-31-2010
-//    )
-/*
- * $matches = 6/1/1982, $matches =
-Array
-(
-    [0] => 6/1/1982
-    [1] => 6
-    [2] => 1
-    [3] => 1982
-)
-
-$matches = 7-31-2010, $matches =
-Array
-(
-    [0] => 7-31-2010
-    [1] => 7
-    [2] => 31
-    [3] => 2010
-)
- */
-    $date_range = $dataset_values['Date Range'][0];
-//    preg_match_all("/(<([\w]+)[^>]*>)(.*?)(<\/\\2>)/", $html, $matches, PREG_SET_ORDER);
-//          if (preg_match("/(\d{1,2}).(\d{1,2}).(\d{2,4})/", $date, $matches)) {
-
-    if (preg_match_all("/(\d{1,2}).(\d{1,2}).(\d{2,4})/", $date_range, $matches, PREG_SET_ORDER)) {
-      echo '$matches = ';
-      dpr($matches);
-      foreach ($matches as $key => $date) {
-//        dpr($date);
-////        echo 'strtotime = ' . strtotime($date);
-////        $onlyconsonants = str_replace($vowels, "", "Hello World of PHP");
-//        if ($key == 0) next;
-//        else {
-          $date = str_replace('-', '/', $date[0]);
-//          dpr($date);
-//          echo "strtotime = " . strftime("%G-%m-%dT00:00:00", strtotime($date)) . "\n";
-          $dates[] = strftime("%G-%m-%dT00:00:00", strtotime($date));
-//        }
-      }
-      dpr($dates);
-    }
-// TODO parse and format date
-//    [field_beg_end_date] => Array
-//        (
-//            [0] => Array
-//                (
-//                    [value] => 2009-02-15T00:00:00
-//                    [value2] => 2009-02-15T00:00:00
-//                    [timezone] => America/New_York
-//                    [timezone_db] => America/New_York
-//                    [date_type] => date
-//                )
-//
-//        )
-//    [field_beg_end_date] => Array
-//        (
-//            [0] => Array
-//                (
-//                    [0] => 6/1/1982 - 7-31-2010
-//                )
-//
-//        )
+    $date_range_values = convert_date_range($dataset_values['Date Range'][0]);
+    $node->field_beg_end_date[0]['value']             = $date_range_values[0];
+    $node->field_beg_end_date[0]['value2']            = $date_range_values[1];
+    $node->field_beg_end_date[0]['timezone']          = 'America/New_York';
+    $node->field_beg_end_date[0]['timezone_db']       = 'America/New_York';
+    $node->field_beg_end_date[0]['date_type']         = 'date';
     $node->field_dataset_abstract[0]['value']         = $dataset_values['Abstract'][0];
 //    TODO add format
 //    field_dataset_abstract] => Array
@@ -377,5 +325,5 @@ Array
 // TODO add format
     $node->field_quality[0]['value']                  = $dataset_values['Quality Assurance'][0];
 // TODO add format
-//    dpr($node);
+    dpr($node);
 }
