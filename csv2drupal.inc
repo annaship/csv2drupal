@@ -297,41 +297,8 @@ function create_dataset_node($dataset_values, $uid) {
     $node->field_dataset_maintenance[0]['format']     = '3';
 //    $node->field_dataset_owner_ref[0]['value']        = $owner; 
     $node->field_dataset_publication_date[0]          =  create_single_date_arr($dataset_values['Publication Date'][0]);
-//  TODO  add fields
-//        [field_dataset_publication_date] => Array
-//        (
-//            [0] => Array
-//                (
-//                    [value] => 2008-03-09 11:27:12
-//                    [timezone] => America/New_York
-//                    [timezone_db] => America/New_York
-//                    [date_type] => datetime
-//                )
-//
-//        )
-//                [0] => Array
-//                (
-//                    [value] => 2006-12-12 00:00:00
-//                    [timezone] => America/New_York
-//                    [timezone_db] => America/New_York
-//                    [date_type] => date
-//                )
-//
-//        )
-
-    /*
-     * Array
-(
-    [value] => 2006-12-12T00:00:00
-    [timezone] => America/New_York
-    [timezone_db] => America/New_York
-    [date_type] => date
-)
-
-     */
-
     $node->field_dataset_purpose[0]['value']          = $dataset_values['Purpose'][0];
-//  TODO add [format] => 1
+    $node->field_dataset_purpose[0]['format']         = '1';
     $node->field_dataset_related_links[0]['value']    = $dataset_values['Related Links'][0]; 
     //TODO all empty should not have [0]! check above
 //        [field_dataset_related_links] => Array
