@@ -203,59 +203,11 @@ function create_datafile_node($content, $uid) {
 
 }
 
-//function create_dataset_node($content, $uid) {
-//    dpr("create_dataset_node");
-//    dpr($content);
-////TODO: convert [0] into [value] and add parsing where needed
-////  $dataset_values = set_dataset_values($content);
-////  dpr($dataset_values);
-//  $node = put_values_into_node($content, $uid);
-//////  dpr($dataset_values);
-////
-////  dpr($node);
-////    return $node;
-//
-//}
-
 function create_keywords_node($content, $uid) {
     dpr("create_keywords_node");
 }
 
-//function set_dataset_values($content) {
-//  $dataset_values = array();
-//  $dataset_tags   = array(
-//    'Abstract',
-//    'Additional Information',
-//    'Associated Researcher',
-//    'Contact',
-//    'Data File Structure',
-//    'Data Manager',
-//    'Dataset ID',
-//    'Date Range',
-//    'Field Crew',
-//    'Instrumentation',
-//    'Lab Crew',
-//    'Maintenance',
-//    'Methods',
-//    'Owner',
-//    'Publication Date',
-//    'Purpose',
-//    'Related Bibliography',
-//    'Related Links',
-//    'Short Name',
-//    'Site',
-//    'Title',
-//    'Quality Assurance',
-//  );
-//
-//  foreach ($content as $value) {
-////    TODO take nid for references
-//    foreach ($dataset_tags as $dataset_tag) {
-//      if (!empty ($value[$dataset_tag])) $dataset_values[$dataset_tag]['value'] = $value[$dataset_tag];
-//    }
-//  }
-//  return $dataset_values;
-//}
+
 
 //taking person id (they should be created first)
 // TODO the same for files and other refs (bib, sites)
@@ -275,7 +227,7 @@ function taking_person_ids($persons) {
 
 //function put_values_into_node($dataset_values, $uid) {
 function create_dataset_node($dataset_values, $uid) {
-  
+  dpr("create_dataset_node");
 //  print_r("UUU");
 //Abstract] => Array
 //        (
@@ -284,7 +236,49 @@ function create_dataset_node($dataset_values, $uid) {
     $node->type                                       = "data_set";
     $node->uid                                        = $uid;
     $node->title                                      = $dataset_values['Title'][0];
-    $node->field_beg_end_date[0]['value']             = $dataset_values['Date Range'][0]; 
+    $node->field_beg_end_date[0]['value']             = $dataset_values['Date Range'][0];
+//    $matches =
+//    Array
+//    (
+//      [0] => 6/1/1982 - 7-31-2010
+//      [1] => 6/1/1982
+//      [2] => 7-31-2010
+//    )
+/*
+ * $matches = 6/1/1982, $matches =
+Array
+(
+    [0] => 6/1/1982
+    [1] => 6
+    [2] => 1
+    [3] => 1982
+)
+
+$matches = 7-31-2010, $matches =
+Array
+(
+    [0] => 7-31-2010
+    [1] => 7
+    [2] => 31
+    [3] => 2010
+)
+ */
+    $date_range = $dataset_values['Date Range'][0];
+    if (preg_match("/(.+\d) - (\d.+)/", $date_range, $matches)) {
+      foreach ($matches as $key => $date) {
+//        dpr($date);
+//        echo 'strtotime = ' . strtotime($date);
+//        $onlyconsonants = str_replace($vowels, "", "Hello World of PHP");
+        if ($key == 0) next;
+        else {
+          $date = str_replace('-', '/', $date);
+//          dpr($date);
+//          echo "strtotime = " . strftime("%G-%m-%dT00:00:00", strtotime($date)) . "\n";
+          $dates[] = strftime("%G-%m-%dT00:00:00", strtotime($date));
+        }
+      }
+      dpr($dates);
+    }
 // TODO parse and format date
 //    [field_beg_end_date] => Array
 //        (
@@ -380,4 +374,3 @@ function create_dataset_node($dataset_values, $uid) {
 // TODO add format
 //    dpr($node);
 }
-

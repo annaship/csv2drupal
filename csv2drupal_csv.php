@@ -53,3 +53,53 @@ function get_content($filename) {
   }
   return $header;
 }
+
+//function create_dataset_node($content, $uid) {
+//    dpr("create_dataset_node");
+//    dpr($content);
+////TODO: convert [0] into [value] and add parsing where needed
+////  $dataset_values = set_dataset_values($content);
+////  dpr($dataset_values);
+//  $node = put_values_into_node($content, $uid);
+//////  dpr($dataset_values);
+////
+////  dpr($node);
+////    return $node;
+//
+//}
+
+//function set_dataset_values($content) {
+//  $dataset_values = array();
+//  $dataset_tags   = array(
+//    'Abstract',
+//    'Additional Information',
+//    'Associated Researcher',
+//    'Contact',
+//    'Data File Structure',
+//    'Data Manager',
+//    'Dataset ID',
+//    'Date Range',
+//    'Field Crew',
+//    'Instrumentation',
+//    'Lab Crew',
+//    'Maintenance',
+//    'Methods',
+//    'Owner',
+//    'Publication Date',
+//    'Purpose',
+//    'Related Bibliography',
+//    'Related Links',
+//    'Short Name',
+//    'Site',
+//    'Title',
+//    'Quality Assurance',
+//  );
+//
+//  foreach ($content as $value) {
+////    TODO take nid for references
+//    foreach ($dataset_tags as $dataset_tag) {
+//      if (!empty ($value[$dataset_tag])) $dataset_values[$dataset_tag]['value'] = $value[$dataset_tag];
+//    }
+//  }
+//  return $dataset_values;
+//}
