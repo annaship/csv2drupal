@@ -129,6 +129,16 @@ function get_uid() {
   return $user->uid;
 }
 
+function create_values($content) {
+  $values = array();
+  foreach ($content as $key => $value) {
+    foreach ($value as $number => $data) {
+      $values[$number][$key] = $data;
+    }
+  }
+  return $values;
+}
+
 function create_person_node($content, $uid) {
   dpr("create_person_node");
   $person_values = create_values($content);
@@ -145,8 +155,8 @@ function create_person_node($content, $uid) {
     $node->field_person_phone[0]['value']         = $value['Phone'];
     $node->field_person_fax[0]['value']           = $value['Fax'];
     $node->field_person_email[0]['value']         = $value['Email'];
-    $node->field_person_personid[0]['value']      = $value[''];
-    $node->field_person_role[0]['value']          = $value['personid'];
+    $node->field_person_personid[0]['value']      = $value['personid'];
+    $node->field_person_role[0]['value']          = $value['Role'];
     $node->field_person_uid[0]['value']           = $value['person_uid'];
     $node->field_person_pubs[0]['value']          = $value['Publications'];
     dpr($node);
@@ -189,24 +199,50 @@ Missing Value Code Explanation
 //      $node->field_attribute_assoc_datafile[0]['value'] = $value['Associated Data Files'];
 //      TODO node_save here
 //      TODO collect nids into array and return it
-  dpr($node);
+//  dpr($node);
   }
-//  return $node;
-}
-
-function create_values($content) {
-  $values = array();
-  foreach ($content as $key => $value) {
-    foreach ($value as $number => $data) {
-      $values[$number][$key] = $data;
-    }
-  }
-  return $values;
+//  return array of nids
 }
 
 function create_site_node($content, $uid) {
-  dpr($content);
-//  dpr("create_site_node");
+//  dpr($content);
+  dpr("create_site_node");
+  /*
+  Title
+  Location
+  Image
+  Coordinates
+  Elevation
+  Landform
+  Geology
+  Soils
+  Hydrology
+  Vegetation
+  Climate
+  History
+  Site
+  ID
+   */
+  $research_site_values = create_values($content);
+  foreach ($research_site_values as $value) {
+    $node = new StdClass();
+    $node->type = "research_site";
+    $node->uid = $uid;
+    $node->title = $value['Title'];
+    $node->field_research_site_image[0]['value']      = $value['Image'];
+    $node->field_research_site_pt_coords[0]['value']  = $value['Coordinates'];
+    $node->field_research_site_elevation[0]['value']  = $value['Elevation'];
+    $node->field_research_site_landform[0]['value']   = $value['Landform'];
+    $node->field_research_site_geology[0]['value']    = $value['Geology'];
+    $node->field_research_site_soils[0]['value']      = $value['Soils'];
+    $node->field_research_site_hydrology[0]['value']  = $value['Hydrology'];
+    $node->field_research_site_vegetation[0]['value'] = $value['Vegetation'];
+    $node->field_research_site_climate[0]['value']    = $value['Climate'];
+    $node->field_research_site_history[0]['value']    = $value['History'];
+    $node->field_research_site_siteid[0]['value']     = $value['Site ID'];
+    dpr($node);
+    }
+  
 }
 
 function create_datafile_node($content, $uid) {
