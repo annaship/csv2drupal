@@ -2,7 +2,6 @@
 
 require_once("includes/PHPExcel/IOFactory.php");
 
-
 function get_data_from_excel_file($file) {
   $sheet_names = array(
     'DataSet-csv'   => 'dataset',
@@ -48,61 +47,6 @@ function get_data_from_excel_file($file) {
   }
   return $content;
 }
-
-//function get_info_from_file() {
-////  call 5 times for each csv file?
-//  $filename = get_file_name();
-//  $content = get_content($filename);
-//
-////  dpr($content);
-//  return $content;
-//}
-//
-//function get_file_name() {
-////  TODO: form here
-////  variable
-////  $filename = "/Users/anna/work/drupal/lter/new/today/variable_h.csv";
-////  dataset
-//  $filename = "/Users/anna/work/drupal/lter/new/today/csv_examples_hor/1982_2000gs81tusbm_DataSet.csv";
-//
-//  return $filename;
-//}
-//
-//function get_content($filename) {
-//  $content = csv_to_array($filename);
-//  return $content;
-//}
-
-// function csv_to_array($filename='', $delimiter=',') {
-//    if(!file_exists($filename) || !is_readable($filename)) {
-//        return FALSE;
-//    }
-//
-//    $header = NULL;
-//    $data = array();
-//    if (($handle = fopen($filename, 'r')) !== FALSE)
-//    {
-//        while (($row = fgetcsv($handle, 1000, $delimiter)) !== FALSE)
-//        {
-//            if(!$header) {
-//                $header = $row;
-//                chop_field_names($header);
-//            }
-//            else {
-//                $data[] = array_combine($header, $row);
-//            }
-//        }
-//        fclose($handle);
-//    }
-//    return $data;
-// }
-//
-// function chop_field_names(&$header) {
-//  foreach ($header as $key => $value) {
-//    $header[$key] = rtrim($value, " ");
-//  }
-//  return $header;
-//}
 
 function create_nodes($content) {
 //TODO link node references
@@ -253,7 +197,7 @@ function create_datafile_node($content, $uid) {
 //    $node->field_datafile_variable_ref[0]['value'] = $value['Variables'];
 //    $node->field_datafile_site_ref[0]['value']    = $value['Sites'];
 //    $node->field_dataset_referrer[0]['value']     = $value['Associated Data Set'];
-    dpr($node);
+//    dpr($node);
     }
 
 
