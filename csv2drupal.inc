@@ -242,10 +242,20 @@ function create_beg_end_date_arr($date_range_values) {
   $beg_end_date = array();
   $beg_end_date['value']        = $date_range_values[0];
   $beg_end_date['value2']       = $date_range_values[1];
-  $beg_end_date['timezone']     = 'America/New_York';
-  $beg_end_date['timezone_db']  = 'America/New_York';
-  $beg_end_date['date_type']    = 'date';
+  $beg_end_date += add_timezone_to_date_arr($beg_end_date);
   return $beg_end_date;
+}
+
+function create_single_date_arr($date_value) {
+
+  $date_value += add_timezone_to_date_arr($date_value);
+}
+
+function add_timezone_to_date_arr($date_arr) {
+  $date_arr['timezone']     = 'America/New_York';
+  $date_arr['timezone_db']  = 'America/New_York';
+  $date_arr['date_type']    = 'date';
+  return $date_arr;
 }
 
 function create_dataset_node($dataset_values, $uid) {
@@ -258,76 +268,9 @@ function create_dataset_node($dataset_values, $uid) {
     $node->type                                       = "data_set";
     $node->uid                                        = $uid;
     $node->title                                      = $dataset_values['Title'][0];
-    $date_range_values = convert_date_range($dataset_values['Date Range'][0]);
-//    dpr($date_range_values);
-    $a = create_beg_end_date_arr($date_range_values);
-//    dpr($a);
-    $node->field_beg_end_date[0]                      = create_beg_end_date_arr($date_range_values);
-
-//    $node->field_beg_end_date[0]['value']             = $date_range_values[0];
-//    $node->field_beg_end_date[0]['value2']            = $date_range_values[1];
-//    $node->field_beg_end_date[0]['timezone']          = 'America/New_York';
-//    $node->field_beg_end_date[0]['timezone_db']       = 'America/New_York';
-//    $node->field_beg_end_date[0]['date_type']         = 'date';
-//    dpr($date_range_values);
-/*
- * Array
-(
-    [0] => 1982-06-01T00:00:00
-    [1] => 2010-07-31T00:00:00
-)
-
- */
-// TODO parse and format date
-// 
-//    [field_beg_end_date] => Array
-//        (
-//            [0] => Array
-//                (
-//                    [value] => 2009-02-15T00:00:00
-//                    [value2] => 2009-02-15T00:00:00
-//                    [timezone] => America/New_York
-//                    [timezone_db] => America/New_York
-//                    [date_type] => date
-//                )
-//
-//        )
-//    [field_beg_end_date] => Array
-//        (
-//            [0] => Array
-//                (
-//                    [value] => 1982-06-01T00:00:00
-//                    [value2] => 2010-07-31T00:00:00
-//                    [timezone] => America/New_York
-//                    [timezone_db] => America/New_York
-//                    [date_type] => date
-//                )
-//
-//        )
-
-//    [field_beg_end_date] => Array
-//        (
-//            [0] => Array
-//                (
-//                    [0] => 6/1/1982 - 7-31-2010
-//                )
-//
-//        )
+    $node->field_beg_end_date[0]                      = create_beg_end_date_arr(convert_date_range($dataset_values['Date Range'][0]));
     $node->field_dataset_abstract[0]['value']         = $dataset_values['Abstract'][0];
-//    TODO add format
-//    field_dataset_abstract] => Array
-//        (
-//            [0] => Array
-//                (
-//                    [value] => Let...
-//
-//                    [format] => 3
-//                )
-//
-//        )       
-
-
-
+    $node->field_dataset_abstract[0]['format']        = '3';
     $node->field_dataset_add_info[0]['value']         = $dataset_values['Additional Information'][0];
 //    $node->field_dataset_biblio_ref[0]['value']       = $related_bibliography; 
 //    $node->field_dataset_contact_ref[0]['value']      = $contact; 
@@ -338,19 +281,7 @@ function create_dataset_node($dataset_values, $uid) {
     $node->field_dataset_id[0]['value']               = $dataset_values['Dataset ID'][0]; 
 //    $node->field_dataset_labcrew_ref[0]['value']      = $lab_crew; 
     $node->field_dataset_maintenance[0]['value']      = $dataset_values['Maintenance'][0];
-//    TODO add format
-//    [field_dataset_maintenance] => Array
-//        (
-//            [0] => Array
-//                (
-//                    [value] => Damnum veniam singularis verto adipiscing. Laoreet euismod hos. Autem neque olim persto. Huic euismod abbas te vel metuo laoreet zelus te os. Validus sagaciter laoreet populus te ea enim. Olim verto paulatim tego melior. Cogo singularis sit. Facilisis tation erat vindico autem. Suscipit enim iustum pala iusto eligo fere ille eligo ideo. Causa quidem pertineo lobortis dignissim euismod aptent.
-//
-//Scisco luptatum pala erat olim i...
-//                    [format] => 3
-//                )
-//
-//        )
-
+    $node->field_dataset_maintenance[0]['format']     = '3';
 //    $node->field_dataset_owner_ref[0]['value']        = $owner; 
     $node->field_dataset_publication_date[0]['value']   =  $dataset_values['Publication Date'][0];
 //  TODO  add fields
