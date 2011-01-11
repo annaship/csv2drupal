@@ -225,20 +225,34 @@ function taking_person_ids($persons) {
   }
 }
 
-//function put_values_into_node($dataset_values, $uid) {
+//function convert_date_range($date_range) {
+//  if (preg_match_all("/(\d{1,2}).(\d{1,2}).(\d{2,4})/", $date_range, $matches, PREG_SET_ORDER)) {
+//    foreach ($matches as $match) {
+//        $date = str_replace('-', '/', $match[0]);
+//        $dates[] = strftime("%G-%m-%dT00:00:00", strtotime($date));
+//    }
+//  }
+//  return $dates;
+//}
 
 function convert_date_range($date_range) {
   if (preg_match_all("/(\d{1,2}).(\d{1,2}).(\d{2,4})/", $date_range, $matches, PREG_SET_ORDER)) {
     foreach ($matches as $match) {
-        $date = str_replace('-', '/', $match[0]);
-        $dates[] = strftime("%G-%m-%dT00:00:00", strtotime($date));
+      $date = str_replace('-', '/', $match[0]);
+      $dates[] = strftime("%G-%m-%d 00:00:00", strtotime($date));
     }
   }
+  elseif (preg_match_all("/^(\d{4})$/", $date_range, $matches, PREG_SET_ORDER)) {
+    foreach ($matches as $match) {
+      $date = preg_replace("/^(\d{4})$/", "12/12/$1", $match[0]);
+      $dates[] = strftime("%G-%m-%d 00:00:00", strtotime($date));
+    }
+  }
+//  dpr($dates);
   return $dates;
 }
 
 function create_beg_end_date_arr($date_range_values) {
-//  echo 'HERE!!!';
   $beg_end_date = array();
   $beg_end_date['value']        = $date_range_values[0];
   $beg_end_date['value2']       = $date_range_values[1];
@@ -247,23 +261,22 @@ function create_beg_end_date_arr($date_range_values) {
 }
 
 function create_single_date_arr($date_value) {
-
-  $date_value += add_timezone_to_date_arr($date_value);
+  $date_arr = array();
+  $converted_value = convert_date_range($date_value);
+  $date_arr['value'] = $converted_value[0];
+  $date_arr += add_timezone_to_date_arr($date_arr);
+  return $date_arr;
 }
 
 function add_timezone_to_date_arr($date_arr) {
   $date_arr['timezone']     = 'America/New_York';
   $date_arr['timezone_db']  = 'America/New_York';
-  $date_arr['date_type']    = 'date';
+  $date_arr['date_type']    = 'datetime'; // TODO: or 'date', ask Inigo
   return $date_arr;
 }
 
 function create_dataset_node($dataset_values, $uid) {
   dpr("create_dataset_node");
-//  print_r("UUU");
-//Abstract] => Array
-//        (
-//            [0
     $node = new StdClass();
     $node->type                                       = "data_set";
     $node->uid                                        = $uid;
@@ -283,7 +296,7 @@ function create_dataset_node($dataset_values, $uid) {
     $node->field_dataset_maintenance[0]['value']      = $dataset_values['Maintenance'][0];
     $node->field_dataset_maintenance[0]['format']     = '3';
 //    $node->field_dataset_owner_ref[0]['value']        = $owner; 
-    $node->field_dataset_publication_date[0]['value']   =  $dataset_values['Publication Date'][0];
+    $node->field_dataset_publication_date[0]          =  create_single_date_arr($dataset_values['Publication Date'][0]);
 //  TODO  add fields
 //        [field_dataset_publication_date] => Array
 //        (
@@ -296,6 +309,26 @@ function create_dataset_node($dataset_values, $uid) {
 //                )
 //
 //        )
+//                [0] => Array
+//                (
+//                    [value] => 2006-12-12 00:00:00
+//                    [timezone] => America/New_York
+//                    [timezone_db] => America/New_York
+//                    [date_type] => date
+//                )
+//
+//        )
+
+    /*
+     * Array
+(
+    [value] => 2006-12-12T00:00:00
+    [timezone] => America/New_York
+    [timezone_db] => America/New_York
+    [date_type] => date
+)
+
+     */
 
     $node->field_dataset_purpose[0]['value']          = $dataset_values['Purpose'][0];
 //  TODO add [format] => 1
