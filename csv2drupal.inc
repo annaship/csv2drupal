@@ -207,22 +207,6 @@ Missing Value Code Explanation
 function create_site_node($content, $uid) {
 //  dpr($content);
   dpr("create_site_node");
-  /*
-  Title
-  Location
-  Image
-  Coordinates
-  Elevation
-  Landform
-  Geology
-  Soils
-  Hydrology
-  Vegetation
-  Climate
-  History
-  Site
-  ID
-   */
   $research_site_values = create_values($content);
   foreach ($research_site_values as $value) {
     $node = new StdClass();
@@ -240,13 +224,39 @@ function create_site_node($content, $uid) {
     $node->field_research_site_climate[0]['value']    = $value['Climate'];
     $node->field_research_site_history[0]['value']    = $value['History'];
     $node->field_research_site_siteid[0]['value']     = $value['Site ID'];
-    dpr($node);
+//    dpr($node);
     }
   
 }
 
 function create_datafile_node($content, $uid) {
   dpr("create_datafile_node");
+  $data_file_values = create_values($content);
+  foreach ($data_file_values as $value) {
+    $node = new StdClass();
+    $node->type = "data_file";
+    $node->uid = $uid;
+    $node->title = $value['Data File Structure Name'];
+    $node->field_datafile_description[0]['value'] = $value['Description'];
+    $node->field_data_file[0]['value']            = $value['Data File'];
+    $node->field_num_header_line[0]['value']      = $value['Number of Header Lines'];
+    $node->field_num_footer_lines[0]['value']     = $value['Number of Footer Lines'];
+    $node->field_orientation[0]['value']          = $value['Orientation'];
+    $node->field_quote_character[0]['value']      = $value['Quote Character'];
+    $node->field_delimiter[0]['value']            = $value['Field Delimiter'];
+    $node->field_record_delimiter[0]['value']     = $value['Record Delimiter'];
+    $node->field_beg_end_date[0]['value']         = $value['Date Range'];
+    $node->field_methods[0]['value']              = $value['Methods'];
+    $node->field_instrumentation[0]['value']      = $value['Instrumentation'];
+    $node->field_quality[0]['value']              = $value['Quality Assurance'];
+//    TODO here should be nids. Add while second opening this node, not now, move into another function
+//    $node->field_datafile_variable_ref[0]['value'] = $value['Variables'];
+//    $node->field_datafile_site_ref[0]['value']    = $value['Sites'];
+//    $node->field_dataset_referrer[0]['value']     = $value['Associated Data Set'];
+    dpr($node);
+    }
+
+
 }
 
 //function create_dataset_node($content, $uid) {
