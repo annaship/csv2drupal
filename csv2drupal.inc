@@ -264,18 +264,23 @@ Array
 )
  */
     $date_range = $dataset_values['Date Range'][0];
-    if (preg_match("/(.+\d) - (\d.+)/", $date_range, $matches)) {
+//    preg_match_all("/(<([\w]+)[^>]*>)(.*?)(<\/\\2>)/", $html, $matches, PREG_SET_ORDER);
+//          if (preg_match("/(\d{1,2}).(\d{1,2}).(\d{2,4})/", $date, $matches)) {
+
+    if (preg_match_all("/(\d{1,2}).(\d{1,2}).(\d{2,4})/", $date_range, $matches, PREG_SET_ORDER)) {
+      echo '$matches = ';
+      dpr($matches);
       foreach ($matches as $key => $date) {
 //        dpr($date);
-//        echo 'strtotime = ' . strtotime($date);
-//        $onlyconsonants = str_replace($vowels, "", "Hello World of PHP");
-        if ($key == 0) next;
-        else {
-          $date = str_replace('-', '/', $date);
+////        echo 'strtotime = ' . strtotime($date);
+////        $onlyconsonants = str_replace($vowels, "", "Hello World of PHP");
+//        if ($key == 0) next;
+//        else {
+          $date = str_replace('-', '/', $date[0]);
 //          dpr($date);
 //          echo "strtotime = " . strftime("%G-%m-%dT00:00:00", strtotime($date)) . "\n";
           $dates[] = strftime("%G-%m-%dT00:00:00", strtotime($date));
-        }
+//        }
       }
       dpr($dates);
     }
