@@ -145,18 +145,20 @@ function create_site_node($content, $uid) {
     $node->type = "research_site";
     $node->uid = $uid;
     $node->title = $value['Title'];
-    $node->field_research_site_image[0]['value']      = $value['Image'];
-    $node->field_research_site_pt_coords[0]['value']  = $value['Coordinates'];
-    $node->field_research_site_elevation[0]['value']  = $value['Elevation'];
-    $node->field_research_site_landform[0]['value']   = $value['Landform'];
-    $node->field_research_site_geology[0]['value']    = $value['Geology'];
-    $node->field_research_site_soils[0]['value']      = $value['Soils'];
-    $node->field_research_site_hydrology[0]['value']  = $value['Hydrology'];
-    $node->field_research_site_vegetation[0]['value'] = $value['Vegetation'];
-    $node->field_research_site_climate[0]['value']    = $value['Climate'];
-    $node->field_research_site_history[0]['value']    = $value['History'];
-    $node->field_research_site_siteid[0]['value']     = $value['Site ID'];
-//    dpr($node);
+    $fields_names = research_site_fields();
+    $node = add_node_value($node, $value, $fields_names);
+//    $node->field_research_site_image[0]['value']      = $value['Image'];
+//    $node->field_research_site_pt_coords[0]['value']  = $value['Coordinates'];
+//    $node->field_research_site_elevation[0]['value']  = $value['Elevation'];
+//    $node->field_research_site_landform[0]['value']   = $value['Landform'];
+//    $node->field_research_site_geology[0]['value']    = $value['Geology'];
+//    $node->field_research_site_soils[0]['value']      = $value['Soils'];
+//    $node->field_research_site_hydrology[0]['value']  = $value['Hydrology'];
+//    $node->field_research_site_vegetation[0]['value'] = $value['Vegetation'];
+//    $node->field_research_site_climate[0]['value']    = $value['Climate'];
+//    $node->field_research_site_history[0]['value']    = $value['History'];
+//    $node->field_research_site_siteid[0]['value']     = $value['Site ID'];
+    dpr($node);
     }
   
 }
