@@ -173,11 +173,34 @@ function create_site_node($content, $uid) {
   
 }
 
-function add_node_value($node, $value, $field_name) {
-//  dpr($value);
+function datafile_fields() {
+  $datafile_fields = array (
+    'field_datafile_description'  => 'Description',
+    'field_data_file'             => 'Data File',
+    'field_num_header_line'       => 'Number of Header Lines',
+    'field_num_footer_lines'      => 'Number of Footer Lines',
+    'field_orientation'           => 'Orientation',
+    'field_quote_character'       => 'Quote Character',
+    'field_delimiter'             => 'Field Delimiter',
+    'field_record_delimiter'      => 'Record Delimiter',
+    'field_beg_end_date'          => 'Date Range',
+    'field_methods'               => 'Methods',
+    'field_instrumentation'       => 'Instrumentation',
+    'field_quality'               => 'Quality Assurance',
+  );
+  return $datafile_fields;
+}
+
+function add_node_value($node, $value) {
+  $datafile_fields = datafile_fields();
+//  dpr($datafile_fields);
 //  dpr($field_name);
-  $node->$field_name = array();
-  if (!empty($value['Data File'])) $node->$field_name = array(array('value' => $value['Data File']));
+  foreach ($datafile_fields as $node_field_name => $csv_title) {
+    $node->$node_field_name = array();
+    if (!empty($value[$csv_title])) $node->$node_field_name = array(array('value' => $value[$csv_title]));
+  }
+//  $node->$field_name = array();
+//  if (!empty($value['Data File'])) $node->$field_name = array(array('value' => $value['Data File']));
 //  dpr($node);
     return $node;
 }
@@ -185,41 +208,45 @@ function add_node_value($node, $value, $field_name) {
 function create_datafile_node($content, $uid) {
   dpr("create_datafile_node");
   $data_file_values = create_values($content);
+//  dpr($data_file_values);
+//  TODO: collect all variables to prevent empty datafile nodes appearence
   foreach ($data_file_values as $value) {
-    $node = new StdClass();
-    $node->type = "data_file";
-    $node->uid = $uid;
-    $node->title = $value['Data File Structure Name'];
-    $node->field_datafile_description = array();
-    if (!empty($value['Description'])) $node->field_datafile_description            = array(array('value' => $value['Description']));
-//    $node->field_datafile_description[0]['value'] = $value['Description'];
-//    $node->field_data_file[0]['value']            = $value['Data File'];
-//    $node +=
-    $node = add_node_value($node, $value, 'field_data_file');
-//    echo 'HERE!!';
-//    dpr($a);
-//    $node = $node + $a;
-//    dpr($node);
-//    $node->field_data_file = array();
-//    if (!empty($value['Data File'])) $node->field_data_file            = array(array('value' => $value['Data File']));
-    $node->field_num_header_line[0]['value']      = $value['Number of Header Lines'];
-    $node->field_num_footer_lines[0]['value']     = $value['Number of Footer Lines'];
-    $node->field_orientation[0]['value']          = $value['Orientation'];
-    $node->field_quote_character[0]['value']      = $value['Quote Character'];
-    $node->field_delimiter[0]['value']            = $value['Field Delimiter'];
-    $node->field_record_delimiter[0]['value']     = $value['Record Delimiter'];
-    $node->field_beg_end_date[0]['value']         = $value['Date Range'];
-    $node->field_methods[0]['value']              = $value['Methods'];
-    $node->field_instrumentation[0]['value']      = $value['Instrumentation'];
-    $node->field_quality[0]['value']              = $value['Quality Assurance'];
-//    TODO here should be nids. Add while second opening this node, not now, move into another function
-//    $node->field_datafile_variable_ref[0]['value'] = $value['Variables'];
-//    $node->field_datafile_site_ref[0]['value']    = $value['Sites'];
-//    $node->field_dataset_referrer[0]['value']     = $value['Associated Data Set'];
-    dpr($node);
+    if (!empty($value['Data File Structure Name'])) {
+      $node = new StdClass();
+      $node->type = "data_file";
+      $node->uid = $uid;
+      $node->title = $value['Data File Structure Name'];
+      $node = add_node_value($node, $value);
+  //    $node->field_datafile_description = array();
+  //    if (!empty($value['Description'])) $node->field_datafile_description            = array(array('value' => $value['Description']));
+  ////    $node->field_datafile_description[0]['value'] = $value['Description'];
+  ////    $node->field_data_file[0]['value']            = $value['Data File'];
+  ////    $node +=
+  //    $node = add_node_value($node, $value, 'field_data_file');
+  ////    echo 'HERE!!';
+  ////    dpr($a);
+  ////    $node = $node + $a;
+  ////    dpr($node);
+  ////    $node->field_data_file = array();
+  ////    if (!empty($value['Data File'])) $node->field_data_file            = array(array('value' => $value['Data File']));
+  //    $node->field_num_header_line[0]['value']      = $value['Number of Header Lines'];
+  //    $node->field_num_footer_lines[0]['value']     = $value['Number of Footer Lines'];
+  //    $node->field_orientation[0]['value']          = $value['Orientation'];
+  //    $node->field_quote_character[0]['value']      = $value['Quote Character'];
+  //    $node->field_delimiter[0]['value']            = $value['Field Delimiter'];
+  //    $node->field_record_delimiter[0]['value']     = $value['Record Delimiter'];
+  //    $node->field_beg_end_date[0]['value']         = $value['Date Range'];
+  //    $node->field_methods[0]['value']              = $value['Methods'];
+  //    $node->field_instrumentation[0]['value']      = $value['Instrumentation'];
+  //    $node->field_quality[0]['value']              = $value['Quality Assurance'];
+  //
+  //    TODO here should be nids. Add while second opening this node, not now, move into another function
+  //    $node->field_datafile_variable_ref[0]['value'] = $value['Variables'];
+  //    $node->field_datafile_site_ref[0]['value']    = $value['Sites'];
+  //    $node->field_dataset_referrer[0]['value']     = $value['Associated Data Set'];
+      dpr($node);
     }
-
-
+  }
 }
 
 function create_keywords_node($content, $uid) {
