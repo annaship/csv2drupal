@@ -181,8 +181,12 @@ function create_datafile_node($content, $uid) {
     $node->type = "data_file";
     $node->uid = $uid;
     $node->title = $value['Data File Structure Name'];
-    $node->field_datafile_description[0]['value'] = $value['Description'];
-    $node->field_data_file[0]['value']            = $value['Data File'];
+    $node->field_datafile_description = array();
+    if (!empty($value['Description'])) $node->field_datafile_description            = array(array('value' => $value['Description']));
+//    $node->field_datafile_description[0]['value'] = $value['Description'];
+//    $node->field_data_file[0]['value']            = $value['Data File'];
+    $node->field_data_file = array();
+    if (!empty($value['Data File'])) $node->field_data_file            = array(array('value' => $value['Data File']));
     $node->field_num_header_line[0]['value']      = $value['Number of Header Lines'];
     $node->field_num_footer_lines[0]['value']     = $value['Number of Footer Lines'];
     $node->field_orientation[0]['value']          = $value['Orientation'];
@@ -197,7 +201,7 @@ function create_datafile_node($content, $uid) {
 //    $node->field_datafile_variable_ref[0]['value'] = $value['Variables'];
 //    $node->field_datafile_site_ref[0]['value']    = $value['Sites'];
 //    $node->field_dataset_referrer[0]['value']     = $value['Associated Data Set'];
-//    dpr($node);
+    dpr($node);
     }
 
 
@@ -283,7 +287,7 @@ function create_dataset_node($dataset_values, $uid) {
     $node->title                                      = $dataset_values['Title'][0];
     $node->field_beg_end_date[0]                      = create_beg_end_date_arr(convert_date_range($dataset_values['Date Range'][0]));
     $node->field_dataset_abstract[0]['value']         = $dataset_values['Abstract'][0];
-    $node->field_dataset_abstract[0]['format']        = '3';
+//    $node->field_dataset_abstract[0]['format']        = '3';
     $node->field_dataset_add_info[0]['value']         = $dataset_values['Additional Information'][0];
 //    $node->field_dataset_biblio_ref[0]['value']       = $related_bibliography; 
 //    $node->field_dataset_contact_ref[0]['value']      = $contact; 
@@ -294,11 +298,11 @@ function create_dataset_node($dataset_values, $uid) {
     $node->field_dataset_id[0]['value']               = $dataset_values['Dataset ID'][0]; 
 //    $node->field_dataset_labcrew_ref[0]['value']      = $lab_crew; 
     $node->field_dataset_maintenance[0]['value']      = $dataset_values['Maintenance'][0];
-    $node->field_dataset_maintenance[0]['format']     = '3';
+//    $node->field_dataset_maintenance[0]['format']     = '3';
 //    $node->field_dataset_owner_ref[0]['value']        = $owner; 
     $node->field_dataset_publication_date[0]          =  create_single_date_arr($dataset_values['Publication Date'][0]);
     $node->field_dataset_purpose[0]['value']          = $dataset_values['Purpose'][0];
-    $node->field_dataset_purpose[0]['format']         = '1';
+//    $node->field_dataset_purpose[0]['format']         = '1';
     $node->field_dataset_related_links[0]['value']    = $dataset_values['Related Links'][0]; 
     //TODO all empty should not have [0]! check above
 //        [field_dataset_related_links] => Array
@@ -316,5 +320,5 @@ function create_dataset_node($dataset_values, $uid) {
 // TODO add format
     $node->field_quality[0]['value']                  = $dataset_values['Quality Assurance'][0];
 // TODO add format
-    dpr($node);
+//    dpr($node);
 }
