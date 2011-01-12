@@ -64,6 +64,7 @@ function get_uid() {
   return $user->uid;
 }
 
+//restructure arrays from Excel
 function create_values($content) {
   $values = array();
   foreach ($content as $key => $value) {
@@ -81,91 +82,13 @@ function add_node_value($node, $value, $fields_names) {
   return $node;
 }
 
-function create_person_node($content, $uid) {
-  dpr("create_person_node");
-  $person_values = create_values($content);
-  foreach ($person_values as $value) {
-    $fields_names = person_fields();
-    if (!empty($value['Last Name'])) {
-      $node = new StdClass();
-      $node->type  = "person";
-      $node->uid   = $uid;
-      $node->title = $value['First name'] . " " . $value['Last Name'];
-      $node = add_node_value($node, $value, $fields_names);
-    }
-//    dpr($node);
-  }
-}
-
-
-function create_variable_node($content, $uid) {
-  dpr('here in variable');
-  $variable_values = create_values($content);
-  foreach ($variable_values as $value) {
-    $node = new StdClass();
-    $node->type = "variable";
-    $node->uid = $uid;
-    $node->title = $value['Variable Name'];
-    $fields_names = variable_fields();
-    $node = add_node_value($node, $value, $fields_names);
-//      $node->field_attribute_assoc_datafile[0]['value'] = $value['Associated Data Files'];
-//      TODO node_save here
-//      TODO collect nids into array and return it
-//  dpr($node);
-  }
-//  return array of nids
-}
-
-function create_site_node($content, $uid) {
-  dpr("create_site_node");
-  $research_site_values = create_values($content);
-  foreach ($research_site_values as $value) {
-    $node = new StdClass();
-    $node->type = "research_site";
-    $node->uid = $uid;
-    $node->title = $value['Title'];
-    $fields_names = research_site_fields();
-    $node = add_node_value($node, $value, $fields_names);
-//    dpr($node);
-    }  
-}
-
-function create_datafile_node($content, $uid) {
-  dpr("create_datafile_node");
-  $data_file_values = create_values($content);
-  foreach ($data_file_values as $value) {
-//  TODO: collect all variables here
-    if (!empty($value['Data File Structure Name'])) {
-      $node = new StdClass();
-      $node->type   = "data_file";
-      $node->uid    = $uid;
-      $node->title  = $value['Data File Structure Name'];
-      $fields_names = datafile_fields();
-      $node = add_node_value($node, $value, $fields_names);
-      $node->field_beg_end_date[0] = create_beg_end_date_arr(convert_date_range($value['Date Range']));
-
-  //    TODO here should be nids. Add while second opening this node, not now, move into another function
-  //    $node->field_datafile_variable_ref[0]['value'] = $value['Variables'];
-  //    $node->field_datafile_site_ref[0]['value']    = $value['Sites'];
-  //    $node->field_dataset_referrer[0]['value']     = $value['Associated Data Set'];
-//      dpr($node);
-    }
-  }
-}
-
-function create_keywords_node($content, $uid) {
-    dpr("create_keywords_node");
-}
-
-
-
 //taking person id (they should be created first)
 // TODO the same for files and other refs (bib, sites)
 function taking_person_ids($persons) {
   if (isset ($persons)) {
     $persons_arr = array();
     foreach ($persons as $persons_value) {
-      $sql = "SELECT nid FROM node WHERE type = 'person' and title = '%s'";
+      $sql = "SELECT nid FROM {node} WHERE type = 'person' and title = '%s'";
       $q = db_query($sql, $persons_value);
         while ($nid = db_result($q)) {
         $persons_arr[][nid] = $nid;
@@ -185,6 +108,7 @@ function taking_person_ids($persons) {
 //  return $dates;
 //}
 
+//TODO: add check for single vs. range
 function convert_date_range($date_range) {
   if (preg_match_all("/(\d{1,2}).(\d{1,2}).(\d{2,4})/", $date_range, $matches, PREG_SET_ORDER)) {
     foreach ($matches as $match) {
@@ -225,30 +149,109 @@ function add_timezone_to_date_arr($date_arr) {
   return $date_arr;
 }
 
+function create_person_node($content, $uid) {
+  dpr("create_person_node");
+  $person_values = create_values($content);
+  $fields_names  = person_fields();
+  foreach ($person_values as $value) {
+    if (!empty($value['Last Name'])) {
+      $node = new StdClass();
+      $node->type  = "person";
+      $node->uid   = $uid;
+      $node->title = $value['First name'] . " " . $value['Last Name'];
+      $node = add_node_value($node, $value, $fields_names);
+    }
+//    dpr($node);
+  }
+}
+
+function create_variable_node($content, $uid) {
+  dpr('here in variable');
+  $variable_values = create_values($content);
+  $fields_names    = variable_fields();
+  foreach ($variable_values as $value) {
+    if (!empty($value['Variable Name'])) {
+      $node = new StdClass();
+      $node->type = "variable";
+      $node->uid = $uid;
+      $node->title = $value['Variable Name'];
+      $node = add_node_value($node, $value, $fields_names);
+  //      $node->field_attribute_assoc_datafile[0]['value'] = $value['Associated Data Files'];
+  //      TODO node_save here
+  //      TODO collect nids into array and return it
+    }
+//  dpr($node);
+  }
+//  return array of nids
+}
+
+function create_site_node($content, $uid) {
+  dpr("create_site_node");
+  $research_site_values = create_values($content);
+  $fields_names = research_site_fields();
+  foreach ($research_site_values as $value) {
+    if (!empty($value['Title'])) {
+      $node = new StdClass();
+      $node->type   = "research_site";
+      $node->uid    = $uid;
+      $node->title  = $value['Title'];
+      $node = add_node_value($node, $value, $fields_names);
+    }
+//    dpr($node);
+  }
+}
+
+function create_datafile_node($content, $uid) {
+  dpr("create_datafile_node");
+  $data_file_values = create_values($content);
+  $fields_names = datafile_fields();
+  foreach ($data_file_values as $value) {
+//  TODO: collect all variables here
+    if (!empty($value['Data File Structure Name'])) {
+      $node = new StdClass();
+      $node->type   = "data_file";
+      $node->uid    = $uid;
+      $node->title  = $value['Data File Structure Name'];
+      $node = add_node_value($node, $value, $fields_names);
+      $node->field_beg_end_date[0] = create_beg_end_date_arr(convert_date_range($value['Date Range']));
+
+  //    TODO here should be nids. Add while second opening this node, not now, move into another function
+  //    $node->field_datafile_variable_ref[0]['value'] = $value['Variables'];
+  //    $node->field_datafile_site_ref[0]['value']    = $value['Sites'];
+  //    $node->field_dataset_referrer[0]['value']     = $value['Associated Data Set'];
+//      dpr($node);
+    }
+  }
+}
+
+function create_keywords_node($content, $uid) {
+    dpr("create_keywords_node");
+}
+
 function create_dataset_node($content, $uid) {
   dpr("create_dataset_node");
-    $dataset_values = create_values($content);
-    foreach ($dataset_values as $value) {
+  $dataset_values = create_values($content);
+  $fields_names   = dataset_fields();
+  foreach ($dataset_values as $value) {
 //  TODO: collect names here (e.g. "Associated Researcher")
-      if (!empty($value['Title'])) {
-        $node = new StdClass();
-        $node->type                                       = "data_set";
-        $node->uid                                        = $uid;
-        $node->title                                      = $value['Title'];
-        $fields_names = dataset_fields();
-        $node = add_node_value($node, $value, $fields_names);
-        $node->field_beg_end_date[0]                      = create_beg_end_date_arr(convert_date_range($value['Date Range']));
-        $node->field_dataset_publication_date[0]          =  create_single_date_arr($value['Publication Date']);
-    ////    $node->field_dataset_biblio_ref[0]['value']       = $related_bibliography;
-    ////    $node->field_dataset_contact_ref[0]['value']      = $contact;
-    ////    $node->field_dataset_datafile_ref[0]['value']     = $data_file_structure;
-    ////    $node->field_dataset_datamanager_ref[0]['value']  = $data_manager;
-    ////    $node->field_dataset_ext_assoc_ref                = $ext_assoc_arr;
-    ////    $node->field_dataset_fieldcrew_ref[0]['value']    = $field_crew;
-    ////    $node->field_dataset_labcrew_ref[0]['value']      = $lab_crew;
-    ////    $node->field_dataset_owner_ref[0]['value']        = $owner;
-    ////    $node->field_dataset_site_ref[0]['value']         = $site;
-        dpr($node);
-      }
+    if (!empty($value['Title'])) {
+      $node = new StdClass();
+      $node->type                                       = "data_set";
+      $node->uid                                        = $uid;
+      $node->title                                      = $value['Title'];
+      $node = add_node_value($node, $value, $fields_names);
+      $node->field_beg_end_date[0]                      = create_beg_end_date_arr(convert_date_range($value['Date Range']));
+      $node->field_dataset_publication_date[0]          =  create_single_date_arr($value['Publication Date']);
+//    $node->field_dataset_biblio_ref[0]['value']       = $related_bibliography;
+//    $node->field_dataset_contact_ref[0]['value']      = $contact;
+//    $node->field_dataset_datafile_ref[0]['value']     = $data_file_structure;
+//    $node->field_dataset_datamanager_ref[0]['value']  = $data_manager;
+//    $node->field_dataset_ext_assoc_ref                = $ext_assoc_arr;
+//    $node->field_dataset_fieldcrew_ref[0]['value']    = $field_crew;
+//    $node->field_dataset_labcrew_ref[0]['value']      = $lab_crew;
+//    $node->field_dataset_owner_ref[0]['value']        = $owner;
+//    $node->field_dataset_site_ref[0]['value']         = $site;
+      dpr($node);
     }
+  }
 }
