@@ -78,9 +78,16 @@ function create_person_node($content, $uid) {
   dpr("create_person_node");
   $person_values = create_values($content);
   foreach ($person_values as $value) {
+    dpr($value['field_person_last_name']);
     $fields_names = person_fields();
-    $node = add_node_value($node, $value, $fields_names);
-//    dpr($node);
+    if (!empty($value['Last Name'])) {
+      $node = new StdClass();
+      $node->type                                       = "person";
+      $node->uid                                        = $uid;
+      $node->title                                      = $value['First name'] . " " . $value['Last Name'];
+      $node = add_node_value($node, $value, $fields_names);
+    }
+    dpr($node);
   }
 }
 
@@ -238,8 +245,7 @@ function add_timezone_to_date_arr($date_arr) {
 function create_dataset_node($content, $uid) {
   dpr("create_dataset_node");
     $dataset_values = create_values($content);
-
-    foreach ($dataset_values as $key => $value) {
+    foreach ($dataset_values as $value) {
 //  TODO: collect names here (e.g. "Associated Researcher")
       if (!empty($value['Title'])) {
         $node = new StdClass();
