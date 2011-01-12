@@ -173,6 +173,15 @@ function create_site_node($content, $uid) {
   
 }
 
+function add_node_value($node, $value, $field_name) {
+//  dpr($value);
+//  dpr($field_name);
+  $node->$field_name = array();
+  if (!empty($value['Data File'])) $node->$field_name = array(array('value' => $value['Data File']));
+//  dpr($node);
+    return $node;
+}
+
 function create_datafile_node($content, $uid) {
   dpr("create_datafile_node");
   $data_file_values = create_values($content);
@@ -185,8 +194,14 @@ function create_datafile_node($content, $uid) {
     if (!empty($value['Description'])) $node->field_datafile_description            = array(array('value' => $value['Description']));
 //    $node->field_datafile_description[0]['value'] = $value['Description'];
 //    $node->field_data_file[0]['value']            = $value['Data File'];
-    $node->field_data_file = array();
-    if (!empty($value['Data File'])) $node->field_data_file            = array(array('value' => $value['Data File']));
+//    $node +=
+    $node = add_node_value($node, $value, 'field_data_file');
+//    echo 'HERE!!';
+//    dpr($a);
+//    $node = $node + $a;
+//    dpr($node);
+//    $node->field_data_file = array();
+//    if (!empty($value['Data File'])) $node->field_data_file            = array(array('value' => $value['Data File']));
     $node->field_num_header_line[0]['value']      = $value['Number of Header Lines'];
     $node->field_num_footer_lines[0]['value']     = $value['Number of Footer Lines'];
     $node->field_orientation[0]['value']          = $value['Orientation'];
