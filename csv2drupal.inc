@@ -100,23 +100,8 @@ function create_person_node($content, $uid) {
 
 function create_variable_node($content, $uid) {
   dpr('here in variable');
-//  dpr($content);
   $variable_values = create_values($content);
-  /*
-Variable Name
-Variable Description
-Units
-Measurement Scale
-Code Information
-Number Type
-DateTime Format
-Missing Value Code
-Missing Value Code Explanation
-
-   */
-
   foreach ($variable_values as $value) {
-//    dpr($value);
     $node = new StdClass();
     $node->type = "variable";
     $node->uid = $uid;
@@ -132,7 +117,6 @@ Missing Value Code Explanation
 }
 
 function create_site_node($content, $uid) {
-//  dpr($content);
   dpr("create_site_node");
   $research_site_values = create_values($content);
   foreach ($research_site_values as $value) {
@@ -142,9 +126,8 @@ function create_site_node($content, $uid) {
     $node->title = $value['Title'];
     $fields_names = research_site_fields();
     $node = add_node_value($node, $value, $fields_names);
-    dpr($node);
-    }
-  
+//    dpr($node);
+    }  
 }
 
 function create_datafile_node($content, $uid) {
@@ -154,11 +137,13 @@ function create_datafile_node($content, $uid) {
 //  TODO: collect all variables here
     if (!empty($value['Data File Structure Name'])) {
       $node = new StdClass();
-      $node->type = "data_file";
-      $node->uid = $uid;
-      $node->title = $value['Data File Structure Name'];
+      $node->type   = "data_file";
+      $node->uid    = $uid;
+      $node->title  = $value['Data File Structure Name'];
       $fields_names = datafile_fields();
       $node = add_node_value($node, $value, $fields_names);
+      $node->field_beg_end_date[0] = create_beg_end_date_arr(convert_date_range($value['Date Range']));
+
   //    TODO here should be nids. Add while second opening this node, not now, move into another function
   //    $node->field_datafile_variable_ref[0]['value'] = $value['Variables'];
   //    $node->field_datafile_site_ref[0]['value']    = $value['Sites'];

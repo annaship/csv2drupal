@@ -58,6 +58,19 @@ function person_fields() {
   return $person_fields;
 }
 
+  /*
+Variable Name
+Variable Description
+Units
+Measurement Scale
+Code Information
+Number Type
+DateTime Format
+Missing Value Code
+Missing Value Code Explanation
+
+   */
+
 function variable_fields() {
   $variable_fields = array (
     'field_attribute_label'         => 'Variable Name',
@@ -66,7 +79,7 @@ function variable_fields() {
     'field_attribute_unit'          => 'Units',
     'field_attribute_maximum'       => 'Maximum Value',
     'field_attribute_minimum'       => 'Minimum Value',
-    'field_attribute_precision'     => 'precision',
+    'field_attribute_precision'     => 'Precision',
     'field_attribute_formatstring'  => 'DateTime Format',
     'field_code_definition'         => 'Code Information',
   );
