@@ -256,7 +256,7 @@ function create_datafile_node($content, $uid) {
   //    $node->field_datafile_variable_ref[0]['value'] = $value['Variables'];
   //    $node->field_datafile_site_ref[0]['value']    = $value['Sites'];
   //    $node->field_dataset_referrer[0]['value']     = $value['Associated Data Set'];
-      dpr($node);
+//      dpr($node);
     }
   }
 }
@@ -333,49 +333,58 @@ function add_timezone_to_date_arr($date_arr) {
   return $date_arr;
 }
 
-function create_dataset_node($dataset_values, $uid) {
+function create_dataset_node($content, $uid) {
   dpr("create_dataset_node");
-    $node = new StdClass();
-    $node->type                                       = "data_set";
-    $node->uid                                        = $uid;
-    $node->title                                      = $dataset_values['Title'][0];
-    $node->field_beg_end_date[0]                      = create_beg_end_date_arr(convert_date_range($dataset_values['Date Range'][0]));
-    $fields_names = dataset_fields();
-    dpr($fields_names);
-    $node = add_node_value($node, $dataset_values, $fields_names);
-//    $node->field_dataset_abstract[0]['value']         = $dataset_values['Abstract'][0];
-////    $node->field_dataset_abstract[0]['format']        = '3';
-//    $node->field_dataset_add_info[0]['value']         = $dataset_values['Additional Information'][0];
-////    $node->field_dataset_biblio_ref[0]['value']       = $related_bibliography;
-////    $node->field_dataset_contact_ref[0]['value']      = $contact;
-////    $node->field_dataset_datafile_ref[0]['value']     = $data_file_structure;
-////    $node->field_dataset_datamanager_ref[0]['value']  = $data_manager;
-////    $node->field_dataset_ext_assoc_ref                = $ext_assoc_arr;
-////    $node->field_dataset_fieldcrew_ref[0]['value']    = $field_crew;
-//    $node->field_dataset_id[0]['value']               = $dataset_values['Dataset ID'][0];
-////    $node->field_dataset_labcrew_ref[0]['value']      = $lab_crew;
-//    $node->field_dataset_maintenance[0]['value']      = $dataset_values['Maintenance'][0];
-////    $node->field_dataset_maintenance[0]['format']     = '3';
-////    $node->field_dataset_owner_ref[0]['value']        = $owner;
-    $node->field_dataset_publication_date[0]          =  create_single_date_arr($dataset_values['Publication Date'][0]);
-//    $node->field_dataset_purpose[0]['value']          = $dataset_values['Purpose'][0];
-////    $node->field_dataset_purpose[0]['format']         = '1';
-//    $node->field_dataset_related_links[0]['value']    = $dataset_values['Related Links'][0];
-//    //TODO all empty should not have [0]! check above
-////        [field_dataset_related_links] => Array
-////        (
-////        )
-////    [field_dataset_related_links] => Array
-////        (
-////            [0] =>
-////        )
-//
-//    $node->field_dataset_short_name[0]['value']       = $dataset_values['Short Name'][0]; //
-////    $node->field_dataset_site_ref[0]['value']         = $site;
-//    $node->field_instrumentation[0]['value']          = $dataset_values['Instrumentation'][0];
-//    $node->field_methods[0]['value']                  = $dataset_values['Methods'][0];
-//// TODO add format
-//    $node->field_quality[0]['value']                  = $dataset_values['Quality Assurance'][0];
-//// TODO add format
-    dpr($node);
+    $dataset_values = create_values($content);
+
+    foreach ($dataset_values as $key => $value) {
+//      echo "\$key = " . $key;
+//      dpr($value);
+//  TODO: collect names here (e.g. "Associated Researcher")
+      if (!empty($value['Title'])) {
+        $node = new StdClass();
+        $node->type                                       = "data_set";
+        $node->uid                                        = $uid;
+        $node->title                                      = $value['Title'];
+        $node->field_beg_end_date[0]                      = create_beg_end_date_arr(convert_date_range($value['Date Range']));
+        $fields_names = dataset_fields();
+//        dpr($fields_names);
+        $node = add_node_value($node, $value, $fields_names);
+    //    $node->field_dataset_abstract[0]['value']         = $value['Abstract'][0];
+    ////    $node->field_dataset_abstract[0]['format']        = '3';
+    //    $node->field_dataset_add_info[0]['value']         = $value['Additional Information'][0];
+    ////    $node->field_dataset_biblio_ref[0]['value']       = $related_bibliography;
+    ////    $node->field_dataset_contact_ref[0]['value']      = $contact;
+    ////    $node->field_dataset_datafile_ref[0]['value']     = $data_file_structure;
+    ////    $node->field_dataset_datamanager_ref[0]['value']  = $data_manager;
+    ////    $node->field_dataset_ext_assoc_ref                = $ext_assoc_arr;
+    ////    $node->field_dataset_fieldcrew_ref[0]['value']    = $field_crew;
+    //    $node->field_dataset_id[0]['value']               = $value['Dataset ID'][0];
+    ////    $node->field_dataset_labcrew_ref[0]['value']      = $lab_crew;
+    //    $node->field_dataset_maintenance[0]['value']      = $value['Maintenance'][0];
+    ////    $node->field_dataset_maintenance[0]['format']     = '3';
+    ////    $node->field_dataset_owner_ref[0]['value']        = $owner;
+        $node->field_dataset_publication_date[0]          =  create_single_date_arr($value['Publication Date'][0]);
+    //    $node->field_dataset_purpose[0]['value']          = $value['Purpose'][0];
+    ////    $node->field_dataset_purpose[0]['format']         = '1';
+    //    $node->field_dataset_related_links[0]['value']    = $value['Related Links'][0];
+    //    //TODO all empty should not have [0]! check above
+    ////        [field_dataset_related_links] => Array
+    ////        (
+    ////        )
+    ////    [field_dataset_related_links] => Array
+    ////        (
+    ////            [0] =>
+    ////        )
+    //
+    //    $node->field_dataset_short_name[0]['value']       = $value['Short Name'][0]; //
+    ////    $node->field_dataset_site_ref[0]['value']         = $site;
+    //    $node->field_instrumentation[0]['value']          = $value['Instrumentation'][0];
+    //    $node->field_methods[0]['value']                  = $value['Methods'][0];
+    //// TODO add format
+    //    $node->field_quality[0]['value']                  = $value['Quality Assurance'][0];
+    //// TODO add format
+        dpr($node);
+      }
+    }
 }
