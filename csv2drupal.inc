@@ -32,8 +32,6 @@ function get_data_from_excel_file($file) {
       $titles[] = trim($objWorksheet->getCellByColumnAndRow($col, "1")->getValue());
     }
 
-//    dpr($titles);
-
     for ($row = 2; $row <= $highestRow; ++$row) {
       for ($col = 0; $col <= $highestColumnIndex; ++$col) {
         $res = $objWorksheet->getCellByColumnAndRow($col, $row)->getValue();
@@ -53,17 +51,11 @@ function create_nodes($content) {
 //TODO link node references
   $uid               = get_uid();
   $person_nodes      = create_person_node($content['person'], $uid);
-//  dpr($person_nodes);
   $variables_nodes   = create_variable_node($content['variable'], $uid);
-//  dpr($variables_nodes);
   $site_nodes        = create_site_node($content['site'], $uid);
-//  dpr($site_nodes);
   $datafile_nodes    = create_datafile_node($content['datafile'], $uid);
-//  dpr($datafile_nodes);
   $dataset_nodes     = create_dataset_node($content['dataset'], $uid);
-//  dpr($dataset_nodes);
   $keywords_taxonomy = create_keywords_node($content['keywords'], $uid);
-
 //  TODO link referrer
 }
 
@@ -118,17 +110,7 @@ Missing Value Code Explanation
     $node->title = $value['Variable Name'];
     $fields_names = variable_fields();
     $node = add_node_value($node, $value, $fields_names);
-
-//    $node->field_attribute_label[0]['value'] = $value['Variable Name'];
-//    $node->field_var_definition[0]['value'] = $value['Variable Description'];
-//    $node->field_var_missingvalues[0]['value'] = $value['Missing Value Code'];
-//    $node->field_attribute_unit[0]['value'] = $value['Units'];
-////      $node->field_attribute_maximum[0]['value'] = $value['Maximum Value'];
-////      $node->field_attribute_minimum[0]['value'] = $value['Minimum Value'];
-////      $node->field_attribute_precision[0]['value'] = $value['precision'];
-//    $node->field_attribute_formatstring[0]['value'] = $value['DateTime Format'];
-//    $node->field_code_definition[0]['value'] = $value['Code Information'];
-////      $node->field_attribute_assoc_datafile[0]['value'] = $value['Associated Data Files'];
+//      $node->field_attribute_assoc_datafile[0]['value'] = $value['Associated Data Files'];
 //      TODO node_save here
 //      TODO collect nids into array and return it
 //  dpr($node);
@@ -147,17 +129,6 @@ function create_site_node($content, $uid) {
     $node->title = $value['Title'];
     $fields_names = research_site_fields();
     $node = add_node_value($node, $value, $fields_names);
-//    $node->field_research_site_image[0]['value']      = $value['Image'];
-//    $node->field_research_site_pt_coords[0]['value']  = $value['Coordinates'];
-//    $node->field_research_site_elevation[0]['value']  = $value['Elevation'];
-//    $node->field_research_site_landform[0]['value']   = $value['Landform'];
-//    $node->field_research_site_geology[0]['value']    = $value['Geology'];
-//    $node->field_research_site_soils[0]['value']      = $value['Soils'];
-//    $node->field_research_site_hydrology[0]['value']  = $value['Hydrology'];
-//    $node->field_research_site_vegetation[0]['value'] = $value['Vegetation'];
-//    $node->field_research_site_climate[0]['value']    = $value['Climate'];
-//    $node->field_research_site_history[0]['value']    = $value['History'];
-//    $node->field_research_site_siteid[0]['value']     = $value['Site ID'];
     dpr($node);
     }
   
@@ -183,29 +154,6 @@ function create_datafile_node($content, $uid) {
       $node->title = $value['Data File Structure Name'];
       $fields_names = datafile_fields();
       $node = add_node_value($node, $value, $fields_names);
-  //    $node->field_datafile_description = array();
-  //    if (!empty($value['Description'])) $node->field_datafile_description            = array(array('value' => $value['Description']));
-  ////    $node->field_datafile_description[0]['value'] = $value['Description'];
-  ////    $node->field_data_file[0]['value']            = $value['Data File'];
-  ////    $node +=
-  //    $node = add_node_value($node, $value, 'field_data_file');
-  ////    echo 'HERE!!';
-  ////    dpr($a);
-  ////    $node = $node + $a;
-  ////    dpr($node);
-  ////    $node->field_data_file = array();
-  ////    if (!empty($value['Data File'])) $node->field_data_file            = array(array('value' => $value['Data File']));
-  //    $node->field_num_header_line[0]['value']      = $value['Number of Header Lines'];
-  //    $node->field_num_footer_lines[0]['value']     = $value['Number of Footer Lines'];
-  //    $node->field_orientation[0]['value']          = $value['Orientation'];
-  //    $node->field_quote_character[0]['value']      = $value['Quote Character'];
-  //    $node->field_delimiter[0]['value']            = $value['Field Delimiter'];
-  //    $node->field_record_delimiter[0]['value']     = $value['Record Delimiter'];
-  //    $node->field_beg_end_date[0]['value']         = $value['Date Range'];
-  //    $node->field_methods[0]['value']              = $value['Methods'];
-  //    $node->field_instrumentation[0]['value']      = $value['Instrumentation'];
-  //    $node->field_quality[0]['value']              = $value['Quality Assurance'];
-  //
   //    TODO here should be nids. Add while second opening this node, not now, move into another function
   //    $node->field_datafile_variable_ref[0]['value'] = $value['Variables'];
   //    $node->field_datafile_site_ref[0]['value']    = $value['Sites'];
@@ -292,8 +240,6 @@ function create_dataset_node($content, $uid) {
     $dataset_values = create_values($content);
 
     foreach ($dataset_values as $key => $value) {
-//      echo "\$key = " . $key;
-//      dpr($value);
 //  TODO: collect names here (e.g. "Associated Researcher")
       if (!empty($value['Title'])) {
         $node = new StdClass();
@@ -303,31 +249,16 @@ function create_dataset_node($content, $uid) {
         $fields_names = dataset_fields();
         $node = add_node_value($node, $value, $fields_names);
         $node->field_beg_end_date[0]                      = create_beg_end_date_arr(convert_date_range($value['Date Range']));
-    //    $node->field_dataset_abstract[0]['value']         = $value['Abstract'][0];
-    ////    $node->field_dataset_abstract[0]['format']        = '3';
-    //    $node->field_dataset_add_info[0]['value']         = $value['Additional Information'][0];
+        $node->field_dataset_publication_date[0]          =  create_single_date_arr($value['Publication Date']);
     ////    $node->field_dataset_biblio_ref[0]['value']       = $related_bibliography;
     ////    $node->field_dataset_contact_ref[0]['value']      = $contact;
     ////    $node->field_dataset_datafile_ref[0]['value']     = $data_file_structure;
     ////    $node->field_dataset_datamanager_ref[0]['value']  = $data_manager;
     ////    $node->field_dataset_ext_assoc_ref                = $ext_assoc_arr;
     ////    $node->field_dataset_fieldcrew_ref[0]['value']    = $field_crew;
-    //    $node->field_dataset_id[0]['value']               = $value['Dataset ID'][0];
     ////    $node->field_dataset_labcrew_ref[0]['value']      = $lab_crew;
-    //    $node->field_dataset_maintenance[0]['value']      = $value['Maintenance'][0];
-    ////    $node->field_dataset_maintenance[0]['format']     = '3';
     ////    $node->field_dataset_owner_ref[0]['value']        = $owner;
-        $node->field_dataset_publication_date[0]          =  create_single_date_arr($value['Publication Date']);
-    //    $node->field_dataset_purpose[0]['value']          = $value['Purpose'][0];
-    ////    $node->field_dataset_purpose[0]['format']         = '1';
-    //    $node->field_dataset_related_links[0]['value']    = $value['Related Links'][0];
-    //    $node->field_dataset_short_name[0]['value']       = $value['Short Name'][0]; //
     ////    $node->field_dataset_site_ref[0]['value']         = $site;
-    //    $node->field_instrumentation[0]['value']          = $value['Instrumentation'][0];
-    //    $node->field_methods[0]['value']                  = $value['Methods'][0];
-    //// TODO add format
-    //    $node->field_quality[0]['value']                  = $value['Quality Assurance'][0];
-    //// TODO add format
         dpr($node);
       }
     }
