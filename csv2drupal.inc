@@ -93,7 +93,7 @@ function create_person_node($content, $uid) {
       $node->title = $value['First name'] . " " . $value['Last Name'];
       $node = add_node_value($node, $value, $fields_names);
     }
-    dpr($node);
+//    dpr($node);
   }
 }
 
