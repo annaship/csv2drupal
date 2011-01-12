@@ -1,7 +1,7 @@
 <?php
 
 require_once("includes/PHPExcel/IOFactory.php");
-
+require_once 'field_name_arrays.inc';
 function get_data_from_excel_file($file) {
   $sheet_names = array(
     'DataSet-csv'   => 'dataset',
@@ -173,42 +173,6 @@ function create_site_node($content, $uid) {
   
 }
 
-function dataset_fields() {
-  $dataset_fields = array(
-    'field_beg_end_date'              => 'Date Range',
-    'field_dataset_abstract'          => 'Abstract',
-    'field_dataset_add_info' 				  => 'Additional Information',
-    'field_dataset_id' 						    => 'Dataset ID',
-    'field_dataset_maintenance'       => 'Maintenance',
-    'field_dataset_publication_date'  => 'Publication Date',
-    'field_dataset_purpose' 					=> 'Purpose',
-    'field_dataset_related_links' 		=> 'Related Links',
-    'field_dataset_short_name'    		=> 'Short Name',
-    'field_instrumentation'       		=> 'Instrumentation',
-    'field_methods' 									=> 'Methods',
-    'field_quality' 									=> 'Quality Assurance',
-  );
-  return $dataset_fields;
-}
-
-function datafile_fields() {
-  $datafile_fields = array (
-    'field_datafile_description'  => 'Description',
-    'field_data_file'             => 'Data File',
-    'field_num_header_line'       => 'Number of Header Lines',
-    'field_num_footer_lines'      => 'Number of Footer Lines',
-    'field_orientation'           => 'Orientation',
-    'field_quote_character'       => 'Quote Character',
-    'field_delimiter'             => 'Field Delimiter',
-    'field_record_delimiter'      => 'Record Delimiter',
-    'field_beg_end_date'          => 'Date Range',
-    'field_methods'               => 'Methods',
-    'field_instrumentation'       => 'Instrumentation',
-    'field_quality'               => 'Quality Assurance',
-  );
-  return $datafile_fields;
-}
-
 function add_node_value($node, $value, $fields_names) {
   foreach ($fields_names as $node_field_name => $csv_title) {
     $node->$node_field_name = array();
@@ -347,7 +311,6 @@ function create_dataset_node($content, $uid) {
         $node->uid                                        = $uid;
         $node->title                                      = $value['Title'];
         $fields_names = dataset_fields();
-//        dpr($fields_names);
         $node = add_node_value($node, $value, $fields_names);
         $node->field_beg_end_date[0]                      = create_beg_end_date_arr(convert_date_range($value['Date Range']));
     //    $node->field_dataset_abstract[0]['value']         = $value['Abstract'][0];
@@ -368,15 +331,6 @@ function create_dataset_node($content, $uid) {
     //    $node->field_dataset_purpose[0]['value']          = $value['Purpose'][0];
     ////    $node->field_dataset_purpose[0]['format']         = '1';
     //    $node->field_dataset_related_links[0]['value']    = $value['Related Links'][0];
-    //    //TODO all empty should not have [0]! check above
-    ////        [field_dataset_related_links] => Array
-    ////        (
-    ////        )
-    ////    [field_dataset_related_links] => Array
-    ////        (
-    ////            [0] =>
-    ////        )
-    //
     //    $node->field_dataset_short_name[0]['value']       = $value['Short Name'][0]; //
     ////    $node->field_dataset_site_ref[0]['value']         = $site;
     //    $node->field_instrumentation[0]['value']          = $value['Instrumentation'][0];
