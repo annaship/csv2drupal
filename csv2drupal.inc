@@ -1,7 +1,8 @@
 <?php
 
-require_once("includes/PHPExcel/IOFactory.php");
-require_once 'field_name_arrays.inc';
+require_once 'includes/PHPExcel/IOFactory.php';
+require_once 'csv2drupal_field_name_arrays.inc';
+
 function get_data_from_excel_file($file) {
   $sheet_names = array(
     'DataSet-csv'   => 'dataset',
@@ -50,8 +51,6 @@ function get_data_from_excel_file($file) {
 
 function create_nodes($content) {
 //TODO link node references
-//  dpr('HERE!!!');
-//  dpr($content['variable']);
   $uid               = get_uid();
   $person_nodes      = create_person_node($content['person'], $uid);
 //  dpr($person_nodes);
@@ -87,23 +86,25 @@ function create_person_node($content, $uid) {
   dpr("create_person_node");
   $person_values = create_values($content);
   foreach ($person_values as $value) {
-    $node->field_person_first_name[0]['value']    = $value['First Name'];
-    $node->field_person_last_name[0]['value']     = $value['Last Name'];
-    $node->field_person_organization[0]['value']  = $value['Organization'];
-    $node->field_person_title[0]['value']         = $value['Title'];
-    $node->field_person_address[0]['value']       = $value['Address'];
-    $node->field_person_city[0]['value']          = $value['City'];
-    $node->field_person_state[0]['value']         = $value['State'];
-    $node->field_person_zipcode[0]['value']       = $value['Zip Code'];
-    $node->field_person_country[0]['value']       = $value['Country'];
-    $node->field_person_phone[0]['value']         = $value['Phone'];
-    $node->field_person_fax[0]['value']           = $value['Fax'];
-    $node->field_person_email[0]['value']         = $value['Email'];
-    $node->field_person_personid[0]['value']      = $value['personid'];
-    $node->field_person_role[0]['value']          = $value['Role'];
-    $node->field_person_uid[0]['value']           = $value['person_uid'];
-    $node->field_person_pubs[0]['value']          = $value['Publications'];
-//    dpr($node);
+    $fields_names = person_fields();
+    $node = add_node_value($node, $value, $fields_names);
+//    $node->field_person_first_name[0]['value']    = $value['First Name'];
+//    $node->field_person_last_name[0]['value']     = $value['Last Name'];
+//    $node->field_person_organization[0]['value']  = $value['Organization'];
+//    $node->field_person_title[0]['value']         = $value['Title'];
+//    $node->field_person_address[0]['value']       = $value['Address'];
+//    $node->field_person_city[0]['value']          = $value['City'];
+//    $node->field_person_state[0]['value']         = $value['State'];
+//    $node->field_person_zipcode[0]['value']       = $value['Zip Code'];
+//    $node->field_person_country[0]['value']       = $value['Country'];
+//    $node->field_person_phone[0]['value']         = $value['Phone'];
+//    $node->field_person_fax[0]['value']           = $value['Fax'];
+//    $node->field_person_email[0]['value']         = $value['Email'];
+//    $node->field_person_personid[0]['value']      = $value['personid'];
+//    $node->field_person_role[0]['value']          = $value['Role'];
+//    $node->field_person_uid[0]['value']           = $value['person_uid'];
+//    $node->field_person_pubs[0]['value']          = $value['Publications'];
+    dpr($node);
   }
 }
 
