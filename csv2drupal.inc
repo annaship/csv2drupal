@@ -74,17 +74,23 @@ function create_values($content) {
   return $values;
 }
 
+function add_node_value($node, $value, $fields_names) {
+  foreach ($fields_names as $node_field_name => $csv_title) {
+    $node->$node_field_name = array(array('value' => $value[$csv_title]));
+  }
+  return $node;
+}
+
 function create_person_node($content, $uid) {
   dpr("create_person_node");
   $person_values = create_values($content);
   foreach ($person_values as $value) {
-    dpr($value['field_person_last_name']);
     $fields_names = person_fields();
     if (!empty($value['Last Name'])) {
       $node = new StdClass();
-      $node->type                                       = "person";
-      $node->uid                                        = $uid;
-      $node->title                                      = $value['First name'] . " " . $value['Last Name'];
+      $node->type  = "person";
+      $node->uid   = $uid;
+      $node->title = $value['First name'] . " " . $value['Last Name'];
       $node = add_node_value($node, $value, $fields_names);
     }
     dpr($node);
@@ -139,14 +145,6 @@ function create_site_node($content, $uid) {
     dpr($node);
     }
   
-}
-
-function add_node_value($node, $value, $fields_names) {
-  foreach ($fields_names as $node_field_name => $csv_title) {
-    $node->$node_field_name = array();
-    if (!empty($value[$csv_title])) $node->$node_field_name = array(array('value' => $value[$csv_title]));
-  }
-  return $node;
 }
 
 function create_datafile_node($content, $uid) {
