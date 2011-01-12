@@ -346,10 +346,10 @@ function create_dataset_node($content, $uid) {
         $node->type                                       = "data_set";
         $node->uid                                        = $uid;
         $node->title                                      = $value['Title'];
-        $node->field_beg_end_date[0]                      = create_beg_end_date_arr(convert_date_range($value['Date Range']));
         $fields_names = dataset_fields();
 //        dpr($fields_names);
         $node = add_node_value($node, $value, $fields_names);
+        $node->field_beg_end_date[0]                      = create_beg_end_date_arr(convert_date_range($value['Date Range']));
     //    $node->field_dataset_abstract[0]['value']         = $value['Abstract'][0];
     ////    $node->field_dataset_abstract[0]['format']        = '3';
     //    $node->field_dataset_add_info[0]['value']         = $value['Additional Information'][0];
@@ -364,7 +364,7 @@ function create_dataset_node($content, $uid) {
     //    $node->field_dataset_maintenance[0]['value']      = $value['Maintenance'][0];
     ////    $node->field_dataset_maintenance[0]['format']     = '3';
     ////    $node->field_dataset_owner_ref[0]['value']        = $owner;
-        $node->field_dataset_publication_date[0]          =  create_single_date_arr($value['Publication Date'][0]);
+        $node->field_dataset_publication_date[0]          =  create_single_date_arr($value['Publication Date']);
     //    $node->field_dataset_purpose[0]['value']          = $value['Purpose'][0];
     ////    $node->field_dataset_purpose[0]['format']         = '1';
     //    $node->field_dataset_related_links[0]['value']    = $value['Related Links'][0];
