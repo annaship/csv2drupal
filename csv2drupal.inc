@@ -75,14 +75,14 @@ function create_values($content) {
   return $values;
 }
 
-function add_node_value($node, $value, $fields_names) {
+function add_node_value(&$node, $value, $fields_names) {
   foreach ($fields_names as $node_field_name => $csv_title) {
     $node->$node_field_name = array(array('value' => $value[$csv_title]));
   }
   return $node;
 }
 
-//taking person id (they should be created first)
+// taking person id (they should be created first)
 // TODO the same for files and other refs (bib, sites)
 function taking_person_ids($persons) {
   if (isset ($persons)) {
@@ -128,8 +128,8 @@ function convert_date_range($date_range) {
 
 function create_beg_end_date_arr($date_range_values) {
   $beg_end_date = array();
-  $beg_end_date['value']        = $date_range_values[0];
-  $beg_end_date['value2']       = $date_range_values[1];
+  $beg_end_date['value']  = $date_range_values[0];
+  $beg_end_date['value2'] = $date_range_values[1];
   $beg_end_date += add_timezone_to_date_arr($beg_end_date);
   return $beg_end_date;
 }
@@ -142,7 +142,7 @@ function create_single_date_arr($date_value) {
   return $date_arr;
 }
 
-function add_timezone_to_date_arr($date_arr) {
+function add_timezone_to_date_arr(&$date_arr) {
   $date_arr['timezone']     = 'America/New_York';
   $date_arr['timezone_db']  = 'America/New_York';
   $date_arr['date_type']    = 'datetime'; // TODO: or 'date', ask Inigo
@@ -161,7 +161,7 @@ function create_person_node($content, $uid) {
       $node->title = $value['First name'] . " " . $value['Last Name'];
       $node = add_node_value($node, $value, $fields_names);
     }
-//    dpr($node);
+    dpr($node);
   }
 }
 
@@ -180,7 +180,7 @@ function create_variable_node($content, $uid) {
   //      TODO node_save here
   //      TODO collect nids into array and return it
     }
-//  dpr($node);
+  dpr($node);
   }
 //  return array of nids
 }
@@ -197,7 +197,7 @@ function create_site_node($content, $uid) {
       $node->title  = $value['Title'];
       $node = add_node_value($node, $value, $fields_names);
     }
-//    dpr($node);
+    dpr($node);
   }
 }
 
@@ -219,7 +219,7 @@ function create_datafile_node($content, $uid) {
   //    $node->field_datafile_variable_ref[0]['value'] = $value['Variables'];
   //    $node->field_datafile_site_ref[0]['value']    = $value['Sites'];
   //    $node->field_dataset_referrer[0]['value']     = $value['Associated Data Set'];
-//      dpr($node);
+      dpr($node);
     }
   }
 }
