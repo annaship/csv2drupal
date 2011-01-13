@@ -36,7 +36,9 @@ function eml_config_form($form_state) {
   $form['dir_name'] = array(
     '#type' => 'textfield',
     '#title' => t('Path to directory'),
-    '#default_value' => '/Users/ashipunova/work/drupal/lter/new/today/csv_examples_hor',
+//      home
+//    '#default_value' => '/Users/ashipunova/work/drupal/lter/new/today/csv_examples_hor',
+    '#default_value' => '/Users/anna/work/drupal/lter/git_LTER_csv2drupal/files',
     '#size' => 60,
     '#maxlength' => 128,
 //    '#required' => TRUE,
@@ -55,7 +57,7 @@ function eml_config_form_submit($form, $form_state) {
   $dir_name = $form_state['values']['dir_name'];
   if (!empty($dir_name)) {
     drupal_set_message('$dir_name = ' . $dir_name);
-    $files = file_scan_directory($dir_name, '.xls');
+    $files = file_scan_directory($dir_name, '\.xls');
     foreach ($files as $file ) {
       $filepath = $file->filename;
       dpr($filepath);
