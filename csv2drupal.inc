@@ -42,8 +42,10 @@ function get_data_from_excel_file($file) {
     }
     if (in_array($sheet_names[$loadedSheetName], $sheet_names)) {
       $content[$sheet_names[$loadedSheetName]] = ${$sheet_names[$loadedSheetName]};
+      print_r($content[$sheet_names[$loadedSheetName]]);
     }
   }
+//  print_r($content);
   return $content;
 }
 
@@ -181,6 +183,7 @@ function create_variable_node($content, $uid) {
   //      TODO collect nids into array and return it
     }
   dpr($node);
+  print_r($node);
   }
 //  return array of nids
 }
