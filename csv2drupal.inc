@@ -42,7 +42,6 @@ function get_data_from_excel_file($file) {
     }
     if (in_array($sheet_names[$loadedSheetName], $sheet_names)) {
       $content[$sheet_names[$loadedSheetName]] = ${$sheet_names[$loadedSheetName]};
-      print_r($content[$sheet_names[$loadedSheetName]]);
     }
   }
 //  print_r($content);
@@ -163,7 +162,7 @@ function create_person_node($content, $uid) {
       $node->title = $value['First name'] . " " . $value['Last Name'];
       $node = add_node_value($node, $value, $fields_names);
     }
-    dpr($node);
+//    dpr($node);
   }
 }
 
@@ -183,7 +182,7 @@ function create_variable_node($content, $uid) {
   //      TODO collect nids into array and return it
     }
   dpr($node);
-  print_r($node);
+//  print_r($node);
   }
 //  return array of nids
 }
@@ -200,7 +199,7 @@ function create_site_node($content, $uid) {
       $node->title  = $value['Title'];
       $node = add_node_value($node, $value, $fields_names);
     }
-    dpr($node);
+//    dpr($node);
   }
 }
 
@@ -222,7 +221,7 @@ function create_datafile_node($content, $uid) {
   //    $node->field_datafile_variable_ref[0]['value'] = $value['Variables'];
   //    $node->field_datafile_site_ref[0]['value']    = $value['Sites'];
   //    $node->field_dataset_referrer[0]['value']     = $value['Associated Data Set'];
-      dpr($node);
+//      dpr($node);
     }
   }
 }
@@ -254,7 +253,7 @@ function create_dataset_node($content, $uid) {
 //    $node->field_dataset_labcrew_ref[0]['value']      = $lab_crew;
 //    $node->field_dataset_owner_ref[0]['value']        = $owner;
 //    $node->field_dataset_site_ref[0]['value']         = $site;
-      dpr($node);
+//      dpr($node);
     }
   }
 }
