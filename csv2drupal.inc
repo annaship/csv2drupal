@@ -165,8 +165,10 @@ function create_person_node($content, $uid) {
       $node->field_person_pubs[0]['nid'] = $value['Publications'];
       node_save(&$node);
       echo 'node nid = ';
-      dpr($node->nid);
+      $person_nids[] = $node->nid;
+//      dpr($node->nid);
     }
+    dpr($person_nids);
     dpr($node);
   }
 }
