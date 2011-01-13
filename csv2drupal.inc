@@ -51,7 +51,7 @@ function create_nodes($content) {
 //TODO link node references
   $ref_nids = create_person_node($content['person'], &$ref_nids);
   echo 'in create_node: person';
-  dpr($ref_nids);
+//  dpr($ref_nids);
   $ref_nids = create_variable_node($content['variable'], &$ref_nids);
   $ref_nids = create_site_node($content['site'], &$ref_nids);
   $ref_nids = create_datafile_node($content['datafile'], &$ref_nids);
@@ -172,7 +172,7 @@ function create_person_node($content, &$ref_nids) {
     }
 //    dpr($node);
   }
-  dpr($ref_nids);
+//  dpr($ref_nids);
   return $ref_nids;
 }
 
@@ -190,6 +190,7 @@ function create_variable_node($content, &$ref_nids) {
   //      $node->field_attribute_assoc_datafile[0]['value'] = $value['Associated Data Files'];
   //      TODO node_save here
   //      TODO collect nids into array and return it
+      node_save(&$node);
       $ref_nids['variable'][] = $node->nid;
     }
 //  dpr($node);
@@ -209,6 +210,7 @@ function create_site_node($content, &$ref_nids) {
       $node->uid   =  get_uid();
       $node->title  = $value['Title'];
       $node = add_node_value($node, $value, $fields_names);
+      node_save(&$node);
       $ref_nids['research_site'][] = $node->nid;
     }
 //    dpr($node);
@@ -218,7 +220,7 @@ function create_site_node($content, &$ref_nids) {
 
 function create_datafile_node($content, &$ref_nids) {
   dpr("create_datafile_node");
-  dpr($ref_nids);
+//  dpr($ref_nids);
   $data_file_values = create_values($content);
   $fields_names = datafile_fields();
   foreach ($data_file_values as $value) {
@@ -231,16 +233,92 @@ function create_datafile_node($content, &$ref_nids) {
       $node = add_node_value($node, $value, $fields_names);
       $node->field_beg_end_date[0] = create_beg_end_date_arr(convert_date_range($value['Date Range']));
 
-  //    TODO here should be nids. Add while second opening this node, not now, move into another function
-  //    $node->field_datafile_variable_ref[0]['value'] = $value['Variables'];
-  //    $node->field_datafile_site_ref[0]['value']    = $value['Sites'];
-  //    $node->field_dataset_referrer[0]['value']     = $value['Associated Data Set'];
+//    TODO here should be nids. Add while second opening this node, not now, move into another function
+//    $node->field_datafile_variable_ref[0]['value'] = $value['Variables'];
+      foreach ($ref_nids['variable'] as $variable) {
+        $node->field_datafile_variable_ref[]['nid'] = $variable;
+      }
+//    $node->field_datafile_site_ref[0]['value']    = $value['Sites'];
+      foreach ($ref_nids['research_site'] as $dataset_site) {
+        $node->field_datafile_site_ref[]['nid']     = $dataset_site;
+      }
+//
+      /*
+[field_data_file] => Array
+(
+[0] => Array
+  (
+      [fid] => 42
+      [list] => 1
+      [data] => Array
+          (
+              [fid] => 42
+              [width] => 0
+              [height] => 0
+              [duration] => 0
+              [audio_format] =>
+              [audio_sample_rate] => 0
+              [audio_channel_mode] =>
+              [audio_bitrate] => 0
+              [audio_bitrate_mode] =>
+              [tags] => Array
+                  (
+                  )
+
+          )
+
+      [uid] => 1
+      [filename] => nodes_test.csv
+      [filepath] => sites/default/files/nodes_test.csv
+      [filemime] => text/csv
+      [filesize] => 225
+      [status] => 1
+      [timestamp] => 1281454967
+      [origname] =>
+  )
+
+)
+
+       */
+
+
+//      $node->field_dataset_referrer[]['nid']      = $dataset_site;
+
+//    $node->field_dataset_referrer[0]['value']     = $value['Associated Data Set'];
+//$ref_nids['data_set']
+/*
+ *             [0] => Array
+                (
+                    [items] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [nid] => 2775
+                                    [vid] => 2775
+                                    [title] => dataset1
+                                    [referrers] => Array
+                                        (
+                                            [field_dataset_datafile_ref] => field_dataset_datafile_ref
+                                        )
+
+                                )
+
+                        )
+
+                    [limit] => 3
+                    [element] => 1
+                    [pager] => 
+                )
+
+        )
+
+ */
       node_save(&$node);
       $ref_nids['data_file'][] = $node->nid;
-//      dpr($node);
+      dpr($node);
     }
   }
-  dpr($ref_nids);
+//  dpr($ref_nids);
   return $ref_nids;
 }
 
@@ -273,8 +351,10 @@ function create_dataset_node($content, &$ref_nids) {
 //    $node->field_dataset_fieldcrew_ref[0]['value']    = $field_crew;
 //    $node->field_dataset_labcrew_ref[0]['value']      = $lab_crew;
 //    $node->field_dataset_owner_ref[0]['value']        = $owner;
-//    $node->field_dataset_site_ref[0]['value']         = $site;
-      dpr($node);
+      foreach ($ref_nids['research_site'] as $dataset_site) {
+        $node->field_dataset_site_ref[]['nid']      = $dataset_site;
+      }
+//      dpr($node);
       $ref_nids['data_set'][] = $node->nid;
     }
   }
