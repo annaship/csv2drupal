@@ -158,7 +158,10 @@ function create_person_node($content, $uid) {
       $node = new StdClass();
       $node->type  = "person";
       $node->uid   = $uid;
-      $node->title = $value['First name'] . " " . $value['Last Name'];
+      $full_name   = $value['First Name'] . " " . $value['Last Name'];
+      dpr($full_name);
+      echo 'full name';
+      $node->title = $full_name;
       $node = add_node_value($node, $value, $fields_names);
       $node->field_person_email[0]['email'] = $value['Email'];
       $node->field_person_uid[0]['uid'] = $value['person_uid'];
