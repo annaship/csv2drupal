@@ -56,9 +56,9 @@ function create_nodes($content) {
   $ref_nids = create_site_node($content['site'], &$ref_nids);
   $ref_nids = create_datafile_node($content['datafile'], &$ref_nids);
   echo 'in create_node: file';
-  dpr($ref_nids);
   $ref_nids = create_dataset_node($content['dataset'], &$ref_nids);
   $keywords_taxonomy = create_keywords_node($content['keywords'], &$ref_nids);
+  dpr($ref_nids);
 //  TODO link referrer
 }
 
@@ -233,7 +233,6 @@ function create_datafile_node($content, &$ref_nids) {
       $node = add_node_value($node, $value, $fields_names);
       $node->field_beg_end_date[0] = create_beg_end_date_arr(convert_date_range($value['Date Range']));
 
-//    TODO here should be nids. Add while second opening this node, not now, move into another function
 //    $node->field_datafile_variable_ref[0]['value'] = $value['Variables'];
       foreach ($ref_nids['variable'] as $variable) {
         $node->field_datafile_variable_ref[]['nid'] = $variable;
@@ -242,6 +241,9 @@ function create_datafile_node($content, &$ref_nids) {
       foreach ($ref_nids['research_site'] as $dataset_site) {
         $node->field_datafile_site_ref[]['nid']     = $dataset_site;
       }
+
+//      in date:                     [date_type] => date
+
 //
       /*
 [field_data_file] => Array
@@ -281,8 +283,20 @@ function create_datafile_node($content, &$ref_nids) {
 
        */
 
-
+//      $node->field_dataset_referrer[0]['items'][0]['nid']      = '4255';
+//      foreach ($ref_nids['research_site'] as $dataset_site) {
+//        $node->field_datafile_site_ref[]['nid']     = $dataset_site;
+//      }
 //      $node->field_dataset_referrer[]['nid']      = $dataset_site;
+//field_dataset_referrer] => Array
+//        (
+//            [0] => Array
+//                (
+//                    [items] => Array
+//                        (
+//                            [0] => Array
+//                                (
+//                                    [nid] => 2775
 
 //    $node->field_dataset_referrer[0]['value']     = $value['Associated Data Set'];
 //$ref_nids['data_set']
@@ -354,7 +368,7 @@ function create_dataset_node($content, &$ref_nids) {
       foreach ($ref_nids['research_site'] as $dataset_site) {
         $node->field_dataset_site_ref[]['nid']      = $dataset_site;
       }
-//      dpr($node);
+      node_save(&$node);
       $ref_nids['data_set'][] = $node->nid;
     }
   }
