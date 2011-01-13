@@ -44,7 +44,6 @@ function get_data_from_excel_file($file) {
       $content[$sheet_names[$loadedSheetName]] = ${$sheet_names[$loadedSheetName]};
     }
   }
-//  print_r($content);
   return $content;
 }
 
@@ -161,8 +160,14 @@ function create_person_node($content, $uid) {
       $node->uid   = $uid;
       $node->title = $value['First name'] . " " . $value['Last Name'];
       $node = add_node_value($node, $value, $fields_names);
+      $node->field_person_email[0]['email'] = $value['Email'];
+      $node->field_person_uid[0]['uid'] = $value['person_uid'];
+      $node->field_person_pubs[0]['nid'] = $value['Publications'];
+      node_save(&$node);
+      echo 'node nid = ';
+      dpr($node->nid);
     }
-//    dpr($node);
+    dpr($node);
   }
 }
 
@@ -181,7 +186,7 @@ function create_variable_node($content, $uid) {
   //      TODO node_save here
   //      TODO collect nids into array and return it
     }
-  dpr($node);
+//  dpr($node);
 //  print_r($node);
   }
 //  return array of nids

@@ -49,11 +49,11 @@ function person_fields() {
     'field_person_country'      => 'Country',
     'field_person_phone'        => 'Phone',
     'field_person_fax'          => 'Fax',
-    'field_person_email'        => 'Email',
+    // 'field_person_email'        => 'Email',
     'field_person_personid'     => 'personid',
     'field_person_role'         => 'Role',
-    'field_person_uid'          => 'person_uid',
-    'field_person_pubs'         => 'Publications',
+    // 'field_person_uid'          => 'person_uid',
+    // 'field_person_pubs'         => 'Publications',
   );
   return $person_fields;
 }
