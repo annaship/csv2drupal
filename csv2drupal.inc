@@ -49,13 +49,12 @@ function get_data_from_excel_file($file) {
 
 function create_nodes($content) {
 //TODO link node references
-  $uid               = get_uid();
-  $person_nodes      = create_person_node($content['person'], $uid);
-  $variables_nodes   = create_variable_node($content['variable'], $uid);
-  $site_nodes        = create_site_node($content['site'], $uid);
-  $datafile_nodes    = create_datafile_node($content['datafile'], $uid);
-  $dataset_nodes     = create_dataset_node($content['dataset'], $uid);
-  $keywords_taxonomy = create_keywords_node($content['keywords'], $uid);
+  $person_nodes      = create_person_node($content['person'], &$ref_nids);
+  $variables_nodes   = create_variable_node($content['variable'], &$ref_nids);
+  $site_nodes        = create_site_node($content['site'], &$ref_nids);
+  $datafile_nodes    = create_datafile_node($content['datafile'], &$ref_nids);
+  $dataset_nodes     = create_dataset_node($content['dataset'], &$ref_nids);
+  $keywords_taxonomy = create_keywords_node($content['keywords'], &$ref_nids);
 //  TODO link referrer
 }
 
@@ -157,22 +156,19 @@ function create_person_node($content, $uid) {
     if (!empty($value['Last Name'])) {
       $node = new StdClass();
       $node->type  = "person";
-      $node->uid   = $uid;
+      $node->uid   =  get_uid();
       $full_name   = $value['First Name'] . " " . $value['Last Name'];
-      dpr($full_name);
-      echo 'full name';
       $node->title = $full_name;
       $node = add_node_value($node, $value, $fields_names);
       $node->field_person_email[0]['email'] = $value['Email'];
       $node->field_person_uid[0]['uid'] = $value['person_uid'];
       $node->field_person_pubs[0]['nid'] = $value['Publications'];
-      node_save(&$node);
-      echo 'node nid = ';
-      $person_nids[] = $node->nid;
+//      node_save(&$node);
+//      $ref_nids['person'][] = $node->nid;
 //      dpr($node->nid);
     }
-    dpr($person_nids);
-    dpr($node);
+//    dpr($ref_nids);
+//    dpr($node);
   }
 }
 
@@ -182,9 +178,9 @@ function create_variable_node($content, $uid) {
   $fields_names    = variable_fields();
   foreach ($variable_values as $value) {
     if (!empty($value['Variable Name'])) {
-      $node = new StdClass();
-      $node->type = "variable";
-      $node->uid = $uid;
+      $node        = new StdClass();
+      $node->type  = "variable";
+      $node->uid   =  get_uid();
       $node->title = $value['Variable Name'];
       $node = add_node_value($node, $value, $fields_names);
   //      $node->field_attribute_assoc_datafile[0]['value'] = $value['Associated Data Files'];
@@ -205,7 +201,7 @@ function create_site_node($content, $uid) {
     if (!empty($value['Title'])) {
       $node = new StdClass();
       $node->type   = "research_site";
-      $node->uid    = $uid;
+      $node->uid   =  get_uid();
       $node->title  = $value['Title'];
       $node = add_node_value($node, $value, $fields_names);
     }
@@ -213,7 +209,7 @@ function create_site_node($content, $uid) {
   }
 }
 
-function create_datafile_node($content, $uid) {
+function create_datafile_node($content, &$ref_nids) {
   dpr("create_datafile_node");
   $data_file_values = create_values($content);
   $fields_names = datafile_fields();
@@ -222,7 +218,7 @@ function create_datafile_node($content, $uid) {
     if (!empty($value['Data File Structure Name'])) {
       $node = new StdClass();
       $node->type   = "data_file";
-      $node->uid    = $uid;
+      $node->uid    =  get_uid();
       $node->title  = $value['Data File Structure Name'];
       $node = add_node_value($node, $value, $fields_names);
       $node->field_beg_end_date[0] = create_beg_end_date_arr(convert_date_range($value['Date Range']));
@@ -231,9 +227,13 @@ function create_datafile_node($content, $uid) {
   //    $node->field_datafile_variable_ref[0]['value'] = $value['Variables'];
   //    $node->field_datafile_site_ref[0]['value']    = $value['Sites'];
   //    $node->field_dataset_referrer[0]['value']     = $value['Associated Data Set'];
-//      dpr($node);
+      node_save(&$node);
+      $ref_nids['data_file'][] = $node->nid;
+
+      dpr($node);
     }
   }
+  return $ref_nids;
 }
 
 function create_keywords_node($content, $uid) {
@@ -249,11 +249,11 @@ function create_dataset_node($content, $uid) {
     if (!empty($value['Title'])) {
       $node = new StdClass();
       $node->type                                       = "data_set";
-      $node->uid                                        = $uid;
+      $node->uid                                        =  get_uid();
       $node->title                                      = $value['Title'];
       $node = add_node_value($node, $value, $fields_names);
       $node->field_beg_end_date[0]                      = create_beg_end_date_arr(convert_date_range($value['Date Range']));
-      $node->field_dataset_publication_date[0]          =  create_single_date_arr($value['Publication Date']);
+      $node->field_dataset_publication_date[0]          = create_single_date_arr($value['Publication Date']);
 //    $node->field_dataset_biblio_ref[0]['value']       = $related_bibliography;
 //    $node->field_dataset_contact_ref[0]['value']      = $contact;
 //    $node->field_dataset_datafile_ref[0]['value']     = $data_file_structure;
