@@ -49,11 +49,15 @@ function get_data_from_excel_file($file) {
 
 function create_nodes($content) {
 //TODO link node references
-  $person_nodes      = create_person_node($content['person'], &$ref_nids);
-  $variables_nodes   = create_variable_node($content['variable'], &$ref_nids);
-  $site_nodes        = create_site_node($content['site'], &$ref_nids);
-  $datafile_nodes    = create_datafile_node($content['datafile'], &$ref_nids);
-  $dataset_nodes     = create_dataset_node($content['dataset'], &$ref_nids);
+  $ref_nids = create_person_node($content['person'], &$ref_nids);
+  echo 'in create_node: person';
+  dpr($ref_nids);
+  $ref_nids = create_variable_node($content['variable'], &$ref_nids);
+  $ref_nids = create_site_node($content['site'], &$ref_nids);
+  $ref_nids = create_datafile_node($content['datafile'], &$ref_nids);
+  echo 'in create_node: file';
+  dpr($ref_nids);
+  $ref_nids = create_dataset_node($content['dataset'], &$ref_nids);
   $keywords_taxonomy = create_keywords_node($content['keywords'], &$ref_nids);
 //  TODO link referrer
 }
@@ -148,7 +152,7 @@ function add_timezone_to_date_arr(&$date_arr) {
   return $date_arr;
 }
 
-function create_person_node($content, $uid) {
+function create_person_node($content, &$ref_nids) {
   dpr("create_person_node");
   $person_values = create_values($content);
   $fields_names  = person_fields();
@@ -163,16 +167,16 @@ function create_person_node($content, $uid) {
       $node->field_person_email[0]['email'] = $value['Email'];
       $node->field_person_uid[0]['uid'] = $value['person_uid'];
       $node->field_person_pubs[0]['nid'] = $value['Publications'];
-//      node_save(&$node);
-//      $ref_nids['person'][] = $node->nid;
-//      dpr($node->nid);
+      node_save(&$node);
+      $ref_nids['person'][] = $node->nid;
     }
-//    dpr($ref_nids);
 //    dpr($node);
   }
+  dpr($ref_nids);
+  return $ref_nids;
 }
 
-function create_variable_node($content, $uid) {
+function create_variable_node($content, &$ref_nids) {
   dpr('here in variable');
   $variable_values = create_values($content);
   $fields_names    = variable_fields();
@@ -186,14 +190,15 @@ function create_variable_node($content, $uid) {
   //      $node->field_attribute_assoc_datafile[0]['value'] = $value['Associated Data Files'];
   //      TODO node_save here
   //      TODO collect nids into array and return it
+      $ref_nids['variable'][] = $node->nid;
     }
 //  dpr($node);
 //  print_r($node);
   }
-//  return array of nids
+  return $ref_nids;
 }
 
-function create_site_node($content, $uid) {
+function create_site_node($content, &$ref_nids) {
   dpr("create_site_node");
   $research_site_values = create_values($content);
   $fields_names = research_site_fields();
@@ -204,13 +209,16 @@ function create_site_node($content, $uid) {
       $node->uid   =  get_uid();
       $node->title  = $value['Title'];
       $node = add_node_value($node, $value, $fields_names);
+      $ref_nids['research_site'][] = $node->nid;
     }
 //    dpr($node);
   }
+  return $ref_nids;
 }
 
 function create_datafile_node($content, &$ref_nids) {
   dpr("create_datafile_node");
+  dpr($ref_nids);
   $data_file_values = create_values($content);
   $fields_names = datafile_fields();
   foreach ($data_file_values as $value) {
@@ -229,18 +237,19 @@ function create_datafile_node($content, &$ref_nids) {
   //    $node->field_dataset_referrer[0]['value']     = $value['Associated Data Set'];
       node_save(&$node);
       $ref_nids['data_file'][] = $node->nid;
-
       dpr($node);
     }
   }
+  dpr($ref_nids);
   return $ref_nids;
 }
 
-function create_keywords_node($content, $uid) {
+function create_keywords_node($content, &$ref_nids) {
     dpr("create_keywords_node");
+    return $ref_nids;
 }
 
-function create_dataset_node($content, $uid) {
+function create_dataset_node($content, &$ref_nids) {
   dpr("create_dataset_node");
   $dataset_values = create_values($content);
   $fields_names   = dataset_fields();
@@ -264,6 +273,8 @@ function create_dataset_node($content, $uid) {
 //    $node->field_dataset_owner_ref[0]['value']        = $owner;
 //    $node->field_dataset_site_ref[0]['value']         = $site;
 //      dpr($node);
+      $ref_nids['data_set'][] = $node->nid;
     }
   }
+  return $ref_nids;
 }
