@@ -237,7 +237,7 @@ function create_datafile_node($content, &$ref_nids) {
   //    $node->field_dataset_referrer[0]['value']     = $value['Associated Data Set'];
       node_save(&$node);
       $ref_nids['data_file'][] = $node->nid;
-      dpr($node);
+//      dpr($node);
     }
   }
   dpr($ref_nids);
@@ -265,14 +265,16 @@ function create_dataset_node($content, &$ref_nids) {
       $node->field_dataset_publication_date[0]          = create_single_date_arr($value['Publication Date']);
 //    $node->field_dataset_biblio_ref[0]['value']       = $related_bibliography;
 //    $node->field_dataset_contact_ref[0]['value']      = $contact;
-//    $node->field_dataset_datafile_ref[0]['value']     = $data_file_structure;
+      foreach ($ref_nids['data_file'] as $data_file_nid) {
+        $node->field_dataset_datafile_ref[]['nid']      = $data_file_nid;
+      }
 //    $node->field_dataset_datamanager_ref[0]['value']  = $data_manager;
 //    $node->field_dataset_ext_assoc_ref                = $ext_assoc_arr;
 //    $node->field_dataset_fieldcrew_ref[0]['value']    = $field_crew;
 //    $node->field_dataset_labcrew_ref[0]['value']      = $lab_crew;
 //    $node->field_dataset_owner_ref[0]['value']        = $owner;
 //    $node->field_dataset_site_ref[0]['value']         = $site;
-//      dpr($node);
+      dpr($node);
       $ref_nids['data_set'][] = $node->nid;
     }
   }
