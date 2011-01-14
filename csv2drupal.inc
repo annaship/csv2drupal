@@ -389,22 +389,16 @@ function create_dataset_node($content, &$ref_nids) {
   return $ref_nids;
 }
 
-function show_title_and_number_of_nodes($nids) {
+function show_node_title_and_number($nids) {
   if (!empty($nids)) {
     foreach ($nids as $key => $nid_array) {
-//      dpr($nids);
-//      echo '$key = ' . $key . '\n<br/>';
       drupal_set_message($key);
       foreach ($nid_array as $nid) {
-//        if (is_int($nid)) {
           $node = node_load($nid);
           $node_nid = $node->nid;
           $node_title = $node->title;
-          drupal_set_message('Title =' . $node_title . ', nid = ' . $node_nid);
-//        }
+          drupal_set_message('Title = ' . $node_title . ', nid = ' . $node_nid);
       }
-//      echo 'nid =';
-//      dpr($nid);
     }
   }
 }
