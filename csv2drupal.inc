@@ -35,8 +35,10 @@ function get_data_from_excel_file($file) {
     for ($row = 2; $row <= $highestRow; ++$row) {
       for ($col = 0; $col <= $highestColumnIndex; ++$col) {
         $res = $objWorksheet->getCellByColumnAndRow($col, $row)->getValue();
-        if (!empty($titles[$col])) {
-          ${$sheet_names[$loadedSheetName]}[$titles[$col]][] = $res;
+        if (!empty($loadedSheetName)) {
+          if (!empty($titles[$col])) {
+            ${$sheet_names[$loadedSheetName]}[$titles[$col]][] = $res;
+          }
         }
       }
     }
@@ -51,7 +53,6 @@ function create_nodes($content) {
 //TODO link node references
   $ref_nids = create_person_node($content['person'], &$ref_nids);
   echo 'in create_node: person';
-//  dpr($ref_nids);
   $ref_nids = create_variable_node($content['variable'], &$ref_nids);
   $ref_nids = create_site_node($content['site'], &$ref_nids);
   $ref_nids = create_datafile_node($content['datafile'], &$ref_nids);
@@ -110,6 +111,13 @@ function taking_person_ids($persons) {
 //  }
 //  return $dates;
 //}
+
+//TODO change format:
+/*
+ * Publication Date	field_dataset_publication_date	Datetime
+ * Date Range	field_beg_end_date	Date
+ *
+ *  */
 
 //TODO: add check for single vs. range
 function convert_date_range($date_range) {
@@ -206,11 +214,11 @@ function create_site_node($content, &$ref_nids) {
   foreach ($research_site_values as $value) {
     if (!empty($value['Title'])) {
       $node = new StdClass();
-      $node->type   = "research_site";
+      $node->type  = "research_site";
       $node->uid   =  get_uid();
-      $node->title  = $value['Title'];
+      $node->title = $value['Title'];
       $node = add_node_value($node, $value, $fields_names);
-      node_save(&$node);
+//      node_save(&$node);
       $ref_nids['research_site'][] = $node->nid;
     }
 //    dpr($node);
@@ -224,7 +232,6 @@ function create_datafile_node($content, &$ref_nids) {
   $data_file_values = create_values($content);
   $fields_names = datafile_fields();
   foreach ($data_file_values as $value) {
-//  TODO: collect all variables here
     if (!empty($value['Data File Structure Name'])) {
       $node = new StdClass();
       $node->type   = "data_file";
@@ -232,14 +239,14 @@ function create_datafile_node($content, &$ref_nids) {
       $node->title  = $value['Data File Structure Name'];
       $node = add_node_value($node, $value, $fields_names);
       $node->field_beg_end_date[0] = create_beg_end_date_arr(convert_date_range($value['Date Range']));
-
-//    $node->field_datafile_variable_ref[0]['value'] = $value['Variables'];
+      $node->field_beg_end_date[0]['date_type'] = 'datetime';
       foreach ($ref_nids['variable'] as $variable) {
         $node->field_datafile_variable_ref[]['nid'] = $variable;
       }
-//    $node->field_datafile_site_ref[0]['value']    = $value['Sites'];
-      foreach ($ref_nids['research_site'] as $dataset_site) {
-        $node->field_datafile_site_ref[]['nid']     = $dataset_site;
+      if ($ref_nids['research_site']) {
+        foreach ($ref_nids['research_site'] as $dataset_site) {
+          $node->field_datafile_site_ref[]['nid']     = $dataset_site;
+        }
       }
 
 //      in date:                     [date_type] => date
@@ -354,7 +361,10 @@ function create_dataset_node($content, &$ref_nids) {
       $node->title                                      = $value['Title'];
       $node = add_node_value($node, $value, $fields_names);
       $node->field_beg_end_date[0]                      = create_beg_end_date_arr(convert_date_range($value['Date Range']));
+      $node->field_beg_end_date[0]['date_type']         = 'datetime';
       $node->field_dataset_publication_date[0]          = create_single_date_arr($value['Publication Date']);
+      $node->field_dataset_publication_date[0]['date_type'] = 'date';
+
 //    $node->field_dataset_biblio_ref[0]['value']       = $related_bibliography;
 //    $node->field_dataset_contact_ref[0]['value']      = $contact;
       foreach ($ref_nids['data_file'] as $data_file_nid) {
@@ -365,12 +375,15 @@ function create_dataset_node($content, &$ref_nids) {
 //    $node->field_dataset_fieldcrew_ref[0]['value']    = $field_crew;
 //    $node->field_dataset_labcrew_ref[0]['value']      = $lab_crew;
 //    $node->field_dataset_owner_ref[0]['value']        = $owner;
-      foreach ($ref_nids['research_site'] as $dataset_site) {
-        $node->field_dataset_site_ref[]['nid']      = $dataset_site;
+      if ($ref_nids['research_site']) {
+        foreach ($ref_nids['research_site'] as $dataset_site) {
+          $node->field_dataset_site_ref[]['nid']      = $dataset_site;
+        }
       }
       node_save(&$node);
       $ref_nids['data_set'][] = $node->nid;
     }
   }
+  dpr($node);
   return $ref_nids;
 }

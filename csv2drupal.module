@@ -37,8 +37,8 @@ function eml_config_form($form_state) {
     '#type' => 'textfield',
     '#title' => t('Path to directory'),
 //      home
-//    '#default_value' => '/Users/ashipunova/work/drupal/lter/new/today/csv_examples_hor',
-    '#default_value' => '/Users/anna/work/drupal/lter/git_LTER_csv2drupal/files',
+    '#default_value' => '/Users/ashipunova/work/drupal/lter/git_LTER_csv2drupal/files',
+//    '#default_value' => '/Users/anna/work/drupal/lter/git_LTER_csv2drupal/files',
     '#size' => 60,
     '#maxlength' => 128,
 //    '#required' => TRUE,
