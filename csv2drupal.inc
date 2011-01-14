@@ -52,14 +52,15 @@ function get_data_from_excel_file($file) {
 function create_nodes($content) {
 //TODO link node references
   $ref_nids = create_person_node($content['person'], &$ref_nids);
-  echo 'in create_node: person';
+//  echo 'in create_node: person';
   $ref_nids = create_variable_node($content['variable'], &$ref_nids);
   $ref_nids = create_site_node($content['site'], &$ref_nids);
   $ref_nids = create_datafile_node($content['datafile'], &$ref_nids);
-  echo 'in create_node: file';
+//  echo 'in create_node: file';
   $ref_nids = create_dataset_node($content['dataset'], &$ref_nids);
   $keywords_taxonomy = create_keywords_node($content['keywords'], &$ref_nids);
-  dpr($ref_nids);
+//  dpr($ref_nids);
+  return $ref_nids;
 //  TODO link referrer
 }
 
@@ -161,7 +162,7 @@ function add_timezone_to_date_arr(&$date_arr) {
 }
 
 function create_person_node($content, &$ref_nids) {
-  dpr("create_person_node");
+//  dpr("create_person_node");
   $person_values = create_values($content);
   $fields_names  = person_fields();
   foreach ($person_values as $value) {
@@ -185,7 +186,7 @@ function create_person_node($content, &$ref_nids) {
 }
 
 function create_variable_node($content, &$ref_nids) {
-  dpr('here in variable');
+//  dpr('here in variable');
   $variable_values = create_values($content);
   $fields_names    = variable_fields();
   foreach ($variable_values as $value) {
@@ -208,7 +209,7 @@ function create_variable_node($content, &$ref_nids) {
 }
 
 function create_site_node($content, &$ref_nids) {
-  dpr("create_site_node");
+//  dpr("create_site_node");
   $research_site_values = create_values($content);
   $fields_names = research_site_fields();
   foreach ($research_site_values as $value) {
@@ -227,7 +228,7 @@ function create_site_node($content, &$ref_nids) {
 }
 
 function create_datafile_node($content, &$ref_nids) {
-  dpr("create_datafile_node");
+//  dpr("create_datafile_node");
 //  dpr($ref_nids);
   $data_file_values = create_values($content);
   $fields_names = datafile_fields();
@@ -336,7 +337,7 @@ function create_datafile_node($content, &$ref_nids) {
  */
       node_save(&$node);
       $ref_nids['data_file'][] = $node->nid;
-      dpr($node);
+//      dpr($node);
     }
   }
 //  dpr($ref_nids);
@@ -344,12 +345,12 @@ function create_datafile_node($content, &$ref_nids) {
 }
 
 function create_keywords_node($content, &$ref_nids) {
-    dpr("create_keywords_node");
+//    dpr("create_keywords_node");
     return $ref_nids;
 }
 
 function create_dataset_node($content, &$ref_nids) {
-  dpr("create_dataset_node");
+//  dpr("create_dataset_node");
   $dataset_values = create_values($content);
   $fields_names   = dataset_fields();
   foreach ($dataset_values as $value) {
@@ -384,6 +385,26 @@ function create_dataset_node($content, &$ref_nids) {
       $ref_nids['data_set'][] = $node->nid;
     }
   }
-  dpr($node);
+//  dpr($node);
   return $ref_nids;
+}
+
+function show_title_and_number_of_nodes($nids) {
+  if (!empty($nids)) {
+    foreach ($nids as $key => $nid_array) {
+//      dpr($nids);
+//      echo '$key = ' . $key . '\n<br/>';
+      drupal_set_message($key);
+      foreach ($nid_array as $nid) {
+//        if (is_int($nid)) {
+          $node = node_load($nid);
+          $node_nid = $node->nid;
+          $node_title = $node->title;
+          drupal_set_message('Title =' . $node_title . ', nid = ' . $node_nid);
+//        }
+      }
+//      echo 'nid =';
+//      dpr($nid);
+    }
+  }
 }
