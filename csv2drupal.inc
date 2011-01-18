@@ -422,30 +422,10 @@ function show_node_title_and_number($nids) {
 //  return theme_table($header, $rows);
 //}
 
-
-function display_my_colors_page()
-{
-    $db_result = db_query( "select name from {my_color} ");
-    $header = array("Color Name");
-    // create array and add one element called data
-    $rows['data'] = array();
-    while ($row = db_fetch_object($db_result)) {
-        $rows[] = array($row->name);
-    }
-    if (count($rows) == 1)
-        $rows[] = array("No Colors Entered Yet");
-
-    $link_to_add_form = l('Add More Colors','my_color/data_entry_form');
-
-    return theme_table($header, $rows).'<br/>'.$link_to_add_form;
-}
-
 function display_report_page()
 {
     $db_result = db_query( "select nid from {node} where nid > 3110");
-//    $header = array("Node nid and title");
-    $header = array('Type', 'Title', 'Nid');
-    // create array and add one element called data
+    $header = array('Title', 'Nid');
 
     $rows['data'] = array();
     while ($res = db_fetch_object($db_result)) {
@@ -456,24 +436,17 @@ function display_report_page()
       $node_type  = $node->type;
       $node_link  = l($nid, 'node/'.$nid);
 //      drupal_set_message('Title = ' . $node_title . ', nid = ' . $node_nid);
-      $rows[] = array('Type = ' . $node_type, 'Title = ' . $node_title, 'nid = ' . $node_link);
+      if ($node_type != $old_node_type) {
+        $rows[] = array(array('data' => 'Type = ' . $node_type, 'colspan' => 2, 'font size' => 4, 'align' => 'center'));
+        $old_node_type = $node_type;
+      }
+      $rows[] = array('Title = ' . $node_title, $node_link);
     }
     if (count($rows) == 1)
-        $rows[] = array("No Colors Entered Yet");
+        $rows[] = array("No nodes where saved");
 
 //    $link_to_add_form = l('Add More Colors','my_color/data_entry_form');
 
     return theme_table($header, $rows);
 //            .'<br/>'.$link_to_add_form;
 }
-
-$rows = array(
-    // Simple row
-    array(
-      'Cell 1', 'Cell 2', 'Cell 3'
-    ),
-    // Row with attributes on the row and some of its cells.
-    array(
-      'data' => array('Cell 1', array('data' => 'Cell 2', 'colspan' => 2)), 'class' => 'funky'
-    )
-  );
