@@ -1,8 +1,8 @@
 <?php
-// $Id: eml_config.module, v 2.0 2010-11-22 ashipunova $
+// $Id: csv2drupal.module, v 2.0 2010-11-22 ashipunova $
 /*
- * Form for eml settings, required by views_bonus_eml_export
- * ?q=eml_config
+ * Export CSV files into predefined custom content types for the LTER project
+ * ?q=csv2drupal
 */
 
 require_once("csv2drupal.inc");
@@ -15,7 +15,7 @@ function csv2drupal_menu() {
     'page callback' => 'drupal_get_form',
     'access arguments' => array('administer nodes'),
     'type' => MENU_CALLBACK,
-    'page arguments'=>array('eml_config_form'),
+    'page arguments'=>array('csv2drupal_form'),
 //    'file' => 'csv2drupal_form.inc',
     );
 
@@ -28,10 +28,10 @@ function csv2drupal_menu() {
 }
 
 function csv2drupal_page() {
-  return drupal_get_form('eml_config_form');
+  return drupal_get_form('csv2drupal_form');
 }
 
-function eml_config_form($form_state) {
+function csv2drupal_form($form_state) {
   $form = array();
 
   $form['#attributes']['enctype'] = 'multipart/form-data';
@@ -62,7 +62,10 @@ function eml_config_form($form_state) {
   return $form;
 }
 
-function eml_config_form_submit($form, $form_state) {
+function csv2drupal_form_submit($form, $form_state) {
+
+  dpm('time = ' . time());
+  variable_set(csv2drupal_submit_time, time());
 //  dpm($form_state['values']['dir_name']);
   $dir_name = $form_state['values']['dir_name'];
   if (!empty($dir_name)) {
@@ -97,7 +100,7 @@ function eml_config_form_submit($form, $form_state) {
       }
     }
     else {
-      form_set_error('eml_config_form', t("Failed to save the file."));
+      form_set_error('csv2drupal_form', t("Failed to save the file."));
     }
   }
   return $nids;
