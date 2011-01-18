@@ -12,11 +12,18 @@ function csv2drupal_menu() {
   $items = array();
   $items['csv2drupal'] = array (
     'title' => t('Export CSV files into predefined custom content types for the LTER project'),
-    'page callback' => 'csv2drupal_page',
+    'page callback' => 'drupal_get_form',
     'access arguments' => array('administer nodes'),
-    'type' => MENU_SUGGESTED_ITEM,
+    'type' => MENU_CALLBACK,
+    'page arguments'=>array('eml_config_form'),
 //    'file' => 'csv2drupal_form.inc',
     );
+
+  $items['display_report'] = array(
+    'type' => MENU_CALLBACK,
+    'access arguments' => array('access content'),
+    'page callback' => 'display_report_page');
+
   return $items;
 }
 
@@ -25,7 +32,10 @@ function csv2drupal_page() {
 }
 
 function eml_config_form($form_state) {
+  $form = array();
+
   $form['#attributes']['enctype'] = 'multipart/form-data';
+  $form['#redirect'] = 'display_report';
 
   $form['upload'] = array(
    '#type'  => 'file',
@@ -37,8 +47,8 @@ function eml_config_form($form_state) {
     '#type' => 'textfield',
     '#title' => t('Path to directory'),
 //      home
-    '#default_value' => '/Users/ashipunova/work/drupal/lter/git_LTER_csv2drupal/files',
-//    '#default_value' => '/Users/anna/work/drupal/lter/git_LTER_csv2drupal/files',
+//    '#default_value' => '/Users/ashipunova/work/drupal/lter/git_LTER_csv2drupal/files',
+    '#default_value' => '/Users/anna/work/drupal/lter/git_LTER_csv2drupal/files',
     '#size' => 60,
     '#maxlength' => 128,
 //    '#required' => TRUE,
@@ -58,12 +68,15 @@ function eml_config_form_submit($form, $form_state) {
   if (!empty($dir_name)) {
 //    drupal_set_message('$dir_name = ' . $dir_name);
     $files = file_scan_directory($dir_name, '\.xls');
-    foreach ($files as $file ) {
+    foreach ($files as $file) {
       $filepath = $file->filename;
+//      echo 'HERE!!!';
       drupal_set_message($filepath);
       $content = get_data_from_excel_file($filepath);
-      $nids    = create_nodes($content);
-      show_node_title_and_number($nids);
+      $nids[$file->basename] = create_nodes($content);
+//      show_node_title_and_number($nids);
+//      display_report_page($nids);
+//      drupal_render("HERE");
     }
   }
   else {
@@ -77,12 +90,15 @@ function eml_config_form_submit($form, $form_state) {
         $filepath = $file->filepath;
         drupal_set_message($filepath);
         $content = get_data_from_excel_file($filepath);
-        $nids    = create_nodes($content);
-        show_node_title_and_number($nids);
+        $nids[$file->basename] = create_nodes($content);
+//        show_node_title_and_number($nids);
+//        drupal_render("HERE!");
+//        display_report_page($nids);
       }
     }
     else {
       form_set_error('eml_config_form', t("Failed to save the file."));
     }
   }
+  return $nids;
 }

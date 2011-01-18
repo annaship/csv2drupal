@@ -219,7 +219,7 @@ function create_site_node($content, &$ref_nids) {
       $node->uid   =  get_uid();
       $node->title = $value['Title'];
       $node = add_node_value($node, $value, $fields_names);
-//      node_save(&$node);
+      node_save(&$node);
       $ref_nids['research_site'][] = $node->nid;
     }
 //    dpr($node);
@@ -401,4 +401,66 @@ function show_node_title_and_number($nids) {
       }
     }
   }
+}
+
+//function display_report_page($nids) {
+//  $header = array("Following nods where saved successfully:");
+//  $rows['data'] = array();
+//  $rows[] = array("No Colors Entered Yet");
+//
+//  if (!empty($nids)) {
+////    foreach ($nids as $key => $nid_array) {
+////      foreach ($nid_array as $nid) {
+////        $node = node_load($nid);
+////        $node_nid = $node->nid;
+////        $node_title = $node->title;
+//  $rows[] = array("HEEEERE!");
+////        $rows[] = array($node_nid);
+////      }
+////    }
+//  }
+//  return theme_table($header, $rows);
+//}
+
+
+function display_my_colors_page()
+{
+    $db_result = db_query( "select name from {my_color} ");
+    $header = array("Color Name");
+    // create array and add one element called data
+    $rows['data'] = array();
+    while ($row = db_fetch_object($db_result)) {
+        $rows[] = array($row->name);
+    }
+    if (count($rows) == 1)
+        $rows[] = array("No Colors Entered Yet");
+
+    $link_to_add_form = l('Add More Colors','my_color/data_entry_form');
+
+    return theme_table($header, $rows).'<br/>'.$link_to_add_form;
+}
+
+function display_report_page()
+{
+    $db_result = db_query( "select nid from {node} where nid > 3110");
+    $header = array("Node nid and title");
+    // create array and add one element called data
+    $rows['data'] = array();
+    while ($res = db_fetch_object($db_result)) {
+      $nid = $res->nid;
+      $node = node_load($nid);
+      $node_nid   = $node->nid;
+      $node_title = $node->title;
+      $node_type  = $node->type;
+      $node_link  = l($nid, 'node/'.$nid);
+//      drupal_set_message('Title = ' . $node_title . ', nid = ' . $node_nid);
+      $rows[] = array('Type = ' . $node_type . ', Title = ' . $node_title . ', nid = ' . $node_link);
+    }
+    if (count($rows) == 1)
+        $rows[] = array("No Colors Entered Yet");
+
+//    $link_to_add_form = l('Add More Colors','my_color/data_entry_form');
+
+    return theme_table($header, $rows);
+//            .'<br/>'.$link_to_add_form;
 }
