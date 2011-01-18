@@ -443,8 +443,10 @@ function display_my_colors_page()
 function display_report_page()
 {
     $db_result = db_query( "select nid from {node} where nid > 3110");
-    $header = array("Node nid and title");
+//    $header = array("Node nid and title");
+    $header = array('Type', 'Title', 'Nid');
     // create array and add one element called data
+
     $rows['data'] = array();
     while ($res = db_fetch_object($db_result)) {
       $nid = $res->nid;
@@ -454,7 +456,7 @@ function display_report_page()
       $node_type  = $node->type;
       $node_link  = l($nid, 'node/'.$nid);
 //      drupal_set_message('Title = ' . $node_title . ', nid = ' . $node_nid);
-      $rows[] = array('Type = ' . $node_type . ', Title = ' . $node_title . ', nid = ' . $node_link);
+      $rows[] = array('Type = ' . $node_type, 'Title = ' . $node_title, 'nid = ' . $node_link);
     }
     if (count($rows) == 1)
         $rows[] = array("No Colors Entered Yet");
@@ -464,3 +466,14 @@ function display_report_page()
     return theme_table($header, $rows);
 //            .'<br/>'.$link_to_add_form;
 }
+
+$rows = array(
+    // Simple row
+    array(
+      'Cell 1', 'Cell 2', 'Cell 3'
+    ),
+    // Row with attributes on the row and some of its cells.
+    array(
+      'data' => array('Cell 1', array('data' => 'Cell 2', 'colspan' => 2)), 'class' => 'funky'
+    )
+  );
