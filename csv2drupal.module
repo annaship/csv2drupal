@@ -64,22 +64,16 @@ function csv2drupal_form($form_state) {
 
 function csv2drupal_form_submit($form, $form_state) {
 
-  dpm('time = ' . time());
+//  set submit time, to use on the report page to take only more recent nodes
   variable_set(csv2drupal_submit_time, time());
-//  dpm($form_state['values']['dir_name']);
   $dir_name = $form_state['values']['dir_name'];
   if (!empty($dir_name)) {
-//    drupal_set_message('$dir_name = ' . $dir_name);
     $files = file_scan_directory($dir_name, '\.xls');
     foreach ($files as $file) {
       $filepath = $file->filename;
-//      echo 'HERE!!!';
-      drupal_set_message($filepath);
+//      drupal_set_message($filepath);
       $content = get_data_from_excel_file($filepath);
       $nids[$file->basename] = create_nodes($content);
-//      show_node_title_and_number($nids);
-//      display_report_page($nids);
-//      drupal_render("HERE");
     }
   }
   else {
@@ -91,12 +85,9 @@ function csv2drupal_form_submit($form, $form_state) {
 
       if ($result) {
         $filepath = $file->filepath;
-        drupal_set_message($filepath);
+//        drupal_set_message($filepath);
         $content = get_data_from_excel_file($filepath);
         $nids[$file->basename] = create_nodes($content);
-//        show_node_title_and_number($nids);
-//        drupal_render("HERE!");
-//        display_report_page($nids);
       }
     }
     else {

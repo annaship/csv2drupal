@@ -389,58 +389,21 @@ function create_dataset_node($content, &$ref_nids) {
   return $ref_nids;
 }
 
-function show_node_title_and_number($nids) {
-  if (!empty($nids)) {
-    foreach ($nids as $key => $nid_array) {
-      drupal_set_message($key);
-      foreach ($nid_array as $nid) {
-          $node = node_load($nid);
-          $node_nid = $node->nid;
-          $node_title = $node->title;
-          drupal_set_message('Title = ' . $node_title . ', nid = ' . $node_nid);
-      }
-    }
-  }
-}
-
-//function display_report_page($nids) {
-//  $header = array("Following nods where saved successfully:");
-//  $rows['data'] = array();
-//  $rows[] = array("No Colors Entered Yet");
-//
-//  if (!empty($nids)) {
-////    foreach ($nids as $key => $nid_array) {
-////      foreach ($nid_array as $nid) {
-////        $node = node_load($nid);
-////        $node_nid = $node->nid;
-////        $node_title = $node->title;
-//  $rows[] = array("HEEEERE!");
-////        $rows[] = array($node_nid);
-////      }
-////    }
-//  }
-//  return theme_table($header, $rows);
-//}
-
 function display_report_page()
 {
-//  1295375838
-//  1295375840
   $csv2drupal_submit_time = variable_get(csv2drupal_submit_time, time());
-  dpm($csv2drupal_submit_time);
   $sql = "SELECT nid FROM {node} WHERE created >= %d ORDER BY nid DESC";
   $db_result = db_query($sql, $csv2drupal_submit_time);
-  $header = array('Title', 'Nid');
 
+  $header       = array('Title', 'Nid');
   $rows['data'] = array();
-  while ($res = db_fetch_object($db_result)) {
-    $nid = $res->nid;
-    $node = node_load($nid);
+  while ($res   = db_fetch_object($db_result)) {
+    $nid        = $res->nid;
+    $node       = node_load($nid);
     $node_nid   = $node->nid;
     $node_title = $node->title;
     $node_type  = $node->type;
     $node_link  = l($nid, 'node/'.$nid);
-//      drupal_set_message('Title = ' . $node_title . ', nid = ' . $node_nid);
     if ($node_type != $old_node_type) {
       $rows[] = array(array('data' => 'Type = ' . $node_type, 'colspan' => 2, 'font size' => 4, 'align' => 'center'));
       $old_node_type = $node_type;
@@ -448,10 +411,8 @@ function display_report_page()
     $rows[] = array('Title = ' . $node_title, $node_link);
   }
   if (count($rows) == 1)
-      $rows[] = array("No nodes where saved");
+      $rows[] = array("No nodes was saved");
 
-//    $link_to_add_form = l('Add More Colors','my_color/data_entry_form');
-
+  variable_del(csv2drupal_submit_time);
   return theme_table($header, $rows);
-//            .'<br/>'.$link_to_add_form;
 }
