@@ -2,6 +2,7 @@
 
 require_once 'includes/PHPExcel/IOFactory.php';
 require_once 'csv2drupal_field_name_arrays.inc';
+module_load_include('module', 'geo', 'geo');
 
 function get_data_from_excel_file($file) {
   $sheet_names = array(
@@ -219,6 +220,46 @@ function create_site_node($content, &$ref_nids) {
       $node->uid   =  get_uid();
       $node->title = $value['Title'];
       $node = add_node_value($node, $value, $fields_names);
+//      parse 'Coordinates' here
+      //    'field_research_site_pt_coords'   => 'Coordinates',
+//      $node->field_geofield[0]['geo'] = 'POINT(30 30)';
+//      $nofe->field_research_site_pt_coords[0]['geo'] = 'POINT(30 30)';
+//      $node->field_research_site_pt_coords[0] = array('geo' => '');
+//        $wkb = 'POINT(30 30)';
+//        $g = GeomFromText($wkb);
+//           $geo = geo_load();
+//           $point = $geo->point(1, 2);
+//
+//        dpr($point);
+//        dpr($wkb);
+//        $geo = geo_load();
+//        dpr($geo);
+//        $g = $geo->geomFromWKB($wkb);
+//        dpr($g);
+//        $wkt = $g->asText();
+//
+//$wkt = geo('wkt_from_point', 30, 30);
+//echo 'UUU';
+//geo_value($input, $output_format, $input_format = 'wkb')
+//
+//$wkt = geo_value($wkt, 'wkt', $gis_input);
+//$wkb = geo_value($wkt, 'wkb', 'wkt');
+
+//dpr(geo_list());
+//      $wkb_data = GeomFromText('POINT(30 30)');
+//      dpr($wkb_data);
+//      $data = geo_wkb_get_data('POINT(30 30)', 'wkt');
+//      echo 'URRA!';
+//      dpr($data);
+//      print_r($wkb_data);
+
+//      $node->field_research_site_pt_coords[0]['geo'] = $wkt;
+//      $node->field_research_site_pt_coords[0]['geo'] = 'POINT(30 30)';
+// $node->field_research_site_pt_coords_geo = 'POINT(30 30)';
+
+//    dpr($node);
+
+
       node_save(&$node);
       $ref_nids['research_site'][] = $node->nid;
     }

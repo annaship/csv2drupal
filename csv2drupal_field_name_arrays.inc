@@ -89,7 +89,7 @@ function variable_fields() {
 function research_site_fields() {
   $research_site_fields = array (
     'field_research_site_image'       => 'Image',
-    'field_research_site_pt_coords'   => 'Coordinates',
+//    'field_research_site_pt_coords'   => 'Coordinates',
     'field_research_site_elevation'   => 'Elevation',
     'field_research_site_landform'    => 'Landform',
     'field_research_site_geology'     => 'Geology',
