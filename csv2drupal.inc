@@ -220,7 +220,14 @@ function create_site_node($content, &$ref_nids) {
       $node->uid   =  get_uid();
       $node->title = $value['Title'];
       $node = add_node_value($node, $value, $fields_names);
-
+      $q = db_result(db_query("SELECT PointFromText('%s')", 'POINT(1 1)'));
+//      $q = db_result(db_query("SELECT GeomFromText('%s')", 'POINT(31.5 42.2)'));
+//      PointFromText(Point(a,b))
+//      GeomFromWKB(Point(1,2)
+      $node->field_research_site_pt_coords[0]['geo'] = $q;
+      $wkt = geo_value($q, 'wkt', 'wkb');
+      dpr($wkt);
+      print_r($wkt);
 //      parse 'Coordinates' here
       //    'field_research_site_pt_coords'   => 'Coordinates',
 //      $node->field_geofield[0]['geo'] = 'POINT(30 30)';
@@ -289,7 +296,7 @@ function create_site_node($content, &$ref_nids) {
 //    dpr($node);
 
 
-      node_save(&$node);
+//      node_save(&$node);
       $ref_nids['research_site'][] = $node->nid;
 //      $site_nid = $node->nid;
 //      $sql = "SELECT X(field_research_site_pt_coords_geo) as longitude,
@@ -308,38 +315,10 @@ function create_site_node($content, &$ref_nids) {
 //      select GeomFromText(select GeomFromText('POINT(31.5 42.2)');
 
 
-//      $q = db_result(db_query("SELECT GeomFromText('POINT(1 1)')"));
-//      $q = db_result(db_query("SELECT GeomFromText('%s')", 'POINT(1 1)'));
-//      $q = db_result(db_query("SELECT GeomFromText('POINT(1 1)'"));
+//      node_save(&$node);
 
-//      TODO: correct value!
-//      Array
-//(
-//    [byte_order] => 0
-//    [type] => point
-//    [x] => 7.291122019556397E-304
-//    [y] => 0
-//    [value] => POINT(7.291122019556397E-304 0)
-//)
-
-//      $data = geo_wkb_get_data($q, 'wkt');
-//      echo 'URRA!';
-//      dpr($data);
-//      dpm($data);
-//      dpr($q);
-//      dpr($q);
-//      print_r($q);
-//      $q = db_result(db_query("SELECT GeomFromText('POINT(1 1)')"));
-//        $values['geo'] =
-      $shp['data'] = 'POINT(1 1)';
-      $srid = 4326;
-      $q = db_result(db_query("SELECT GeomFromText('%s', %d)", $shp['data'], $srid));
-      
-      $node->field_research_site_pt_coords[0]['geo'] = $q;
-      node_save(&$node);
-//4326
-      dpr($node);
-      dpm($node);
+//      dpr($node);
+//      dpm($node);
       print_r($node);
 
 //      if (is_string($shp['data'])) {
@@ -350,7 +329,7 @@ function create_site_node($content, &$ref_nids) {
 
 
     }
-//    dpr($node);
+    dpr($node);
   }
   return $ref_nids;
 }
