@@ -220,6 +220,7 @@ function create_site_node($content, &$ref_nids) {
       $node->uid   =  get_uid();
       $node->title = $value['Title'];
       $node = add_node_value($node, $value, $fields_names);
+
 //      parse 'Coordinates' here
       //    'field_research_site_pt_coords'   => 'Coordinates',
 //      $node->field_geofield[0]['geo'] = 'POINT(30 30)';
@@ -262,6 +263,28 @@ function create_site_node($content, &$ref_nids) {
 
       node_save(&$node);
       $ref_nids['research_site'][] = $node->nid;
+      $site_nid = $node->nid;
+      $sql = "SELECT X(field_research_site_pt_coords_geo) as longitude,
+             Y(field_research_site_pt_coords_geo) as latitude,
+             AsText(field_research_site_pt_coords_geo) as geo_point
+             FROM {content_type_research_site}
+             WHERE vid=(SELECT max(vid)
+                        FROM {content_type_research_site}
+                        WHERE nid = '%d')";
+
+      $query = db_query($sql, $site_nid);
+      $geo_lon_lat_point =  db_fetch_array($query);
+      dpr($geo_lon_lat_point);
+      dpm($geo_lon_lat_point);
+
+//      $q = db_result(db_query("SELECT GeomFromText('%s', %d)", $shp['data'], $srid));
+//      if (is_string($shp['data'])) {
+//        $values['geo'] = db_result(db_query("SELECT GeomFromText('%s', %d)", $shp['data'], $srid));
+//      } else {
+//        $values['geo'] = db_result(db_query("SELECT GeomFromText('%s', %d)", $shp['data']['wkt'], $srid));
+//      }
+
+
     }
 //    dpr($node);
   }
