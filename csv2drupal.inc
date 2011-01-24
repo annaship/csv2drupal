@@ -233,7 +233,11 @@ function create_site_node($content, &$ref_nids) {
 //        dpr($point);
 //        dpr($wkb);
 //        $geo = geo_load();
+//        $geo = geo_load(array('table_name' => $field['geo']));
+//          dpr(geo_field_names());
+//          echo "UUUU";
 //        dpr($geo);
+//        dpm($geo);
 //        $g = $geo->geomFromWKB($wkb);
 //        dpr($g);
 //        $wkt = $g->asText();
@@ -246,6 +250,30 @@ function create_site_node($content, &$ref_nids) {
 //$wkb = geo_value($wkt, 'wkb', 'wkt');
 
 //dpr(geo_list());
+//dpm(geo_list());
+//dpm(geo_field_names());
+//dpr(geo_field_names());
+
+//    [4] => GeoSQLMySQL Object
+//        (
+//            [gid:protected] => 4
+//            [name:protected] => field_research_site_pt_coords
+//            [title:protected] => Coordinates
+//            [srid:protected] => 4326
+//            [geo_type:protected] => 0
+//            [table_name:protected] => content_type_research_site
+//            [column_name:protected] => field_research_site_pt_coords_geo
+//            [schema:protected] =>
+//            [indexed:protected] => 1
+//            [count:protected] =>
+//        )
+//
+//)
+//Array
+//(
+//    [0] => field_research_site_pt_coords
+//)
+
 //      $wkb_data = GeomFromText('POINT(30 30)');
 //      dpr($wkb_data);
 //      $data = geo_wkb_get_data('POINT(30 30)', 'wkt');
