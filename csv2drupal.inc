@@ -73,9 +73,11 @@ function get_uid() {
 //restructure arrays from Excel
 function create_values($content) {
   $values = array();
-  foreach ($content as $key => $value) {
-    foreach ($value as $number => $data) {
-      $values[$number][$key] = $data;
+  if ($content) {
+    foreach ($content as $key => $value) {
+      foreach ($value as $number => $data) {
+        $values[$number][$key] = $data;
+      }
     }
   }
   return $values;
@@ -220,14 +222,27 @@ function create_site_node($content, &$ref_nids) {
       $node->uid   =  get_uid();
       $node->title = $value['Title'];
       $node = add_node_value($node, $value, $fields_names);
-      $q = db_result(db_query("SELECT PointFromText('%s')", 'POINT(1 1)'));
-//      $q = db_result(db_query("SELECT GeomFromText('%s')", 'POINT(31.5 42.2)'));
-//      PointFromText(Point(a,b))
-//      GeomFromWKB(Point(1,2)
-      $node->field_research_site_pt_coords[0]['geo'] = $q;
-      $wkt = geo_value($q, 'wkt', 'wkb');
-      dpr($wkt);
-      print_r($wkt);
+      $coordinates = $value['Coordinates'];
+      $q_geo = db_result(db_query("SELECT GeomFromText('%s')", $coordinates));
+      $node->field_research_site_pt_coords[0]['geo'] = $q_geo;
+
+      /*
+       * user warning: Incorrect parameter count in the call to native function 'AsBinary' query: geo_field /* anna : geo_field */
+//      SELECT AsBinary() AS geo FROM WHERE vid = 12038 in /Library/WebServer/Documents/drupal6-local/sites/all/modules/geo/modules/geo_field/geo_field.module on line 83.
+//       check $coordinates format!!!
+
+
+//      echo 'HERE!';
+//      dpr($coordinates);
+//      print $coordinates;
+//      $q = db_result(db_query("SELECT PointFromText('%s')", 'POINT(1 1)'));
+////      $q = db_result(db_query("SELECT GeomFromText('%s')", 'POINT(31.5 42.2)'));
+////      PointFromText(Point(a,b))
+////      GeomFromWKB(Point(1,2)
+//      $node->field_research_site_pt_coords[0]['geo'] = $q;
+//      $wkt = geo_value($q, 'wkt', 'wkb');
+//      dpr($wkt);
+//      print_r($wkt);
 //      parse 'Coordinates' here
       //    'field_research_site_pt_coords'   => 'Coordinates',
 //      $node->field_geofield[0]['geo'] = 'POINT(30 30)';
@@ -296,7 +311,7 @@ function create_site_node($content, &$ref_nids) {
 //    dpr($node);
 
 
-//      node_save(&$node);
+      node_save(&$node);
       $ref_nids['research_site'][] = $node->nid;
 //      $site_nid = $node->nid;
 //      $sql = "SELECT X(field_research_site_pt_coords_geo) as longitude,
@@ -319,7 +334,7 @@ function create_site_node($content, &$ref_nids) {
 
 //      dpr($node);
 //      dpm($node);
-      print_r($node);
+//      print_r($node);
 
 //      if (is_string($shp['data'])) {
 //        $values['geo'] = db_result(db_query("SELECT GeomFromText('%s', %d)", $shp['data'], $srid));
@@ -329,7 +344,7 @@ function create_site_node($content, &$ref_nids) {
 
 
     }
-    dpr($node);
+//    dpr($node);
   }
   return $ref_nids;
 }
