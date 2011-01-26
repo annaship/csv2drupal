@@ -221,9 +221,9 @@ function create_site_node($content, &$ref_nids) {
       $node->type  = "research_site";
       $node->uid   =  get_uid();
       $node->title = $value['Title'];
-      $node = add_node_value($node, $value, $fields_names);
+      $node        = add_node_value($node, $value, $fields_names);
       $coordinates = $value['Coordinates'];
-      $q_geo = db_result(db_query("SELECT GeomFromText('%s')", $coordinates));
+      $q_geo       = db_result(db_query("SELECT GeomFromText('%s')", $coordinates));
       $node->field_research_site_pt_coords[0]['geo'] = $q_geo;
 
       /*
