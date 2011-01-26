@@ -419,49 +419,10 @@ function create_datafile_node($content, &$ref_nids, $file_object) {
       }
 
       $node->field_data_file[0] = (array) $file_object;
-//          'field_data_file'             => 'Data File',
 
 
 //      in date:                     [date_type] => date
 
-//
-      /*
-[field_data_file] => Array
-(
-[0] => Array
-  (
-      [fid] => 42
-      [list] => 1
-      [data] => Array
-          (
-              [fid] => 42
-              [width] => 0
-              [height] => 0
-              [duration] => 0
-              [audio_format] =>
-              [audio_sample_rate] => 0
-              [audio_channel_mode] =>
-              [audio_bitrate] => 0
-              [audio_bitrate_mode] =>
-              [tags] => Array
-                  (
-                  )
-
-          )
-
-      [uid] => 1
-      [filename] => nodes_test.csv
-      [filepath] => sites/default/files/nodes_test.csv
-      [filemime] => text/csv
-      [filesize] => 225
-      [status] => 1
-      [timestamp] => 1281454967
-      [origname] =>
-  )
-
-)
-
-       */
 
 //      $node->field_dataset_referrer[0]['items'][0]['nid']      = '4255';
 //      foreach ($ref_nids['research_site'] as $dataset_site) {
