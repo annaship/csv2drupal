@@ -21,7 +21,7 @@ function dataset_fields() {
 function datafile_fields() {
   $datafile_fields = array (
     'field_datafile_description'  => 'Description',
-    'field_data_file'             => 'Data File',
+//    'field_data_file'             => 'Data File',
     'field_num_header_line'       => 'Number of Header Lines',
     'field_num_footer_lines'      => 'Number of Footer Lines',
     'field_orientation'           => 'Orientation',

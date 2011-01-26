@@ -50,13 +50,12 @@ function get_data_from_excel_file($file) {
   return $content;
 }
 
-function create_nodes($content) {
-//TODO link node references
+function create_nodes($content, $file_object) {
   $ref_nids = create_person_node($content['person'], &$ref_nids);
-//  echo 'in create_node: person';
   $ref_nids = create_variable_node($content['variable'], &$ref_nids);
   $ref_nids = create_site_node($content['site'], &$ref_nids);
-  $ref_nids = create_datafile_node($content['datafile'], &$ref_nids);
+//  dpr($file_object);
+  $ref_nids = create_datafile_node($content['datafile'], &$ref_nids, $file_object);
 //  echo 'in create_node: file';
   $ref_nids = create_dataset_node($content['dataset'], &$ref_nids);
   $keywords_taxonomy = create_keywords_node($content['keywords'], &$ref_nids);
@@ -349,11 +348,56 @@ function create_site_node($content, &$ref_nids) {
   return $ref_nids;
 }
 
-function create_datafile_node($content, &$ref_nids) {
+function create_file_object($file) {
+  $details = stat($file);
+  $filesize = $details['size'];
+
+  // Get the path to your Drupal site's files directory
+  $dest = file_directory_path();
+
+  // Copy the file to the Drupal files directory
+  if(!file_copy($file, $dest)) {
+      echo "Failed to move file: $file.\n";
+      return;
+  } else {
+      // file_move might change the name of the file
+      $name = basename($file);
+  }
+
+  // Build the file object
+  $file_obj = new stdClass();
+  $file_obj->filename   = $name;
+  $file_obj->filepath   = $file;
+  $file_obj->filemime   = file_get_mimetype($name);
+  $file_obj->filesize   = $filesize;
+  $file_obj->filesource = $name;
+  $file_obj->uid        = get_uid();
+  $file_obj->status     = FILE_STATUS_TEMPORARY;
+  $file_obj->timestamp  = time();
+  $file_obj->list       = 1;
+  $file_obj->new        = true;
+
+  // Save file to files table
+  drupal_write_record('files', $file_obj);
+  // change file status to permanent
+  file_set_status($file_obj, 1);
+
+  // Attach the file object to your node
+//  $node->files[$file_obj->fid] = $file_obj;
+//  dpr($file_obj);
+//  dpm($file_obj);
+
+  return $file_obj;
+}
+
+function create_datafile_node($content, &$ref_nids, $file_object) {
 //  dpr("create_datafile_node");
 //  dpr($ref_nids);
+//  create_file_object();
+//    dpr($file_object);
+//    dpm($file_object);
   $data_file_values = create_values($content);
-  $fields_names = datafile_fields();
+  $fields_names     = datafile_fields();
   foreach ($data_file_values as $value) {
     if (!empty($value['Data File Structure Name'])) {
       $node = new StdClass();
@@ -373,6 +417,10 @@ function create_datafile_node($content, &$ref_nids) {
           $node->field_datafile_site_ref[]['nid']     = $dataset_site;
         }
       }
+
+      $node->field_data_file[0] = (array) $file_object;
+//          'field_data_file'             => 'Data File',
+
 
 //      in date:                     [date_type] => date
 
@@ -461,10 +509,10 @@ function create_datafile_node($content, &$ref_nids) {
  */
       node_save(&$node);
       $ref_nids['data_file'][] = $node->nid;
-//      dpr($node);
+      dpr($node);
     }
   }
-//  dpr($ref_nids);
+  dpr($ref_nids);
   return $ref_nids;
 }
 
