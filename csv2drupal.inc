@@ -265,13 +265,27 @@ field_person_uid[0]['uid']
   }
 //  dpr($rows);
 //    echo '</tbody></table>';
-//  $output = theme('table', $header, $rows);
-  $output = theme_table($header, $rows);
-  print $output;
-  print popup_filter_process_text('[popup text=' . $output . ' activate=click]');
+  $output = theme('table', $header, $rows);
+
+//  $output = theme_table($header, $rows);
+  $current_destination = drupal_get_destination();
+//  drupal_set_message('There are such last names in the database');
+//  drupal_goto('check_person', $current_destination);
+// return theme_table($header, $rows).'<br/>'.drupal_get_form("YOUR_FORM_ID");
+
+//  $output = theme(
+//    'table',
+//    $headers,
+//    $data
+//  );
+ $limit = 2;
+  $output .= theme('pager', NULL, $limit, 0);
+print theme('page', $output);
+//  print node_view($output, $page = TRUE);
+//  print popup_filter_process_text('[popup text=' . $output . ' activate=click]');
 
 //  $output .= theme('pager', $rows_per_page);
-  return $output;
+//  return $output;
 
 }
 

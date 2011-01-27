@@ -62,6 +62,15 @@ function csv2drupal_form($form_state) {
   return $form;
 }
 
+//function csv2drupal_form_validate ($form_id, &$form_state) {
+  // $toast = $form_state['values']['toast'];
+  //
+  // if (!$toast) {
+  //   form_set_error('toast error', t('You must like toast!'));
+  // }
+//}
+
+
 function csv2drupal_form_submit($form, $form_state) {
 
 //  set submit time, to use on the report page to take only more recent nodes
