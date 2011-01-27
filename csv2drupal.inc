@@ -295,12 +295,12 @@ function create_person_node($content, &$ref_nids) {
       $node->field_person_uid[0]['uid'] = $value['person_uid'];
       $node->field_person_pubs[0]['nid'] = $value['Publications'];
       $persons_arr = taking_person_ids($value['First Name'], $value['Last Name']);
-      show_persons($persons_arr);
 //      dpr($persons_arr);
 //      dpm($persons_arr);
       if($persons_arr) {
         dpr('$persons_arr');
         dpm('$persons_arr');
+        show_persons($persons_arr);
       }
       else {
         dpr('no persons');
