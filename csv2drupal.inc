@@ -127,8 +127,8 @@ function taking_person_ids($first_name, $last_name) {
 //          $persons_arr[][nid_last] = $nid_last;
           $persons_arr[] = $nid_last;
       }
-    dpr($persons_arr);
-    dpm($persons_arr);
+//    dpr($persons_arr);
+//    dpm($persons_arr);
     return $persons_arr;
   }
 }
@@ -215,28 +215,29 @@ function show_persons($current_person, $persons_arr) {
 
  */
 //  dpm($uniq_persons_nid);
-    echo '<table><thead>
-  <th>First1</th><th>Last1</th><th>Email1</th>
-  </thead>
-  <tbody>';
-    echo '<tr><td>' . $current_person['First Name'];
+//    echo '<table><thead>
+//  <th>First1</th><th>Last1</th><th>Email1</th>
+//  </thead>
+//  <tbody>';
+//    echo '<tr><td>' . $current_person['First Name'];
+////    echo '</td><td>' . $current_person['Last Name'];
 //    echo '</td><td>' . $current_person['Last Name'];
-    echo '</td><td>' . $current_person['Last Name'];
-    echo '</td><td>' . $current_person['Email'];
-    echo '</tr>';
-
-
-  echo '</tbody></table>';
-
-
-  echo '<table><thead>
-  <th>First2</th><th>Last2</th><th>Email2</th>
-  </thead>
-  <tbody>';
+//    echo '</td><td>' . $current_person['Email'];
+//    echo '</tr>';
+//
+//
+//  echo '</tbody></table>';
+//
+//
+//  echo '<table><thead>
+//  <th>First2</th><th>Last2</th><th>Email2</th>
+//  </thead>
+//  <tbody>';
   foreach ($uniq_persons_nid as $value) {
 //    $sql = "SELECT nid FROM {node} WHERE nid = '%s'";
 //    $db_result = db_query($sql, $value['nid_last']);
     $person_node = node_load($value);
+    $nid2   = $person_node->nid;
     $first2 = $person_node->field_person_first_name[0]['value'];
     $last2  = $person_node->field_person_last_name[0]['value'];
     $email2 = $person_node->field_person_email[0]['email'];
@@ -258,18 +259,26 @@ field_person_uid[0]['uid']
 //    dpr($person_node);
 //    TODO: show every name only once
     $header       = array('NID', 'First2', 'Last2', 'Email2');
-//    $rows['data'] = array();
+    $rows['data'] = array();
 //    $rows[] = array(array('data' => 'Type = ' . $node_type, 'colspan' => 2, 'font size' => 4, 'align' => 'center'));
-//    $rows[] = array('First1 = ', 'Last1', 'Email1', $first2, $last2, $email2);
+    $rows[] = array($nid2, $first2, $last2, $email2);
 //    return theme_table($header, $rows);
 
-    echo '<tr><td>' . $person_node->nid;
-    echo '</td><td>' . $first2;
-    echo '</td><td>' . $last2;
-    echo '</td><td>' . $email2;
-    echo '</tr>';
+//    echo '<tr><td>' . $person_node->nid;
+//    echo '</td><td>' . $first2;
+//    echo '</td><td>' . $last2;
+//    echo '</td><td>' . $email2;
+//    echo '</tr>';
   }
-    echo '</tbody></table>';
+//    echo '</tbody></table>';
+//  $output = theme('table', $header, $rows);
+  $output = theme_table($header, $data);
+  print $output;
+  print popup_filter_process_text('[popup text=' . $output . ' activate=click]');
+
+//  $output .= theme('pager', $rows_per_page);
+  return $output;
+
 }
 
 /*
