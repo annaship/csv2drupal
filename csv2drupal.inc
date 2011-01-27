@@ -129,7 +129,8 @@ function taking_person_ids(&$persons_arr, $first_name, $last_name) {
       $q_last   = db_query($sql_last, $last_name);
         while ($nid_last = db_result($q_last)) {
 //          dpr($nid_last);
-          $persons_arr[][nid_last] = $nid_last;
+//          $persons_arr[][nid_last] = $nid_last;
+          $persons_arr[] = $nid_last;
       }
 //    }
 //    dpr($persons_arr);
@@ -196,18 +197,21 @@ function add_timezone_to_date_arr(&$date_arr) {
   return $date_arr;
 }
 
+//function
+
 function show_persons($persons_arr) {
-//  dpr($persons_arr);
-//  dpr($persons_arr);
+  $uniq_persons_nid = array_unique($persons_arr);
+//  dpr($uniq_persons_nid);
+//  dpm($uniq_persons_nid);
   echo '<table><thead>
   <th>First1</th><th>Last1</th><th>Email1</th>
   <th>First2</th><th>Last2</th><th>Email2</th>
   </thead>
   <tbody>';
-  foreach ($persons_arr as $value) {
+  foreach ($uniq_persons_nid as $value) {
 //    $sql = "SELECT nid FROM {node} WHERE nid = '%s'";
 //    $db_result = db_query($sql, $value['nid_last']);
-    $person_node = node_load($value['nid_last']);
+    $person_node = node_load($value);
     $first2 = $person_node->field_person_first_name[0]['value'];
     $last2  = $person_node->field_person_last_name[0]['value'];
     $email2 = $person_node->field_person_email[0]['email'];
@@ -300,6 +304,14 @@ function create_person_node($content, &$ref_nids) {
       show_persons($persons_arr);
 //      dpr($persons_arr);
 //      dpm($persons_arr);
+      if($persons_arr) {
+        dpr('$persons_arr');
+        dpm('$persons_arr');
+      }
+      else {
+        dpr('no persons');
+        dpm('no persons');
+      }
       node_save(&$node);
       $ref_nids['person'][] = $node->nid;
     }
