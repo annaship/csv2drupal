@@ -105,19 +105,14 @@ function add_node_value(&$node, $value, $fields_names) {
 //  }
 //}
 
-// taking person id (they should be created first)
-// TODO the same for files and other refs (bib, sites)
-//field_person_first_name_value	varchar(60)	utf8_general_ci	YES				select,insert,update,references
-//field_person_last_name_value	varchar(60)	utf8_general_ci	YES				select,insert,update,references
-function taking_person_ids(&$persons_arr, $first_name, $last_name) {
+function taking_person_ids($first_name, $last_name) {
 //  unset ($nid_first);
   unset ($nid_last);
 //  if ((isset ($first_name)) || (isset ($last_name))) {
   if (isset ($last_name)) {
-//    $persons_arr = array();
+    $persons_arr = array();
 //    dpm($first_name);
 //    dpm($last_name);
-//    foreach ($persons as $persons_value) {
 //      $sql_first = "SELECT nid FROM {content_type_person} WHERE field_person_first_name_value = '%s' AND field_person_last_name_value = '%s'";
       $sql_last  = "SELECT nid FROM {content_type_person} WHERE field_person_last_name_value = '%s'";
 //      $sql = "SELECT nid FROM {node} WHERE type = 'person' and title = '%s'";
@@ -132,9 +127,8 @@ function taking_person_ids(&$persons_arr, $first_name, $last_name) {
 //          $persons_arr[][nid_last] = $nid_last;
           $persons_arr[] = $nid_last;
       }
-//    }
-//    dpr($persons_arr);
-//    dpm($persons_arr);
+    dpr($persons_arr);
+    dpm($persons_arr);
     return $persons_arr;
   }
 }
@@ -300,7 +294,7 @@ function create_person_node($content, &$ref_nids) {
       $node->field_person_email[0]['email'] = $value['Email'];
       $node->field_person_uid[0]['uid'] = $value['person_uid'];
       $node->field_person_pubs[0]['nid'] = $value['Publications'];
-      $persons_arr += taking_person_ids(&$persons_arr, $value['First Name'], $value['Last Name']);
+      $persons_arr = taking_person_ids($value['First Name'], $value['Last Name']);
       show_persons($persons_arr);
 //      dpr($persons_arr);
 //      dpm($persons_arr);
