@@ -89,18 +89,51 @@ function add_node_value(&$node, $value, $fields_names) {
   return $node;
 }
 
+//function taking_person_ids($persons) {
+//  if (isset ($persons)) {
+//    $persons_arr = array();
+//    foreach ($persons as $persons_value) {
+//      $sql = "SELECT nid FROM {node} WHERE type = 'person' and title = '%s'";
+//      $q = db_query($sql, $persons_value);
+//        while ($nid = db_result($q)) {
+//        $persons_arr[][nid] = $nid;
+//      }
+//    }
+//    dpr($persons_arr);
+//    dpm($persons_arr);
+//    return $persons_arr;
+//  }
+//}
+
 // taking person id (they should be created first)
 // TODO the same for files and other refs (bib, sites)
-function taking_person_ids($persons) {
-  if (isset ($persons)) {
-    $persons_arr = array();
-    foreach ($persons as $persons_value) {
-      $sql = "SELECT nid FROM {node} WHERE type = 'person' and title = '%s'";
-      $q = db_query($sql, $persons_value);
-        while ($nid = db_result($q)) {
-        $persons_arr[][nid] = $nid;
+//field_person_first_name_value	varchar(60)	utf8_general_ci	YES				select,insert,update,references
+//field_person_last_name_value	varchar(60)	utf8_general_ci	YES				select,insert,update,references
+function taking_person_ids(&$persons_arr, $first_name, $last_name) {
+//  unset ($nid_first);
+  unset ($nid_last);
+//  if ((isset ($first_name)) || (isset ($last_name))) {
+  if (isset ($last_name)) {
+//    $persons_arr = array();
+//    dpm($first_name);
+//    dpm($last_name);
+//    foreach ($persons as $persons_value) {
+//      $sql_first = "SELECT nid FROM {content_type_person} WHERE field_person_first_name_value = '%s' AND field_person_last_name_value = '%s'";
+      $sql_last  = "SELECT nid FROM {content_type_person} WHERE field_person_last_name_value = '%s'";
+//      $sql = "SELECT nid FROM {node} WHERE type = 'person' and title = '%s'";
+//      $q_first   = db_query($sql_first, $first_name, $last_name);
+//        while ($nid_first_last = db_result($q_first)) {
+////          dpr($nid_first_last);
+//          $persons_arr[][$nid_first_last] = $nid_first_last;
+//      }
+      $q_last   = db_query($sql_last, $last_name);
+        while ($nid_last = db_result($q_last)) {
+//          dpr($nid_last);
+          $persons_arr[][nid_last] = $nid_last;
       }
-    }
+//    }
+//    dpr($persons_arr);
+//    dpm($persons_arr);
     return $persons_arr;
   }
 }
@@ -163,8 +196,93 @@ function add_timezone_to_date_arr(&$date_arr) {
   return $date_arr;
 }
 
+function show_persons($persons_arr) {
+//  dpr($persons_arr);
+//  dpr($persons_arr);
+  echo '<table><thead>
+  <th>First1</th><th>Last1</th><th>Email1</th>
+  <th>First2</th><th>Last2</th><th>Email2</th>
+  </thead>
+  <tbody>';
+  foreach ($persons_arr as $value) {
+//    $sql = "SELECT nid FROM {node} WHERE nid = '%s'";
+//    $db_result = db_query($sql, $value['nid_last']);
+    $person_node = node_load($value['nid_last']);
+    $first2 = $person_node->field_person_first_name[0]['value'];
+    $last2  = $person_node->field_person_last_name[0]['value'];
+    $email2 = $person_node->field_person_email[0]['email'];
+    /*
+     * field_person_organization,
+     * field_person_role
+     * field_person_title
+     * field_person_address
+field_person_city
+field_person_state
+field_person_zipcode
+field_person_country
+field_person_phone
+field_person_fax
+field_person_personid
+field_person_uid[0]['uid']
+
+     */
+//    dpr($person_node);
+//    TODO: show every name only once
+    $header       = array('First1 ', 'Last1', 'Email1', 'First2', 'Last2', 'Email2');
+//    $rows['data'] = array();
+//    $rows[] = array(array('data' => 'Type = ' . $node_type, 'colspan' => 2, 'font size' => 4, 'align' => 'center'));
+//    $rows[] = array('First1 = ', 'Last1', 'Email1', $first2, $last2, $email2);
+//    return theme_table($header, $rows);
+
+    echo '<tr><td>First1</td><td>Last1</td><td>Email1</td>';
+
+//          <td></td><td></td><td></td>';
+    echo '<td>' . $first2;
+    echo '</td><td>' . $last2;
+    echo '</td><td>' . $email2;
+    echo '</tr>';
+//        echo '</td><td>' . $version . '</td><td>' . $description . '</td><td><a href="http://drupal.org/project/' . $project .
+//        '">http://drupal.org/project/' . $project . '</a></td></tr>';
+//      }
+//    }
+
+  }
+    echo '</tbody></table>';
+}
+
+/*
+ * function display_report_page()
+{
+  $csv2drupal_submit_time = variable_get(csv2drupal_submit_time, time());
+  $sql = "SELECT nid FROM {node} WHERE created >= %d ORDER BY nid DESC";
+  $db_result = db_query($sql, $csv2drupal_submit_time);
+
+  $header       = array('Title', 'Nid');
+  $rows['data'] = array();
+  while ($res   = db_fetch_object($db_result)) {
+    $nid        = $res->nid;
+    $node       = node_load($nid);
+    $node_nid   = $node->nid;
+    $node_title = $node->title;
+    $node_type  = $node->type;
+    $node_link  = l($nid, 'node/'.$nid);
+    if ($node_type != $old_node_type) {
+      $rows[] = array(array('data' => 'Type = ' . $node_type, 'colspan' => 2, 'font size' => 4, 'align' => 'center'));
+      $old_node_type = $node_type;
+    }
+    $rows[] = array('Title = ' . $node_title, $node_link);
+  }
+  if (count($rows) == 1)
+      $rows[] = array("No nodes was saved");
+
+  variable_del(csv2drupal_submit_time);
+  return theme_table($header, $rows);
+}
+ */
+
 function create_person_node($content, &$ref_nids) {
 //  dpr("create_person_node");
+  $persons_arr = array ();
   $person_values = create_values($content);
   $fields_names  = person_fields();
   foreach ($person_values as $value) {
@@ -178,6 +296,10 @@ function create_person_node($content, &$ref_nids) {
       $node->field_person_email[0]['email'] = $value['Email'];
       $node->field_person_uid[0]['uid'] = $value['person_uid'];
       $node->field_person_pubs[0]['nid'] = $value['Publications'];
+      $persons_arr += taking_person_ids(&$persons_arr, $value['First Name'], $value['Last Name']);
+      show_persons($persons_arr);
+//      dpr($persons_arr);
+//      dpm($persons_arr);
       node_save(&$node);
       $ref_nids['person'][] = $node->nid;
     }
@@ -470,10 +592,10 @@ function create_datafile_node($content, &$ref_nids, $file_object) {
  */
       node_save(&$node);
       $ref_nids['data_file'][] = $node->nid;
-      dpr($node);
+//      dpr($node);
     }
   }
-  dpr($ref_nids);
+//  dpr($ref_nids);
   return $ref_nids;
 }
 
