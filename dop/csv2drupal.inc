@@ -50,12 +50,13 @@ function get_data_from_excel_file($file) {
   return $content;
 }
 
-function create_nodes($content, $file_object) {
+function create_nodes($content) {
+//TODO link node references
   $ref_nids = create_person_node($content['person'], &$ref_nids);
+//  echo 'in create_node: person';
   $ref_nids = create_variable_node($content['variable'], &$ref_nids);
   $ref_nids = create_site_node($content['site'], &$ref_nids);
-//  dpr($file_object);
-  $ref_nids = create_datafile_node($content['datafile'], &$ref_nids, $file_object);
+  $ref_nids = create_datafile_node($content['datafile'], &$ref_nids);
 //  echo 'in create_node: file';
   $ref_nids = create_dataset_node($content['dataset'], &$ref_nids);
   $keywords_taxonomy = create_keywords_node($content['keywords'], &$ref_nids);
@@ -72,11 +73,9 @@ function get_uid() {
 //restructure arrays from Excel
 function create_values($content) {
   $values = array();
-  if ($content) {
-    foreach ($content as $key => $value) {
-      foreach ($value as $number => $data) {
-        $values[$number][$key] = $data;
-      }
+  foreach ($content as $key => $value) {
+    foreach ($value as $number => $data) {
+      $values[$number][$key] = $data;
     }
   }
   return $values;
@@ -89,46 +88,18 @@ function add_node_value(&$node, $value, $fields_names) {
   return $node;
 }
 
-//function taking_person_ids($persons) {
-//  if (isset ($persons)) {
-//    $persons_arr = array();
-//    foreach ($persons as $persons_value) {
-//      $sql = "SELECT nid FROM {node} WHERE type = 'person' and title = '%s'";
-//      $q = db_query($sql, $persons_value);
-//        while ($nid = db_result($q)) {
-//        $persons_arr[][nid] = $nid;
-//      }
-//    }
-//    dpr($persons_arr);
-//    dpm($persons_arr);
-//    return $persons_arr;
-//  }
-//}
-
-function taking_person_ids($first_name, $last_name) {
-//  unset ($nid_first);
-  unset ($nid_last);
-//  if ((isset ($first_name)) || (isset ($last_name))) {
-  if (isset ($last_name)) {
+// taking person id (they should be created first)
+// TODO the same for files and other refs (bib, sites)
+function taking_person_ids($persons) {
+  if (isset ($persons)) {
     $persons_arr = array();
-//    dpm($first_name);
-//    dpm($last_name);
-//      $sql_first = "SELECT nid FROM {content_type_person} WHERE field_person_first_name_value = '%s' AND field_person_last_name_value = '%s'";
-      $sql_last  = "SELECT nid FROM {content_type_person} WHERE field_person_last_name_value = '%s'";
-//      $sql = "SELECT nid FROM {node} WHERE type = 'person' and title = '%s'";
-//      $q_first   = db_query($sql_first, $first_name, $last_name);
-//        while ($nid_first_last = db_result($q_first)) {
-////          dpr($nid_first_last);
-//          $persons_arr[][$nid_first_last] = $nid_first_last;
-//      }
-      $q_last   = db_query($sql_last, $last_name);
-        while ($nid_last = db_result($q_last)) {
-//          dpr($nid_last);
-//          $persons_arr[][nid_last] = $nid_last;
-          $persons_arr[] = $nid_last;
+    foreach ($persons as $persons_value) {
+      $sql = "SELECT nid FROM {node} WHERE type = 'person' and title = '%s'";
+      $q = db_query($sql, $persons_value);
+        while ($nid = db_result($q)) {
+        $persons_arr[][nid] = $nid;
       }
-    dpr($persons_arr);
-    dpm($persons_arr);
+    }
     return $persons_arr;
   }
 }
@@ -191,120 +162,8 @@ function add_timezone_to_date_arr(&$date_arr) {
   return $date_arr;
 }
 
-//function
-
-function show_persons($current_person, $persons_arr) {
-  $uniq_persons_nid = array_unique($persons_arr);
-//  dpr($current_person);
-/*
- *     [Last Name] => Shaver
-    [Organization] => Marine Biological Lab
-    [Role] => Lead Principal Investigator
-    [Title] =>
-    [Email] => gshaver@mbl.edu
-    [Address] => 7 MBL St
-    [City] => Woods Hole
-    [State] => MA
-    [Zip Code] => 02543
-    [Country] => USA
-    [Phone] => 508 289 7492
-    [Fax] =>
-    [personid] =>
-    [person_uid] =>
-    [Publications] =>
-
- */
-//  dpm($uniq_persons_nid);
-    echo '<table><thead>
-  <th>First1</th><th>Last1</th><th>Email1</th>
-  </thead>
-  <tbody>';
-    echo '<tr><td>' . $current_person['First Name'];
-//    echo '</td><td>' . $current_person['Last Name'];
-    echo '</td><td>' . $current_person['Last Name'];
-    echo '</td><td>' . $current_person['Email'];
-    echo '</tr>';
-
-
-  echo '</tbody></table>';
-
-
-  echo '<table><thead>
-  <th>First2</th><th>Last2</th><th>Email2</th>
-  </thead>
-  <tbody>';
-  foreach ($uniq_persons_nid as $value) {
-//    $sql = "SELECT nid FROM {node} WHERE nid = '%s'";
-//    $db_result = db_query($sql, $value['nid_last']);
-    $person_node = node_load($value);
-    $first2 = $person_node->field_person_first_name[0]['value'];
-    $last2  = $person_node->field_person_last_name[0]['value'];
-    $email2 = $person_node->field_person_email[0]['email'];
-    /*
-     * field_person_organization,
-     * field_person_role
-     * field_person_title
-     * field_person_address
-field_person_city
-field_person_state
-field_person_zipcode
-field_person_country
-field_person_phone
-field_person_fax
-field_person_personid
-field_person_uid[0]['uid']
-
-     */
-//    dpr($person_node);
-//    TODO: show every name only once
-    $header       = array('NID', 'First2', 'Last2', 'Email2');
-//    $rows['data'] = array();
-//    $rows[] = array(array('data' => 'Type = ' . $node_type, 'colspan' => 2, 'font size' => 4, 'align' => 'center'));
-//    $rows[] = array('First1 = ', 'Last1', 'Email1', $first2, $last2, $email2);
-//    return theme_table($header, $rows);
-
-    echo '<tr><td>' . $person_node->nid;
-    echo '</td><td>' . $first2;
-    echo '</td><td>' . $last2;
-    echo '</td><td>' . $email2;
-    echo '</tr>';
-  }
-    echo '</tbody></table>';
-}
-
-/*
- * function display_report_page()
-{
-  $csv2drupal_submit_time = variable_get(csv2drupal_submit_time, time());
-  $sql = "SELECT nid FROM {node} WHERE created >= %d ORDER BY nid DESC";
-  $db_result = db_query($sql, $csv2drupal_submit_time);
-
-  $header       = array('Title', 'Nid');
-  $rows['data'] = array();
-  while ($res   = db_fetch_object($db_result)) {
-    $nid        = $res->nid;
-    $node       = node_load($nid);
-    $node_nid   = $node->nid;
-    $node_title = $node->title;
-    $node_type  = $node->type;
-    $node_link  = l($nid, 'node/'.$nid);
-    if ($node_type != $old_node_type) {
-      $rows[] = array(array('data' => 'Type = ' . $node_type, 'colspan' => 2, 'font size' => 4, 'align' => 'center'));
-      $old_node_type = $node_type;
-    }
-    $rows[] = array('Title = ' . $node_title, $node_link);
-  }
-  if (count($rows) == 1)
-      $rows[] = array("No nodes was saved");
-
-  variable_del(csv2drupal_submit_time);
-  return theme_table($header, $rows);
-}
- */
-
 function create_person_node($content, &$ref_nids) {
 //  dpr("create_person_node");
-  $persons_arr = array ();
   $person_values = create_values($content);
   $fields_names  = person_fields();
   foreach ($person_values as $value) {
@@ -318,18 +177,6 @@ function create_person_node($content, &$ref_nids) {
       $node->field_person_email[0]['email'] = $value['Email'];
       $node->field_person_uid[0]['uid'] = $value['person_uid'];
       $node->field_person_pubs[0]['nid'] = $value['Publications'];
-      $persons_arr = taking_person_ids($value['First Name'], $value['Last Name']);
-//      dpr($persons_arr);
-//      dpm($persons_arr);
-      if($persons_arr) {
-        dpr('$persons_arr');
-        dpm('$persons_arr');
-        show_persons($value, $persons_arr);
-      }
-      else {
-        dpr('no persons');
-        dpm('no persons');
-      }
       node_save(&$node);
       $ref_nids['person'][] = $node->nid;
     }
@@ -372,28 +219,8 @@ function create_site_node($content, &$ref_nids) {
       $node->type  = "research_site";
       $node->uid   =  get_uid();
       $node->title = $value['Title'];
-      $node        = add_node_value($node, $value, $fields_names);
-      $coordinates = $value['Coordinates'];
-      $q_geo       = db_result(db_query("SELECT GeomFromText('%s')", $coordinates));
-      $node->field_research_site_pt_coords[0]['geo'] = $q_geo;
+      $node = add_node_value($node, $value, $fields_names);
 
-      /*
-       * user warning: Incorrect parameter count in the call to native function 'AsBinary' query: geo_field /* anna : geo_field */
-//      SELECT AsBinary() AS geo FROM WHERE vid = 12038 in /Library/WebServer/Documents/drupal6-local/sites/all/modules/geo/modules/geo_field/geo_field.module on line 83.
-//       check $coordinates format!!!
-
-
-//      echo 'HERE!';
-//      dpr($coordinates);
-//      print $coordinates;
-//      $q = db_result(db_query("SELECT PointFromText('%s')", 'POINT(1 1)'));
-////      $q = db_result(db_query("SELECT GeomFromText('%s')", 'POINT(31.5 42.2)'));
-////      PointFromText(Point(a,b))
-////      GeomFromWKB(Point(1,2)
-//      $node->field_research_site_pt_coords[0]['geo'] = $q;
-//      $wkt = geo_value($q, 'wkt', 'wkb');
-//      dpr($wkt);
-//      print_r($wkt);
 //      parse 'Coordinates' here
       //    'field_research_site_pt_coords'   => 'Coordinates',
 //      $node->field_geofield[0]['geo'] = 'POINT(30 30)';
@@ -464,28 +291,34 @@ function create_site_node($content, &$ref_nids) {
 
       node_save(&$node);
       $ref_nids['research_site'][] = $node->nid;
-//      $site_nid = $node->nid;
-//      $sql = "SELECT X(field_research_site_pt_coords_geo) as longitude,
-//             Y(field_research_site_pt_coords_geo) as latitude,
-//             AsText(field_research_site_pt_coords_geo) as geo_point
-//             FROM {content_type_research_site}
-//             WHERE vid=(SELECT max(vid)
-//                        FROM {content_type_research_site}
-//                        WHERE nid = '%d')";
-//
-//      $query = db_query($sql, $site_nid);
-//      $geo_lon_lat_point =  db_fetch_array($query);
-//      dpr($geo_lon_lat_point);
-//      dpm($geo_lon_lat_point);
+      $site_nid = $node->nid;
+      $sql = "SELECT X(field_research_site_pt_coords_geo) as longitude,
+             Y(field_research_site_pt_coords_geo) as latitude,
+             AsText(field_research_site_pt_coords_geo) as geo_point
+             FROM {content_type_research_site}
+             WHERE vid=(SELECT max(vid)
+                        FROM {content_type_research_site}
+                        WHERE nid = '%d')";
+
+      $query = db_query($sql, $site_nid);
+      $geo_lon_lat_point =  db_fetch_array($query);
+      dpr($geo_lon_lat_point);
+      dpm($geo_lon_lat_point);
 
 //      select GeomFromText(select GeomFromText('POINT(31.5 42.2)');
 
 
+      $q = db_result(db_query("SELECT GeomFromText('%s')", 'POINT(31.5 42.2)'));
+//      dpr($q);
+//      dpr($q);
+//      print_r($q);
+      
+      $node->field_research_site_pt_coords[0]['geo'] = $q;
 //      node_save(&$node);
 
-//      dpr($node);
-//      dpm($node);
-//      print_r($node);
+      dpr($node);
+      dpm($node);
+      print_r($node);
 
 //      if (is_string($shp['data'])) {
 //        $values['geo'] = db_result(db_query("SELECT GeomFromText('%s', %d)", $shp['data'], $srid));
@@ -500,56 +333,11 @@ function create_site_node($content, &$ref_nids) {
   return $ref_nids;
 }
 
-function create_file_object($file) {
-  $details = stat($file);
-  $filesize = $details['size'];
-
-  // Get the path to your Drupal site's files directory
-  $dest = file_directory_path();
-
-  // Copy the file to the Drupal files directory
-  if(!file_copy($file, $dest)) {
-      echo "Failed to move file: $file.\n";
-      return;
-  } else {
-      // file_move might change the name of the file
-      $name = basename($file);
-  }
-
-  // Build the file object
-  $file_obj = new stdClass();
-  $file_obj->filename   = $name;
-  $file_obj->filepath   = $file;
-  $file_obj->filemime   = file_get_mimetype($name);
-  $file_obj->filesize   = $filesize;
-  $file_obj->filesource = $name;
-  $file_obj->uid        = get_uid();
-  $file_obj->status     = FILE_STATUS_TEMPORARY;
-  $file_obj->timestamp  = time();
-  $file_obj->list       = 1;
-  $file_obj->new        = true;
-
-  // Save file to files table
-  drupal_write_record('files', $file_obj);
-  // change file status to permanent
-  file_set_status($file_obj, 1);
-
-  // Attach the file object to your node
-//  $node->files[$file_obj->fid] = $file_obj;
-//  dpr($file_obj);
-//  dpm($file_obj);
-
-  return $file_obj;
-}
-
-function create_datafile_node($content, &$ref_nids, $file_object) {
+function create_datafile_node($content, &$ref_nids) {
 //  dpr("create_datafile_node");
 //  dpr($ref_nids);
-//  create_file_object();
-//    dpr($file_object);
-//    dpm($file_object);
   $data_file_values = create_values($content);
-  $fields_names     = datafile_fields();
+  $fields_names = datafile_fields();
   foreach ($data_file_values as $value) {
     if (!empty($value['Data File Structure Name'])) {
       $node = new StdClass();
@@ -570,11 +358,46 @@ function create_datafile_node($content, &$ref_nids, $file_object) {
         }
       }
 
-      $node->field_data_file[0] = (array) $file_object;
-
-
 //      in date:                     [date_type] => date
 
+//
+      /*
+[field_data_file] => Array
+(
+[0] => Array
+  (
+      [fid] => 42
+      [list] => 1
+      [data] => Array
+          (
+              [fid] => 42
+              [width] => 0
+              [height] => 0
+              [duration] => 0
+              [audio_format] =>
+              [audio_sample_rate] => 0
+              [audio_channel_mode] =>
+              [audio_bitrate] => 0
+              [audio_bitrate_mode] =>
+              [tags] => Array
+                  (
+                  )
+
+          )
+
+      [uid] => 1
+      [filename] => nodes_test.csv
+      [filepath] => sites/default/files/nodes_test.csv
+      [filemime] => text/csv
+      [filesize] => 225
+      [status] => 1
+      [timestamp] => 1281454967
+      [origname] =>
+  )
+
+)
+
+       */
 
 //      $node->field_dataset_referrer[0]['items'][0]['nid']      = '4255';
 //      foreach ($ref_nids['research_site'] as $dataset_site) {
