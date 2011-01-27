@@ -262,17 +262,11 @@ field_person_uid[0]['uid']
     $rows['data'] = array();
 //    $rows[] = array(array('data' => 'Type = ' . $node_type, 'colspan' => 2, 'font size' => 4, 'align' => 'center'));
     $rows[] = array($nid2, $first2, $last2, $email2);
-//    return theme_table($header, $rows);
-
-//    echo '<tr><td>' . $person_node->nid;
-//    echo '</td><td>' . $first2;
-//    echo '</td><td>' . $last2;
-//    echo '</td><td>' . $email2;
-//    echo '</tr>';
   }
+//  dpr($rows);
 //    echo '</tbody></table>';
 //  $output = theme('table', $header, $rows);
-  $output = theme_table($header, $data);
+  $output = theme_table($header, $rows);
   print $output;
   print popup_filter_process_text('[popup text=' . $output . ' activate=click]');
 
@@ -282,33 +276,21 @@ field_person_uid[0]['uid']
 }
 
 /*
- * function display_report_page()
-{
-  $csv2drupal_submit_time = variable_get(csv2drupal_submit_time, time());
-  $sql = "SELECT nid FROM {node} WHERE created >= %d ORDER BY nid DESC";
-  $db_result = db_query($sql, $csv2drupal_submit_time);
+ function _mymodule_somepage_callback($nid) {
+  $query = db_query("SELECT * FROM {mytablename}");
 
-  $header       = array('Title', 'Nid');
-  $rows['data'] = array();
-  while ($res   = db_fetch_object($db_result)) {
-    $nid        = $res->nid;
-    $node       = node_load($nid);
-    $node_nid   = $node->nid;
-    $node_title = $node->title;
-    $node_type  = $node->type;
-    $node_link  = l($nid, 'node/'.$nid);
-    if ($node_type != $old_node_type) {
-      $rows[] = array(array('data' => 'Type = ' . $node_type, 'colspan' => 2, 'font size' => 4, 'align' => 'center'));
-      $old_node_type = $node_type;
-    }
-    $rows[] = array('Title = ' . $node_title, $node_link);
+  $data = array();
+
+  $i = 0;
+  while ($row = db_fetch_array($query)) {
+    $data[$i] = $row;
+    $i++;
   }
-  if (count($rows) == 1)
-      $rows[] = array("No nodes was saved");
 
-  variable_del(csv2drupal_submit_time);
-  return theme_table($header, $rows);
+  $output = theme_table(array('ID', 'Look', 'Taste'), $data);
+  return $output;
 }
+
  */
 
 function create_person_node($content, &$ref_nids) {
