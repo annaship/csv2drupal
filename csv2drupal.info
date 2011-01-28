@@ -2,4 +2,6 @@
 name = CSV2Drupal
 description = "Export CSV files into predefined custom content types for the LTER project"
 core = 6.x
+package = Metadata upload
+
 

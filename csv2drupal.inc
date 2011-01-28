@@ -324,19 +324,29 @@ function create_person_node($content, &$ref_nids) {
       $node->field_person_uid[0]['uid'] = $value['person_uid'];
       $node->field_person_pubs[0]['nid'] = $value['Publications'];
       $persons_arr = taking_person_ids($value['First Name'], $value['Last Name']);
-//      dpr($persons_arr);
-//      dpm($persons_arr);
+      $current_destination = drupal_get_destination();
+      node_save(&$node);
+      $person_nid = $node->nid;
+      dpr($person_nid);
+      drupal_set_message($person_nid);
+      variable_set('new_person_nid', $person_nid);
+
+      $a = variable_get('new_person_nid', '1');
+      dpr($a);
+      drupal_set_message($a);
+
       if($persons_arr) {
-        dpr('$persons_arr');
-        dpm('$persons_arr');
-        show_persons($value, $persons_arr);
+//        show_persons($value, $persons_arr);
+      drupal_set_message('Compare new and old person\'s information');
+      drupal_goto('personell_check', $current_destination);
       }
       else {
         dpr('no persons');
         dpm('no persons');
       }
-      node_save(&$node);
-      $ref_nids['person'][] = $node->nid;
+
+//      TODO get $person_nid from variables
+      $ref_nids['person'][] = $person_nid;
     }
 //    dpr($node);
   }
