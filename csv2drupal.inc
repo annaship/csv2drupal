@@ -127,10 +127,9 @@ function taking_person_ids($first_name, $last_name) {
 //          $persons_arr[][nid_last] = $nid_last;
           $persons_arr[] = $nid_last;
       }
-//    dpr($persons_arr);
-//    dpm($persons_arr);
-    return $persons_arr;
   }
+  variable_set('old_person_nids', $persons_arr);
+  return $persons_arr;
 }
 
 //function convert_date_range($date_range) {
@@ -331,9 +330,6 @@ function create_person_node($content, &$ref_nids) {
       drupal_set_message($person_nid);
       variable_set('new_person_nid', $person_nid);
 
-      $a = variable_get('new_person_nid', '1');
-      dpr($a);
-      drupal_set_message($a);
 
       if($persons_arr) {
 //        show_persons($value, $persons_arr);
