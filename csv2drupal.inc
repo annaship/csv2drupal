@@ -549,7 +549,8 @@ function create_dataset_node($content, &$ref_nids) {
 //    $node->field_dataset_fieldcrew_ref[0]['value']    = $field_crew;
 //    $node->field_dataset_labcrew_ref[0]['value']      = $lab_crew;
 //
-      $owner = get_person_ref($value, $ref_nids['person']);
+      $dataset_person_refs = get_person_ref($value, $ref_nids['person']);
+      $add_person_refs     = add_person_refs(&$node, $dataset_person_refs);
 //    $node->field_dataset_owner_ref[0]['value']        = $owner;
       if ($ref_nids['research_site']) {
         foreach ($ref_nids['research_site'] as $dataset_site) {
@@ -560,7 +561,7 @@ function create_dataset_node($content, &$ref_nids) {
       $ref_nids['data_set'][] = $node->nid;
     }
   }
-//  dpr($node);
+  dpr($node);
 //  dpm($node);
   return $ref_nids;
 }
@@ -645,46 +646,27 @@ Krumo version 0.2a | http://krumo.sourceforge.net Called from /Users/anna/work/d
 
 //TODO: Associated Researcher - take whole array
 function  get_person_ref($dataset_value, $person_ref_nids) {
+  $dataset_person_refs = array();
 
   $dataset_person_ref_fields = dataset_person_ref_fields();
-  dpm($dataset_person_ref_fields);
-//  foreach ($dataset_person_ref_fields as $dataset_person_ref_name => $csv_title) {
-//    $node->$dataset_person_ref_name = array(array('value' => $value[$csv_title]));
-//  }
-
-
-//  $dataset_roles = array (
-////    $node->field_dataset_contact_ref[0]['value']      = $contact;
-////    $node->field_dataset_owner_ref[0]['value']        = $owner;
-////    $node->field_dataset_datamanager_ref[0]['value']  = $data_manager;
-////    $node->field_dataset_ext_assoc_ref                = $ext_assoc_arr;
-////    $node->field_dataset_fieldcrew_ref[0]['value']    = $field_crew;
-////    $node->field_dataset_labcrew_ref[0]['value']      = $lab_crew;
-//    'Owner',
-//    'Contact',
-//    'Data Manager',
-//    'Field Crew',
-//    'Lab Crew',
-//    'Associated Researcher',
-//  );
-
-//  $owner = $dataset_value['Owner'];
-
-  foreach ($dataset_person_ref_fields as $dataset_role) {
-    dpm($dataset_role);
+  foreach ($dataset_person_ref_fields as $dataset_field_name => $dataset_role) {
     $role = $dataset_value[$dataset_role];
-  foreach ($person_ref_nids as $person_ref_nid) {
-    $node = node_load($person_ref_nid);
-    $title = $node->title;
-    if ($title == $role) {
-//      dpm('URA');
-      dpm('title = ' . $title);
-      dpm('$dataset_role = ' . $dataset_role);
+    foreach ($person_ref_nids as $person_ref_nid) {
+      $node = node_load($person_ref_nid);
+      $title = $node->title;
+      if ($title == $role) {
+        $dataset_person_refs[$dataset_field_name] = $person_ref_nid;
+      }
     }
   }
-  }
   
-  dpm('get_person_ref');
-//  dpm($dataset_value);
-//  dpm($person_ref_nids);
+  return $dataset_person_refs;
+}
+
+function add_person_refs(&$node, $dataset_person_refs) {
+//  TODO: add cycle by inner array, as field_dataset_site_ref
+  foreach ($dataset_person_refs as $key => $value) {
+    $node->$key = array(array('nid' => $value));
+  }
+  return $node;
 }
