@@ -640,6 +640,7 @@ Krumo version 0.2a | http://krumo.sourceforge.net Called from /Users/anna/work/d
 
  */
 
+//TODO: Associated Researcher - take whole array
 function  get_person_ref($dataset_value, $person_ref_nids) {
 
   $dataset_roles = array (
@@ -651,17 +652,22 @@ function  get_person_ref($dataset_value, $person_ref_nids) {
     'Associated Researcher',
   );
 
-  $owner = $dataset_value['Owner'];
+//  $owner = $dataset_value['Owner'];
+
+  foreach ($dataset_roles as $dataset_role) {
+    $role = $dataset_value[$dataset_role];
   foreach ($person_ref_nids as $person_ref_nid) {
     $node = node_load($person_ref_nid);
-    if ($node == $owner) {
-      dpm($node->title);
+    $title = $node->title;
+    if ($title == $role) {
+//      dpm('URA');
+      dpm('title = ' . $title);
+      dpm('$dataset_role = ' . $dataset_role);
     }
   }
-
+  }
   
   dpm('get_person_ref');
-  dpm($owner);
 //  dpm($dataset_value);
 //  dpm($person_ref_nids);
 }
