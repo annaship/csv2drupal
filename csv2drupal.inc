@@ -644,6 +644,12 @@ Krumo version 0.2a | http://krumo.sourceforge.net Called from /Users/anna/work/d
 function  get_person_ref($dataset_value, $person_ref_nids) {
 
   $dataset_roles = array (
+//    $node->field_dataset_contact_ref[0]['value']      = $contact;
+//    $node->field_dataset_owner_ref[0]['value']        = $owner;
+//    $node->field_dataset_datamanager_ref[0]['value']  = $data_manager;
+//    $node->field_dataset_ext_assoc_ref                = $ext_assoc_arr;
+//    $node->field_dataset_fieldcrew_ref[0]['value']    = $field_crew;
+//    $node->field_dataset_labcrew_ref[0]['value']      = $lab_crew;
     'Owner',
     'Contact',
     'Data Manager',

@@ -18,6 +18,17 @@ function dataset_fields() {
   return $dataset_fields;
 }
 
+function dataset_person_ref_fields() {
+  $dataset_person_ref_fields = array(
+    'field_dataset_owner_ref'        => 'Owner',
+    'field_dataset_contact_ref'      => 'Contact',
+    'field_dataset_datamanager_ref'  => 'Data Manager',
+    'field_dataset_ext_assoc_ref'    => 'Associated Researcher',
+    'field_dataset_fieldcrew_ref'    => 'Field Crew',
+    'field_dataset_labcrew_ref'      => 'Lab Crew',
+  );
+}
+
 function datafile_fields() {
   $datafile_fields = array (
     'field_datafile_description'  => 'Description',
