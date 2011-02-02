@@ -253,7 +253,7 @@ function create_site_node($content, &$ref_nids) {
         $coordinates = "POINT(" . $coord1 . " " . $coord2 . ")";
         $q_geo       = db_result(db_query("SELECT GeomFromText('%s')", $coordinates));
 //        $q_geo       = db_result(db_query("SELECT GeomFromText('POINT(68.6167 -149.31)')"));
-        $node->field_research_site_pt_coords[0]['geo'] = $coordinates;
+//        $node->field_research_site_pt_coords[0]['geo'] = $coordinates;
 //        $node->field_research_site_pt_coords[0]['geo'] = $q_geo;
       }
 
