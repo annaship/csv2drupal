@@ -106,6 +106,8 @@ function add_node_value(&$node, $value, $fields_names) {
 //}
 
 function taking_person_ids($first_name, $last_name) {
+//  dpr($last_name);
+//  dpm($last_name);
 //  unset ($nid_first);
   unset ($nid_last);
 //  if ((isset ($first_name)) || (isset ($last_name))) {
@@ -326,19 +328,20 @@ function create_person_node($content, &$ref_nids) {
       $current_destination = drupal_get_destination();
       node_save(&$node);
       $person_nid = $node->nid;
-      dpr($person_nid);
-      drupal_set_message($person_nid);
+//      dpr($person_nid);
+//      drupal_set_message($person_nid);
       variable_set('new_person_nid', $person_nid);
 
 
-      if($persons_arr) {
+      if ($persons_arr) {
 //        show_persons($value, $persons_arr);
-      drupal_set_message('Compare new and old person\'s information');
-      drupal_goto('personell_check', $current_destination);
+        drupal_set_message('Compare new and old person\'s information');
+        drupal_goto('personell_check');
+//      drupal_goto('personell_check', $current_destination);
       }
       else {
-        dpr('no persons');
-        dpm('no persons');
+//        dpr('no persons');
+//        dpm('no persons');
       }
 
 //      TODO get $person_nid from variables
