@@ -89,44 +89,13 @@ function add_node_value(&$node, $value, $fields_names) {
   return $node;
 }
 
-//function taking_person_ids($persons) {
-//  if (isset ($persons)) {
-//    $persons_arr = array();
-//    foreach ($persons as $persons_value) {
-//      $sql = "SELECT nid FROM {node} WHERE type = 'person' and title = '%s'";
-//      $q = db_query($sql, $persons_value);
-//        while ($nid = db_result($q)) {
-//        $persons_arr[][nid] = $nid;
-//      }
-//    }
-//    dpr($persons_arr);
-//    dpm($persons_arr);
-//    return $persons_arr;
-//  }
-//}
-
-function taking_person_ids($first_name, $last_name) {
-//  dpr($last_name);
-//  dpm($last_name);
-//  unset ($nid_first);
+function taking_person_ids($last_name) {
   unset ($nid_last);
-//  if ((isset ($first_name)) || (isset ($last_name))) {
   if (isset ($last_name)) {
     $persons_arr = array();
-//    dpm($first_name);
-//    dpm($last_name);
-//      $sql_first = "SELECT nid FROM {content_type_person} WHERE field_person_first_name_value = '%s' AND field_person_last_name_value = '%s'";
       $sql_last  = "SELECT nid FROM {content_type_person} WHERE field_person_last_name_value = '%s'";
-//      $sql = "SELECT nid FROM {node} WHERE type = 'person' and title = '%s'";
-//      $q_first   = db_query($sql_first, $first_name, $last_name);
-//        while ($nid_first_last = db_result($q_first)) {
-////          dpr($nid_first_last);
-//          $persons_arr[][$nid_first_last] = $nid_first_last;
-//      }
       $q_last   = db_query($sql_last, $last_name);
         while ($nid_last = db_result($q_last)) {
-//          dpr($nid_last);
-//          $persons_arr[][nid_last] = $nid_last;
           $persons_arr[] = $nid_last;
       }
   }
@@ -134,19 +103,10 @@ function taking_person_ids($first_name, $last_name) {
   return $persons_arr;
 }
 
-//function convert_date_range($date_range) {
-//  if (preg_match_all("/(\d{1,2}).(\d{1,2}).(\d{2,4})/", $date_range, $matches, PREG_SET_ORDER)) {
-//    foreach ($matches as $match) {
-//        $date = str_replace('-', '/', $match[0]);
-//        $dates[] = strftime("%G-%m-%dT00:00:00", strtotime($date));
-//    }
-//  }
-//  return $dates;
-//}
-
 //TODO change format:
 /*
- * Publication Date	field_dataset_publication_date	Datetime
+dd-mmm-yyyy format
+ *  * Publication Date	field_dataset_publication_date	Datetime
  * Date Range	field_beg_end_date	Date
  *
  *  */
@@ -192,104 +152,6 @@ function add_timezone_to_date_arr(&$date_arr) {
   return $date_arr;
 }
 
-//function
-
-function show_persons($current_person, $persons_arr) {
-  $uniq_persons_nid = array_unique($persons_arr);
-//  dpr($current_person);
-/*
- *     [Last Name] => Shaver
-    [Organization] => Marine Biological Lab
-    [Role] => Lead Principal Investigator
-    [Title] =>
-    [Email] => gshaver@mbl.edu
-    [Address] => 7 MBL St
-    [City] => Woods Hole
-    [State] => MA
-    [Zip Code] => 02543
-    [Country] => USA
-    [Phone] => 508 289 7492
-    [Fax] =>
-    [personid] =>
-    [person_uid] =>
-    [Publications] =>
-
- */
-//  dpm($uniq_persons_nid);
-//    echo '<table><thead>
-//  <th>First1</th><th>Last1</th><th>Email1</th>
-//  </thead>
-//  <tbody>';
-//    echo '<tr><td>' . $current_person['First Name'];
-////    echo '</td><td>' . $current_person['Last Name'];
-//    echo '</td><td>' . $current_person['Last Name'];
-//    echo '</td><td>' . $current_person['Email'];
-//    echo '</tr>';
-//
-//
-//  echo '</tbody></table>';
-//
-//
-//  echo '<table><thead>
-//  <th>First2</th><th>Last2</th><th>Email2</th>
-//  </thead>
-//  <tbody>';
-  foreach ($uniq_persons_nid as $value) {
-//    $sql = "SELECT nid FROM {node} WHERE nid = '%s'";
-//    $db_result = db_query($sql, $value['nid_last']);
-    $person_node = node_load($value);
-    $nid2   = $person_node->nid;
-    $first2 = $person_node->field_person_first_name[0]['value'];
-    $last2  = $person_node->field_person_last_name[0]['value'];
-    $email2 = $person_node->field_person_email[0]['email'];
-    /*
-     * field_person_organization,
-     * field_person_role
-     * field_person_title
-     * field_person_address
-field_person_city
-field_person_state
-field_person_zipcode
-field_person_country
-field_person_phone
-field_person_fax
-field_person_personid
-field_person_uid[0]['uid']
-
-     */
-//    dpr($person_node);
-//    TODO: show every name only once
-    $header       = array('NID', 'First2', 'Last2', 'Email2');
-    $rows['data'] = array();
-//    $rows[] = array(array('data' => 'Type = ' . $node_type, 'colspan' => 2, 'font size' => 4, 'align' => 'center'));
-    $rows[] = array($nid2, $first2, $last2, $email2);
-  }
-//  dpr($rows);
-//    echo '</tbody></table>';
-  $output = theme('table', $header, $rows);
-
-//  $output = theme_table($header, $rows);
-  $current_destination = drupal_get_destination();
-//  drupal_set_message('There are such last names in the database');
-//  drupal_goto('check_person', $current_destination);
-// return theme_table($header, $rows).'<br/>'.drupal_get_form("YOUR_FORM_ID");
-
-//  $output = theme(
-//    'table',
-//    $headers,
-//    $data
-//  );
- $limit = 2;
-  $output .= theme('pager', NULL, $limit, 0);
-print theme('page', $output);
-//  print node_view($output, $page = TRUE);
-//  print popup_filter_process_text('[popup text=' . $output . ' activate=click]');
-
-//  $output .= theme('pager', $rows_per_page);
-//  return $output;
-
-}
-
 /*
  function _mymodule_somepage_callback($nid) {
   $query = db_query("SELECT * FROM {mytablename}");
@@ -324,19 +186,16 @@ function create_person_node($content, &$ref_nids) {
       $node->field_person_email[0]['email'] = $value['Email'];
       $node->field_person_uid[0]['uid'] = $value['person_uid'];
       $node->field_person_pubs[0]['nid'] = $value['Publications'];
-      $persons_arr = taking_person_ids($value['First Name'], $value['Last Name']);
+      $persons_arr = taking_person_ids($value['Last Name']);
       $current_destination = drupal_get_destination();
       node_save(&$node);
       $person_nid = $node->nid;
-//      dpr($person_nid);
-//      drupal_set_message($person_nid);
       variable_set('new_person_nid', $person_nid);
 
 
       if ($persons_arr) {
-//        show_persons($value, $persons_arr);
-        drupal_set_message('Compare new and old person\'s information');
-        drupal_goto('personell_check');
+//        drupal_set_message('Compare new and old person\'s information');
+//        drupal_goto('personell_check');
 //      drupal_goto('personell_check', $current_destination);
       }
       else {
@@ -365,12 +224,11 @@ function create_variable_node($content, &$ref_nids) {
       $node->title = $value['Variable Name'];
       $node = add_node_value($node, $value, $fields_names);
   //      $node->field_attribute_assoc_datafile[0]['value'] = $value['Associated Data Files'];
-  //      TODO node_save here
-  //      TODO collect nids into array and return it
       node_save(&$node);
       $ref_nids['variable'][] = $node->nid;
     }
 //  dpr($node);
+//  dpm($node);
 //  print_r($node);
   }
   return $ref_nids;
@@ -387,8 +245,25 @@ function create_site_node($content, &$ref_nids) {
       $node->uid   =  get_uid();
       $node->title = $value['Title'];
       $node        = add_node_value($node, $value, $fields_names);
-      $coordinates = $value['Coordinates'];
-      $q_geo       = db_result(db_query("SELECT GeomFromText('%s')", $coordinates));
+//      dpr($value['Coordinates']);
+//      dpm($value['Coordinates']);
+      if (preg_match("/(.+),\s(.+)/", $value['Coordinates'], $matches)) {
+        $coord1 = $matches[1];
+        $coord2 = $matches[2];
+      }
+
+
+      $coordinates = $coord1 . " " . $coord2;
+//      $value['Coordinates'];
+//      dpr($coordinates);
+//      dpm($coordinates);
+
+//      $q_geo       = db_result(db_query("SELECT GeomFromText('%s')", $coordinates));
+//      `POINT(1 1)`
+      $q_geo       = db_result(db_query("SELECT GeomFromText('POINT(68.6167 -149.31)')"));
+//      dpr($q_geo);
+//      dpm($q_geo);
+      print_r($q_geo);
       $node->field_research_site_pt_coords[0]['geo'] = $q_geo;
 
       /*
@@ -685,6 +560,7 @@ function create_dataset_node($content, &$ref_nids) {
     }
   }
 //  dpr($node);
+//  dpm($node);
   return $ref_nids;
 }
 
