@@ -27,6 +27,7 @@ function dataset_person_ref_fields() {
     'field_dataset_fieldcrew_ref'    => 'Field Crew',
     'field_dataset_labcrew_ref'      => 'Lab Crew',
   );
+  return $dataset_person_ref_fields;
 }
 
 function datafile_fields() {

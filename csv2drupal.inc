@@ -72,6 +72,8 @@ function get_uid() {
 
 //restructure arrays from Excel
 function create_values($content) {
+//    dpr($content);
+//  TODO: take here all Assosiated reserchers names from dataset!
   $values = array();
   if ($content) {
     foreach ($content as $key => $value) {
@@ -84,6 +86,7 @@ function create_values($content) {
 }
 
 function add_node_value(&$node, $value, $fields_names) {
+//  dpm($value);
   foreach ($fields_names as $node_field_name => $csv_title) {
     $node->$node_field_name = array(array('value' => $value[$csv_title]));
   }
@@ -643,24 +646,32 @@ Krumo version 0.2a | http://krumo.sourceforge.net Called from /Users/anna/work/d
 //TODO: Associated Researcher - take whole array
 function  get_person_ref($dataset_value, $person_ref_nids) {
 
-  $dataset_roles = array (
-//    $node->field_dataset_contact_ref[0]['value']      = $contact;
-//    $node->field_dataset_owner_ref[0]['value']        = $owner;
-//    $node->field_dataset_datamanager_ref[0]['value']  = $data_manager;
-//    $node->field_dataset_ext_assoc_ref                = $ext_assoc_arr;
-//    $node->field_dataset_fieldcrew_ref[0]['value']    = $field_crew;
-//    $node->field_dataset_labcrew_ref[0]['value']      = $lab_crew;
-    'Owner',
-    'Contact',
-    'Data Manager',
-    'Field Crew',
-    'Lab Crew',
-    'Associated Researcher',
-  );
+  $dataset_person_ref_fields = dataset_person_ref_fields();
+  dpm($dataset_person_ref_fields);
+//  foreach ($dataset_person_ref_fields as $dataset_person_ref_name => $csv_title) {
+//    $node->$dataset_person_ref_name = array(array('value' => $value[$csv_title]));
+//  }
+
+
+//  $dataset_roles = array (
+////    $node->field_dataset_contact_ref[0]['value']      = $contact;
+////    $node->field_dataset_owner_ref[0]['value']        = $owner;
+////    $node->field_dataset_datamanager_ref[0]['value']  = $data_manager;
+////    $node->field_dataset_ext_assoc_ref                = $ext_assoc_arr;
+////    $node->field_dataset_fieldcrew_ref[0]['value']    = $field_crew;
+////    $node->field_dataset_labcrew_ref[0]['value']      = $lab_crew;
+//    'Owner',
+//    'Contact',
+//    'Data Manager',
+//    'Field Crew',
+//    'Lab Crew',
+//    'Associated Researcher',
+//  );
 
 //  $owner = $dataset_value['Owner'];
 
-  foreach ($dataset_roles as $dataset_role) {
+  foreach ($dataset_person_ref_fields as $dataset_role) {
+    dpm($dataset_role);
     $role = $dataset_value[$dataset_role];
   foreach ($person_ref_nids as $person_ref_nid) {
     $node = node_load($person_ref_nid);
