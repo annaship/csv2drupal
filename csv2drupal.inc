@@ -250,21 +250,12 @@ function create_site_node($content, &$ref_nids) {
       if (preg_match("/(.+),\s(.+)/", $value['Coordinates'], $matches)) {
         $coord1 = $matches[1];
         $coord2 = $matches[2];
+        $coordinates = "POINT(" . $coord1 . " " . $coord2 . ")";
+        $q_geo       = db_result(db_query("SELECT GeomFromText('%s')", $coordinates));
+//        $q_geo       = db_result(db_query("SELECT GeomFromText('POINT(68.6167 -149.31)')"));
+        $node->field_research_site_pt_coords[0]['geo'] = $coordinates;
+//        $node->field_research_site_pt_coords[0]['geo'] = $q_geo;
       }
-
-
-      $coordinates = $coord1 . " " . $coord2;
-//      $value['Coordinates'];
-//      dpr($coordinates);
-//      dpm($coordinates);
-
-//      $q_geo       = db_result(db_query("SELECT GeomFromText('%s')", $coordinates));
-//      `POINT(1 1)`
-      $q_geo       = db_result(db_query("SELECT GeomFromText('POINT(68.6167 -149.31)')"));
-//      dpr($q_geo);
-//      dpm($q_geo);
-      print_r($q_geo);
-      $node->field_research_site_pt_coords[0]['geo'] = $q_geo;
 
       /*
        * user warning: Incorrect parameter count in the call to native function 'AsBinary' query: geo_field /* anna : geo_field */
