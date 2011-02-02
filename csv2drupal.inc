@@ -77,7 +77,24 @@ function create_values($content) {
   $values = array();
   if ($content) {
     foreach ($content as $key => $value) {
+
+//        dpm('$key = ' . $key);
       foreach ($value as $number => $data) {
+//        TODO $key in array of all dataset_person_ref
+//        if (preg_match("/node/", $key) AND $value == 1) {
+
+        if ($key == 'Associated Researcher' AND (preg_match("/,/", $data))) {
+//          TODO: move to a function
+          if (preg_match_all("/([^,]+)/", $data, $matches, PREG_SET_ORDER)) {
+            dpm($matches);
+//            foreach ($matches as $match) {
+//              TODO: create an array with all names
+//              and send to dataset_person_ref
+//            }
+          }
+          dpm('data = ' . $data);
+          dpm('$number = ' . $number);
+        }
         $values[$number][$key] = $data;
       }
     }
@@ -175,9 +192,16 @@ function add_timezone_to_date_arr(&$date_arr) {
  */
 
 function create_person_node($content, &$ref_nids) {
+//  TODO: show Jim
+//  dpm('Person content: ');
+//  dpm($content);
+//  dpm($ref_nids['person']);
 //  dpr("create_person_node");
   $persons_arr = array ();
   $person_values = create_values($content);
+//  TODO: show Jim
+//  dpm('$person_values: ');
+//  dpm($person_values);
   $fields_names  = person_fields();
   foreach ($person_values as $value) {
     if (!empty($value['Last Name'])) {
@@ -519,9 +543,13 @@ function create_keywords_node($content, &$ref_nids) {
 }
 
 function create_dataset_node($content, &$ref_nids) {
-//  dpr($ref_nids);
+  //  TODO: show Jim
+//  dpm('Content: ');
+//  dpm($content);
 //  dpm($ref_nids['person']);
   $dataset_values = create_values($content);
+//  dpm('$dataset_values: ');
+//  dpm($dataset_values);
   $fields_names   = dataset_fields();
   foreach ($dataset_values as $value) {
 //  TODO: collect names here (e.g. "Associated Researcher")
@@ -539,7 +567,6 @@ function create_dataset_node($content, &$ref_nids) {
 //    $node->field_dataset_biblio_ref[0]['value']       = $related_bibliography;
 //    $node->field_dataset_contact_ref[0]['value']      = $contact;
 
-      dpm($dataset_values);
 
       foreach ($ref_nids['data_file'] as $data_file_nid) {
         $node->field_dataset_datafile_ref[]['nid']      = $data_file_nid;
