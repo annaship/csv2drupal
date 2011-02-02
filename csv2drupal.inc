@@ -47,6 +47,7 @@ function get_data_from_excel_file($file) {
       $content[$sheet_names[$loadedSheetName]] = ${$sheet_names[$loadedSheetName]};
     }
   }
+//  dpr($content);
   return $content;
 }
 
@@ -515,7 +516,8 @@ function create_keywords_node($content, &$ref_nids) {
 }
 
 function create_dataset_node($content, &$ref_nids) {
-//  dpr("create_dataset_node");
+//  dpr($ref_nids);
+//  dpm($ref_nids['person']);
   $dataset_values = create_values($content);
   $fields_names   = dataset_fields();
   foreach ($dataset_values as $value) {
@@ -533,6 +535,9 @@ function create_dataset_node($content, &$ref_nids) {
 
 //    $node->field_dataset_biblio_ref[0]['value']       = $related_bibliography;
 //    $node->field_dataset_contact_ref[0]['value']      = $contact;
+
+//      dpm($dataset_values);
+
       foreach ($ref_nids['data_file'] as $data_file_nid) {
         $node->field_dataset_datafile_ref[]['nid']      = $data_file_nid;
       }
@@ -540,6 +545,8 @@ function create_dataset_node($content, &$ref_nids) {
 //    $node->field_dataset_ext_assoc_ref                = $ext_assoc_arr;
 //    $node->field_dataset_fieldcrew_ref[0]['value']    = $field_crew;
 //    $node->field_dataset_labcrew_ref[0]['value']      = $lab_crew;
+//
+      $owner = get_person_ref($value, $ref_nids['person']);
 //    $node->field_dataset_owner_ref[0]['value']        = $owner;
       if ($ref_nids['research_site']) {
         foreach ($ref_nids['research_site'] as $dataset_site) {
@@ -581,4 +588,80 @@ function display_report_page()
 
   variable_del(csv2drupal_submit_time);
   return theme_table($header, $rows);
+}
+
+/*
+ * Short Name (String, 18 characters ) 1982_2000gs81tusbm
+Dataset ID (Float) 10004
+Purpose (NULL)
+Additional Information (NULL)
+Data File Structure (String, 18 characters ) 1982_2000gs81tusbm
+Related Links (NULL)
+Related Bibliography (NULL)
+Maintenance (String, 345 characters ) Merged the 1982 through 2000 harvest files into...
+Owner (String, 10 characters ) Gus Shaver
+Contact (String, 12 characters ) Data Manager
+Data Manager (String, 12 characters ) Data Manager
+Field Crew (NULL)
+Lab Crew (NULL)
+Associated Researcher (String, 12 characters ) Terry Chapin
+Publication Date (Float) 2006
+Site (String, 127 characters ) Arctic LTER, Toolik Field Station, North Slope ...
+Date Range (String, 20 characters ) 6/1/1982 - 7-31-2010
+Methods (String, 10972 characters ) EXPERIMENTAL DESIGN AND METHODS: Plots were set...
+Instrumentation (NULL)
+Quality Assurance (NULL)
+ *
+ *     [field_dataset_owner_ref] =&gt; Array
+        (
+            [0] =&gt; Array
+                (
+                    [nid] =&gt; 2880
+                )
+
+            [1] =&gt; Array
+                (
+                    [nid] =&gt; 2881
+                )
+
+        )
+
+
+Lab Crew (NULL)
+Associated Researcher (String, 12 characters ) Terry Chapin
+Krumo version 0.2a | http://krumo.sourceforge.net Called from /Users/anna/work/drupal/lter/git_LTER_csv2drupal/csv2drupal.inc, line 618
+... (Array, 5 elements)
+0 (String, 5 characters ) 19073
+1 (String, 5 characters ) 19074
+2 (String, 5 characters ) 19075
+3 (String, 5 characters ) 19076
+4 (String, 5 characters ) 19077
+Krumo version 0.2a | http://krumo.sourceforge.net Called from /Users/anna/work/drupal/lter/git_LTER_csv2drupal/csv2drupal.inc, line 619
+
+ */
+
+function  get_person_ref($dataset_value, $person_ref_nids) {
+
+  $dataset_roles = array (
+    'Owner',
+    'Contact',
+    'Data Manager',
+    'Field Crew',
+    'Lab Crew',
+    'Associated Researcher',
+  );
+
+  $owner = $dataset_value['Owner'];
+  foreach ($person_ref_nids as $person_ref_nid) {
+    $node = node_load($person_ref_nid);
+    if ($node == $owner) {
+      dpm($node->title);
+    }
+  }
+
+  
+  dpm('get_person_ref');
+  dpm($owner);
+//  dpm($dataset_value);
+//  dpm($person_ref_nids);
 }
