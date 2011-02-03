@@ -571,7 +571,6 @@ function create_dataset_node($content, &$ref_nids) {
 //    $node->field_dataset_labcrew_ref[0]['value']      = $lab_crew;
 //
       $dataset_person_refs = get_person_ref($value, $ref_nids['person']);
-      dpm($dataset_person_refs);
       $add_person_refs     = add_person_refs(&$node, $dataset_person_refs);
 //    $node->field_dataset_owner_ref[0]['value']        = $owner;
       if ($ref_nids['research_site']) {
@@ -621,12 +620,7 @@ function  get_person_ref($dataset_value, $person_ref_nids) {
   $dataset_person_ref_fields = dataset_person_ref_fields();
   foreach ($dataset_person_ref_fields as $dataset_field_name => $dataset_role) {
     $name = $dataset_value[$dataset_role];
-    if (!is_array($name)) {
-      $names = (array) $name;
-    }
-    else {
-      $names = $name;
-    }
+    is_array($name) ? $names = $name : $names = (array) $name;
     foreach ($person_ref_nids as $person_ref_nid) {
       $node = node_load($person_ref_nid);
       $title = $node->title;
@@ -635,28 +629,16 @@ function  get_person_ref($dataset_value, $person_ref_nids) {
       }
     }
   }
-//  dpm($dataset_person_refs);
   return $dataset_person_refs;
 }
 
 function add_person_refs(&$node, $dataset_person_refs) {
-//  TODO: add cycle by inner array, as field_dataset_site_ref
-//  dpm('$dataset_person_refs = ');
-//  dpm($dataset_person_refs);
   foreach ($dataset_person_refs as $field_name => $value1) {
     $refs = array();
-//    dpm('$field_name = ');
-//    dpm($field_name);
     foreach ($value1 as $ref) {
-
       $refs[]['nid'] = $ref;
-//      dpm('ref = ');
-//      dpm($ref);
     }
-//    dpm($refs);
     $node->$field_name = $refs;
   }
-//  dpm($node);
-
   return $node;
 }
