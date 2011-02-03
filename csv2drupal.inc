@@ -631,7 +631,7 @@ files (Array, 0 elements)
   $data_file_nids = $ref_nids['data_file'];
   $variable_nids = $ref_nids['variable'];
   
-  $var_to_datafile_reffers = create_data_file_referrer($data_file_nids);
+  $var_to_datafile_reffers = create_referrer($data_file_nids);
 
   if (!empty ($variable_nids)) {
     foreach ($variable_nids as $variable_nid) {
@@ -644,7 +644,7 @@ files (Array, 0 elements)
   }
 //  referrer to dataset in file
 
-  $file_to_set_refferers = create_data_file_referrer($data_set_nids);
+  $file_to_set_refferers = create_referrer($data_set_nids);
   if (!empty ($data_file_nids)) {
    foreach ($data_file_nids as $data_file_nid) {
       foreach ($file_to_set_refferers as $file_to_set_refferer) {
@@ -656,34 +656,21 @@ files (Array, 0 elements)
   }
 }
 
-function create_data_file_referrer($data_file_nids) {
-  $var_to_datafile_reffers = array();
-  if ($data_file_nids) {
-    foreach ($data_file_nids as $data_file_nid) {
-      $file_node = node_load($data_file_nid);
-      $var_to_datafile_reffers[] = array(array(
+function create_referrer($nids) {
+  $reffers = array();
+  if ($nids) {
+    foreach ($nids as $nid) {
+      $node = node_load($nid);
+      $reffers[] = array(array(
         'items' => array(array(
-        'nid'   => $file_node->nid,
-        'vid'   => $file_node->vid,
-        'title' => $file_node->title,
+        'nid'   => $node->nid,
+        'vid'   => $node->vid,
+        'title' => $node->title,
         ))
       ));
     }
   }
-  return $var_to_datafile_reffers;
-}
-
-function create_data_set_referrer($data_set_nids) {
-  $dataset_node = node_load($data_set_nid);
-  $file_to_set_refferer = array(array(
-        'items' => array(array(
-        'nid'   => $file_node->nid,
-        'vid'   => $file_node->vid,
-        'title' => $file_node->title,
-        ))
-      ));
-dpm($file_to_set_refferer);
-  return $file_to_set_refferer;
+  return $reffers;
 }
 
 function display_report_page()
