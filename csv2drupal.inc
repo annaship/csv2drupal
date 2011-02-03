@@ -544,8 +544,6 @@ function create_dataset_node($content, &$ref_nids) {
 //  dpm($content);
 //  dpm($ref_nids['person']);
   $dataset_values = create_values($content);
-//  dpm('$dataset_values: ');
-//  dpm($dataset_values);
   $fields_names   = dataset_fields();
   foreach ($dataset_values as $value) {
 //  TODO: collect names here (e.g. "Associated Researcher")
@@ -622,13 +620,28 @@ function  get_person_ref($dataset_value, $person_ref_nids) {
   $dataset_person_refs = array();
   $dataset_person_ref_fields = dataset_person_ref_fields();
   foreach ($dataset_person_ref_fields as $dataset_field_name => $dataset_role) {
-    $role = $dataset_value[$dataset_role];
+    dpm('$dataset_role = ' . $dataset_role);
+    $name = $dataset_value[$dataset_role];
+//    dpm($name);
+    if (!is_array($name)) {
+      $names = (array) $name;
+    }
+    else {
+      $names = $name;
+    }
+    dpm($names);
     foreach ($person_ref_nids as $person_ref_nid) {
       $node = node_load($person_ref_nid);
       $title = $node->title;
-      if ($title == $role) {
-        $dataset_person_refs[$dataset_field_name] = $person_ref_nid;
+      dpm('title = ' . $title);
+//      dpm($names);
+
+      if (in_array($title, $names)) {
+        dpm('URA');
       }
+//      if ($title == $name) {
+//        $dataset_person_refs[$dataset_field_name] = $person_ref_nid;
+//      }
     }
   }
 
