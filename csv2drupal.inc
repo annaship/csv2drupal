@@ -55,12 +55,9 @@ function create_nodes($content, $file_object) {
   $ref_nids = create_person_node($content['person'], &$ref_nids);
   $ref_nids = create_variable_node($content['variable'], &$ref_nids);
   $ref_nids = create_site_node($content['site'], &$ref_nids);
-//  dpr($file_object);
   $ref_nids = create_datafile_node($content['datafile'], &$ref_nids, $file_object);
-//  echo 'in create_node: file';
   $ref_nids = create_dataset_node($content['dataset'], &$ref_nids);
   $keywords_taxonomy = create_keywords_node($content['keywords'], &$ref_nids);
-//  dpr($ref_nids);
   return $ref_nids;
 //  TODO link referrer
 }
@@ -216,7 +213,6 @@ function create_person_node($content, &$ref_nids) {
       $person_nid = $node->nid;
       variable_set('new_person_nid', $person_nid);
 
-
       if ($persons_arr) {
 //        drupal_set_message('Compare new and old person\'s information');
 //        drupal_goto('personell_check');
@@ -248,6 +244,7 @@ function create_variable_node($content, &$ref_nids) {
       $node->title = $value['Variable Name'];
       $node = add_node_value($node, $value, $fields_names);
   //      $node->field_attribute_assoc_datafile[0]['value'] = $value['Associated Data Files'];
+//      field_attribute_assoc_datafile
       node_save(&$node);
       $ref_nids['variable'][] = $node->nid;
     }
@@ -546,7 +543,6 @@ function create_dataset_node($content, &$ref_nids) {
   $dataset_values = create_values($content);
   $fields_names   = dataset_fields();
   foreach ($dataset_values as $value) {
-//  TODO: collect names here (e.g. "Associated Researcher")
     if (!empty($value['Title'])) {
       $node = new StdClass();
       $node->type                                       = "data_set";
@@ -557,22 +553,13 @@ function create_dataset_node($content, &$ref_nids) {
       $node->field_beg_end_date[0]['date_type']         = 'datetime';
       $node->field_dataset_publication_date[0]          = create_single_date_arr($value['Publication Date']);
       $node->field_dataset_publication_date[0]['date_type'] = 'date';
-
+//TODO: take ref for biblio
 //    $node->field_dataset_biblio_ref[0]['value']       = $related_bibliography;
-//    $node->field_dataset_contact_ref[0]['value']      = $contact;
-
-
       foreach ($ref_nids['data_file'] as $data_file_nid) {
         $node->field_dataset_datafile_ref[]['nid']      = $data_file_nid;
       }
-//    $node->field_dataset_datamanager_ref[0]['value']  = $data_manager;
-//    $node->field_dataset_ext_assoc_ref                = $ext_assoc_arr;
-//    $node->field_dataset_fieldcrew_ref[0]['value']    = $field_crew;
-//    $node->field_dataset_labcrew_ref[0]['value']      = $lab_crew;
-//
       $dataset_person_refs = get_person_ref($value, $ref_nids['person']);
       $add_person_refs     = add_person_refs(&$node, $dataset_person_refs);
-//    $node->field_dataset_owner_ref[0]['value']        = $owner;
       if ($ref_nids['research_site']) {
         foreach ($ref_nids['research_site'] as $dataset_site) {
           $node->field_dataset_site_ref[]['nid']        = $dataset_site;
@@ -582,9 +569,107 @@ function create_dataset_node($content, &$ref_nids) {
       $ref_nids['data_set'][] = $node->nid;
     }
   }
+//  dpm($ref_nids);
+  add_referrers($ref_nids);
 //  dpr($node);
 //  dpm($node);
   return $ref_nids;
+}
+
+function add_referrers($ref_nids) {
+  /*data_file (Array, 1 element)
+0 (String, 5 characters ) 23823
+data_set (Array, 1 element)
+0 (String, 5 characters ) 23824
+   *
+   * field_attribute_assoc_datafile
+   field_attribute_assoc_datafile (Array, 1 element)
+0 (Array, 4 elements)
+items (Array, 1 element)
+0 (Array, 4 elements)
+nid (String, 5 characters ) 18462
+vid (String, 5 characters ) 18462
+title (String, 30 characters ) El Verde Canopy Arthropodsdata
+referrers (Array, 1 element)
+field_datafile_variable_ref (String, 27 characters ) field_datafile_variable_ref
+limit (Integer) 0
+element (Integer) 0
+pager (String, 0 characters )
+0 (Boolean) FALSE
+taxonomy (Array, 0 elements)
+files (Array, 0 elements)
+   *
+   *     [field_attribute_assoc_datafile] => Array
+        (
+            [0] => Array
+                (
+                    [items] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [nid] => 18462
+                                    [vid] => 18462
+                                    [title] => El Verde Canopy Arthropodsdata
+                                    [referrers] => Array
+                                        (
+                                            [field_datafile_variable_ref] => field_datafile_variable_ref
+                                        )
+
+                                )
+
+                        )
+
+                    [limit] => 0
+                    [element] => 0
+                    [pager] =&gt;
+                )
+
+        )
+
+   */
+  $data_set_nids = $ref_nids['data_set'];
+  $data_file_nids = $ref_nids['data_file'];
+  $variable_nids = $ref_nids['variable'];
+
+//  referrer to file in var
+  if (!empty ($variable_nids)) {
+    foreach ($variable_nids as $variable_nid) {
+      foreach ($data_file_nids as $data_file_nid) {
+        $var_node = node_load($variable_nid);
+        $var_node->field_datafile_variable_ref = create_data_file_referrer($data_file_nid);
+      }
+    }
+  }
+
+//  referrer to dataset in file
+}
+
+function create_data_file_referrer($data_file_nid) {
+//   create once, use for every var
+  $file_node = node_load($data_file_nid);
+//array(array('data'=>
+  $b = array(array(
+   'items' => array(array(
+     'nid' => $file_node->nid,
+     'vid' => $file_node->vid,
+     'title' => $file_node->title,
+     'referrers' => array('field_datafile_variable_ref' => field_datafile_variable_ref)
+    ))
+  ));
+  
+
+  $a = array(
+   'nid' => $file_node->nid,
+   'vid' => $file_node->vid,
+   'title' => $file_node->title,
+   'referrers' => Array
+       (
+           'field_datafile_variable_ref' => field_datafile_variable_ref
+       ),
+  );
+  dpr($b);
+  dpm($b);
+
 }
 
 function display_report_page()
