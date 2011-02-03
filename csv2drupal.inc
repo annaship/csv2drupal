@@ -70,39 +70,33 @@ function get_uid() {
   return $user->uid;
 }
 
-//restructure arrays from Excel
+//restructures arrays from Excel
 function create_values($content) {
-//    dpr($content);
-//  TODO: take here all Assosiated reserchers names from dataset!
+  $dataset_person_ref_fields = dataset_person_ref_fields();
   $values = array();
-  $person_names = array();
   if ($content) {
     foreach ($content as $key => $value) {
-
-//        dpm('$key = ' . $key);
       foreach ($value as $number => $data) {
-//        TODO $key in array of all dataset_person_ref
-//        if (preg_match("/node/", $key) AND $value == 1) {
-
-        if ($key == 'Associated Researcher' AND (preg_match("/,/", $data))) {
-//          TODO: move to a function
-          if (preg_match_all("/([^,]+)/", $data, $matches, PREG_SET_ORDER)) {
-            foreach ($matches as $match) {
-//              dpm($match[1]);
-//              TODO: create an array with all names
-//              and send to dataset_person_ref
-              $person_names[] = $match[1];
-            }
-          }
-          $data = $person_names;
+        if (in_array($key, $dataset_person_ref_fields) AND (preg_match("/,/", $data))) {
+          $data = get_person_array($data);
         }
         $values[$number][$key] = $data;
       }
     }
   }
-  dpm($values);
   return $values;
 }
+
+function  get_person_array($data) {
+  $person_names = array();
+  if (preg_match_all("/([^,]+)/", $data, $matches, PREG_SET_ORDER)) {
+    foreach ($matches as $match) {
+      $person_names[] = $match[1];
+    }
+  }
+  return $person_names;
+}
+
 
 function add_node_value(&$node, $value, $fields_names) {
 //  dpm($value);
@@ -524,7 +518,7 @@ function create_datafile_node($content, &$ref_nids, $file_object) {
 
                     [limit] => 3
                     [element] => 1
-                    [pager] => 
+                    [pager] =>
                 )
 
         )
@@ -638,7 +632,7 @@ function  get_person_ref($dataset_value, $person_ref_nids) {
       }
     }
   }
-  
+
   return $dataset_person_refs;
 }
 
