@@ -2,7 +2,7 @@
 
 require_once 'includes/PHPExcel/IOFactory.php';
 require_once 'csv2drupal_field_name_arrays.inc';
-module_load_include('module', 'geo', 'geo');
+//module_load_include('module', 'geo', 'geo');
 
 function get_data_from_excel_file($file) {
   $sheet_names = array(
@@ -75,6 +75,7 @@ function create_values($content) {
 //    dpr($content);
 //  TODO: take here all Assosiated reserchers names from dataset!
   $values = array();
+  $person_names = array();
   if ($content) {
     foreach ($content as $key => $value) {
 
@@ -86,19 +87,20 @@ function create_values($content) {
         if ($key == 'Associated Researcher' AND (preg_match("/,/", $data))) {
 //          TODO: move to a function
           if (preg_match_all("/([^,]+)/", $data, $matches, PREG_SET_ORDER)) {
-            dpm($matches);
-//            foreach ($matches as $match) {
+            foreach ($matches as $match) {
+//              dpm($match[1]);
 //              TODO: create an array with all names
 //              and send to dataset_person_ref
-//            }
+              $person_names[] = $match[1];
+            }
           }
-          dpm('data = ' . $data);
-          dpm('$number = ' . $number);
+          $data = $person_names;
         }
         $values[$number][$key] = $data;
       }
     }
   }
+  dpm($values);
   return $values;
 }
 
