@@ -620,7 +620,6 @@ function display_report_page()
 //TODO: Associated Researcher - take whole array
 function  get_person_ref($dataset_value, $person_ref_nids) {
   $dataset_person_refs = array();
-
   $dataset_person_ref_fields = dataset_person_ref_fields();
   foreach ($dataset_person_ref_fields as $dataset_field_name => $dataset_role) {
     $role = $dataset_value[$dataset_role];
