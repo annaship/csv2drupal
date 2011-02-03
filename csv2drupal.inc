@@ -91,7 +91,7 @@ function  get_person_array($data) {
   $person_names = array();
   if (preg_match_all("/([^,]+)/", $data, $matches, PREG_SET_ORDER)) {
     foreach ($matches as $match) {
-      $person_names[] = $match[1];
+      $person_names[] = trim($match[1]);
     }
   }
   return $person_names;
@@ -636,7 +636,7 @@ function  get_person_ref($dataset_value, $person_ref_nids) {
       dpm('title = ' . $title);
 //      dpm($names);
 
-      if (in_array($title, $names)) {
+      if (in_array(trim($title), $names)) {
         dpm('URA');
       }
 //      if ($title == $name) {
