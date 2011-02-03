@@ -631,16 +631,16 @@ files (Array, 0 elements)
   $data_file_nids = $ref_nids['data_file'];
   $variable_nids = $ref_nids['variable'];
   $var_to_datafile_reffers = create_data_file_referrer($data_file_nids);
+
   if (!empty ($variable_nids)) {
     foreach ($variable_nids as $variable_nid) {
       foreach ($var_to_datafile_reffers as $var_to_datafile_reffer) {
         $var_node = node_load($variable_nid);
         $var_node->field_datafile_variable_ref = $var_to_datafile_reffer;
       }
+      node_save(&$var_node);
     }
   }
-  dpr($var_node);
-  dpm($var_node);
 //  referrer to dataset in file
 }
 
