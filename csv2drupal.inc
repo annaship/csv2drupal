@@ -216,7 +216,7 @@ function create_person_node($content, &$ref_nids) {
 
       if ($persons_arr) {
 //        drupal_set_message('Compare new and old person\'s information');
-//        drupal_goto('personell_check');
+        drupal_goto('personell_check');
 //      drupal_goto('personell_check', $current_destination);
       }
       else {
@@ -445,11 +445,7 @@ function create_file_object($file) {
 }
 
 function create_datafile_node($content, &$ref_nids, $file_object) {
-//  dpr("create_datafile_node");
-//  dpr($ref_nids);
-//  create_file_object();
-//    dpr($file_object);
-//    dpm($file_object);
+
   $data_file_values = create_values($content);
   $fields_names     = datafile_fields();
   foreach ($data_file_values as $value) {
@@ -473,61 +469,10 @@ function create_datafile_node($content, &$ref_nids, $file_object) {
       }
 
       $node->field_data_file[0] = (array) $file_object;
-
-
-//      in date:                     [date_type] => date
-
-
-//      $node->field_dataset_referrer[0]['items'][0]['nid']      = '4255';
-//      foreach ($ref_nids['research_site'] as $dataset_site) {
-//        $node->field_datafile_site_ref[]['nid']     = $dataset_site;
-//      }
-//      $node->field_dataset_referrer[]['nid']      = $dataset_site;
-//field_dataset_referrer] => Array
-//        (
-//            [0] => Array
-//                (
-//                    [items] => Array
-//                        (
-//                            [0] => Array
-//                                (
-//                                    [nid] => 2775
-
-//    $node->field_dataset_referrer[0]['value']     = $value['Associated Data Set'];
-//$ref_nids['data_set']
-/*
- *             [0] => Array
-                (
-                    [items] => Array
-                        (
-                            [0] => Array
-                                (
-                                    [nid] => 2775
-                                    [vid] => 2775
-                                    [title] => dataset1
-                                    [referrers] => Array
-                                        (
-                                            [field_dataset_datafile_ref] => field_dataset_datafile_ref
-                                        )
-
-                                )
-
-                        )
-
-                    [limit] => 3
-                    [element] => 1
-                    [pager] =>
-                )
-
-        )
-
- */
       node_save(&$node);
       $ref_nids['data_file'][] = $node->nid;
-//      dpr($node);
     }
   }
-//  dpr($ref_nids);
   return $ref_nids;
 }
 

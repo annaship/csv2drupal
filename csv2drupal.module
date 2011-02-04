@@ -27,9 +27,9 @@ function csv2drupal_menu() {
   return $items;
 }
 
-function csv2drupal_page() {
-  return drupal_get_form('csv2drupal_form');
-}
+//function csv2drupal_page() {
+//  return drupal_get_form('csv2drupal_form');
+//}
 
 function csv2drupal_form($form_state) {
   $form = array();
@@ -43,12 +43,12 @@ function csv2drupal_form($form_state) {
    '#size'  => 40,
   );
 
+  $files_path = '/Library/Webserver/Documents' . base_path() . 'sites/all/modules/csv2drupal/files';
+
   $form['dir_name'] = array(
     '#type' => 'textfield',
     '#title' => t('Path to directory'),
-//      home
-//    '#default_value' => '/Users/ashipunova/work/drupal/lter/git_LTER_csv2drupal/files',
-    '#default_value' => '/Users/anna/work/drupal/lter/git_LTER_csv2drupal/files',
+    '#default_value' => $files_path,
     '#size' => 60,
     '#maxlength' => 128,
 //    '#required' => TRUE,
