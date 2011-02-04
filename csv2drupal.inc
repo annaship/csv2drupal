@@ -579,51 +579,9 @@ function create_dataset_node($content, &$ref_nids) {
 function add_referrers($ref_nids) {
 
   $data_file_nids = $ref_nids['data_file'];
-  $variable_nids = $ref_nids['variable'];
 
-  $var_to_datafile_reffers = create_referrer($data_file_nids);
-
-  $nids       = $variable_nids;
-  $referrers  = $var_to_datafile_reffers;
-  $field_name = 'field_datafile_variable_ref';
-  save_ref_node($nids, $referrers, $field_name);
-  
-//  if (!empty ($nids)) {
-//    foreach ($nids as $nid) {
-//      foreach ($referrers as $reffer) {
-//        $var_node = node_load($nid);
-//        $var_node->$field_name = $reffer;
-//      }
-//      node_save(&$var_node);
-//    }
-//  }
-
-//  if (!empty ($variable_nids)) {
-//    foreach ($variable_nids as $variable_nid) {
-//      foreach ($var_to_datafile_reffers as $var_to_datafile_reffer) {
-//        $var_node = node_load($variable_nid);
-//        $var_node->field_datafile_variable_ref = $var_to_datafile_reffer;
-//      }
-//      node_save(&$var_node);
-//    }
-//  }
-//  referrer to dataset in file
-
-  $file_to_set_refferers = create_referrer($ref_nids['data_set']);
-
-  $nids       = $data_file_nids;
-  $referrers  = $file_to_set_refferers;
-  $field_name = 'field_dataset_referrer';
-  save_ref_node($nids, $referrers, $field_name);
-//  if (!empty ($nids) AND !empty ($refferers)) {
-//   foreach ($nids as $nid) {
-//      foreach ($refferers as $refferer) {
-//        $file_node = node_load($nid);
-//        $file_node->$field_name = $refferer;
-//      }
-//      node_save(&$file_node);
-//    }
-//  }
+  save_ref_node($ref_nids['variable'], create_referrer($data_file_nids), 'field_datafile_variable_ref');
+  save_ref_node($data_file_nids, create_referrer($ref_nids['data_set']), 'field_dataset_referrer');
 }
 
 function save_ref_node($nids, $referrers, $field_name) {
@@ -637,41 +595,6 @@ function save_ref_node($nids, $referrers, $field_name) {
     }
   }
 }
-
-/*
-
-function add_referrers($ref_nids) {
-
-  $data_file_nids = $ref_nids['data_file'];
-  $variable_nids = $ref_nids['variable'];
-
-  $var_to_datafile_reffers = create_referrer($data_file_nids);
-  dpm($var_to_datafile_reffers);
-  if (!empty ($variable_nids)) {
-    foreach ($variable_nids as $variable_nid) {
-      foreach ($var_to_datafile_reffers as $var_to_datafile_reffer) {
-        $var_node = node_load($variable_nid);
-        $var_node->field_datafile_variable_ref = $var_to_datafile_reffer;
-      }
-      node_save(&$var_node);
-    }
-  }
-//  referrer to dataset in file
-
-  $file_to_set_refferers = create_referrer($ref_nids['data_set']);
-
-  if (!empty ($data_file_nids)) {
-   foreach ($data_file_nids as $data_file_nid) {
-      foreach ($file_to_set_refferers as $file_to_set_refferer) {
-        $file_node = node_load($data_file_nid);
-        $file_node->field_dataset_referrer = $file_to_set_refferer;
-      }
-      node_save(&$file_node);
-    }
-  }
-}
- *
- */
 
 function create_referrer($nids) {
   $reffers = array();
