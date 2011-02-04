@@ -610,11 +610,15 @@ function add_referrers($ref_nids) {
 
   $file_to_set_refferers = create_referrer($ref_nids['data_set']);
 
-  if (!empty ($data_file_nids)) {
-   foreach ($data_file_nids as $data_file_nid) {
-      foreach ($file_to_set_refferers as $file_to_set_refferer) {
-        $file_node = node_load($data_file_nid);
-        $file_node->field_dataset_referrer = $file_to_set_refferer;
+  $nids       = $data_file_nids;
+  $referrers  = $file_to_set_refferers;
+  $field_name = 'field_dataset_referrer';
+
+  if (!empty ($nids) AND !empty ($refferers)) {
+   foreach ($nids as $nid) {
+      foreach ($refferers as $refferer) {
+        $file_node = node_load($nid);
+        $file_node->$field_name = $refferer;
       }
       node_save(&$file_node);
     }
