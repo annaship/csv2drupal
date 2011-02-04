@@ -586,16 +586,17 @@ function add_referrers($ref_nids) {
   $nids       = $variable_nids;
   $referrers  = $var_to_datafile_reffers;
   $field_name = 'field_datafile_variable_ref';
-
-  if (!empty ($nids)) {
-    foreach ($nids as $nid) {
-      foreach ($referrers as $reffer) {
-        $var_node = node_load($nid);
-        $var_node->$field_name = $reffer;
-      }
-      node_save(&$var_node);
-    }
-  }
+  save_ref_node($nids, $referrers, $field_name);
+  
+//  if (!empty ($nids)) {
+//    foreach ($nids as $nid) {
+//      foreach ($referrers as $reffer) {
+//        $var_node = node_load($nid);
+//        $var_node->$field_name = $reffer;
+//      }
+//      node_save(&$var_node);
+//    }
+//  }
 
 //  if (!empty ($variable_nids)) {
 //    foreach ($variable_nids as $variable_nid) {
@@ -613,14 +614,26 @@ function add_referrers($ref_nids) {
   $nids       = $data_file_nids;
   $referrers  = $file_to_set_refferers;
   $field_name = 'field_dataset_referrer';
+  save_ref_node($nids, $referrers, $field_name);
+//  if (!empty ($nids) AND !empty ($refferers)) {
+//   foreach ($nids as $nid) {
+//      foreach ($refferers as $refferer) {
+//        $file_node = node_load($nid);
+//        $file_node->$field_name = $refferer;
+//      }
+//      node_save(&$file_node);
+//    }
+//  }
+}
 
+function save_ref_node($nids, $referrers, $field_name) {
   if (!empty ($nids) AND !empty ($refferers)) {
-   foreach ($nids as $nid) {
+    foreach ($nids as $nid) {
       foreach ($refferers as $refferer) {
-        $file_node = node_load($nid);
-        $file_node->$field_name = $refferer;
+        $r_node = node_load($nid);
+        $r_node->$field_name = $refferer;
       }
-      node_save(&$file_node);
+      node_save(&$r_node);
     }
   }
 }
