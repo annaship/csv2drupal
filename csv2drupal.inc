@@ -58,6 +58,7 @@ function create_nodes($content, $file_object) {
   $ref_nids = create_datafile_node($content['datafile'], &$ref_nids, $file_object);
   $ref_nids = create_dataset_node($content['dataset'], &$ref_nids);
   $keywords_taxonomy = create_keywords_node($content['keywords'], &$ref_nids);
+  add_referrers($ref_nids);
   return $ref_nids;
 //  TODO link referrer
 }
@@ -570,64 +571,13 @@ function create_dataset_node($content, &$ref_nids) {
     }
   }
 //  dpm($ref_nids);
-  add_referrers($ref_nids);
 //  dpr($node);
 //  dpm($node);
   return $ref_nids;
 }
 
 function add_referrers($ref_nids) {
-  /*data_file (Array, 1 element)
-0 (String, 5 characters ) 23823
-data_set (Array, 1 element)
-0 (String, 5 characters ) 23824
-   *
-   * field_attribute_assoc_datafile
-   field_attribute_assoc_datafile (Array, 1 element)
-0 (Array, 4 elements)
-items (Array, 1 element)
-0 (Array, 4 elements)
-nid (String, 5 characters ) 18462
-vid (String, 5 characters ) 18462
-title (String, 30 characters ) El Verde Canopy Arthropodsdata
-referrers (Array, 1 element)
-field_datafile_variable_ref (String, 27 characters ) field_datafile_variable_ref
-limit (Integer) 0
-element (Integer) 0
-pager (String, 0 characters )
-0 (Boolean) FALSE
-taxonomy (Array, 0 elements)
-files (Array, 0 elements)
-   *
-   *     [field_attribute_assoc_datafile] => Array
-        (
-            [0] => Array
-                (
-                    [items] => Array
-                        (
-                            [0] => Array
-                                (
-                                    [nid] => 18462
-                                    [vid] => 18462
-                                    [title] => El Verde Canopy Arthropodsdata
-                                    [referrers] => Array
-                                        (
-                                            [field_datafile_variable_ref] => field_datafile_variable_ref
-                                        )
 
-                                )
-
-                        )
-
-                    [limit] => 0
-                    [element] => 0
-                    [pager] =&gt;
-                )
-
-        )
-
-   */
-  $data_set_nids = $ref_nids['data_set'];
   $data_file_nids = $ref_nids['data_file'];
   $variable_nids = $ref_nids['variable'];
   
@@ -644,7 +594,7 @@ files (Array, 0 elements)
   }
 //  referrer to dataset in file
 
-  $file_to_set_refferers = create_referrer($data_set_nids);
+  $file_to_set_refferers = create_referrer($ref_nids['data_set']);
   if (!empty ($data_file_nids)) {
    foreach ($data_file_nids as $data_file_nid) {
       foreach ($file_to_set_refferers as $file_to_set_refferer) {
