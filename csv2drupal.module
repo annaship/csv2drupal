@@ -48,10 +48,10 @@ function csv2drupal_form($form_state) {
   $form['dir_name'] = array(
     '#type' => 'textfield',
     '#title' => t('Path to directory'),
+//  TODO: remove on production
     '#default_value' => $files_path,
     '#size' => 60,
     '#maxlength' => 128,
-//    '#required' => TRUE,
   );
 
   $form['submit'] = array (

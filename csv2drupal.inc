@@ -103,12 +103,14 @@ function add_node_value(&$node, $value, $fields_names) {
   }
   return $node;
 }
-
+//
 function taking_person_ids($last_name) {
   unset ($nid_last);
   if (isset ($last_name)) {
     $persons_arr = array();
-      $sql_last  = "SELECT nid FROM {content_type_person} WHERE field_person_last_name_value = '%s'";
+      $sql_last  = "SELECT nid FROM {content_type_person}
+        WHERE
+          field_person_last_name_value = '%s'";
       $q_last   = db_query($sql_last, $last_name);
         while ($nid_last = db_result($q_last)) {
           $persons_arr[] = $nid_last;
@@ -117,6 +119,41 @@ function taking_person_ids($last_name) {
   variable_set('old_person_nids', $persons_arr);
   return $persons_arr;
 }
+
+function validate_persons_uniqness($last_name) {
+  unset ($nid_last);
+  if (!empty ($last_name)) {
+    $persons_arr = array();
+      $sql  = "SELECT nid FROM {content_type_person}
+        WHERE
+          field_person_last_name_value = '%s'";
+      $q_last   = db_query($sql_last, $last_name);
+        while ($nid_last = db_result($q_last)) {
+          $persons_arr[] = $nid_last;
+      }
+  }
+  variable_set('old_person_nids', $persons_arr);
+  return $persons_arr;
+}
+/*
+ *
+//      $comparison['first_name'][]  	= $node->field_person_first_name[0]['value'];
+//      $comparison['last_name'][]  	= $node->field_person_last_name[0]['value'];
+//      $comparison['organization'][] = $node->field_person_organization[0]['value'];
+//      $comparison['title'][]  			= $node->field_person_title[0]['value'];
+//      $comparison['address'][]  		= $node->field_person_address[0]['value'];
+//      $comparison['city'][]         = $node->field_person_city[0]['value'];
+//      $comparison['state'][]  			= $node->field_person_state[0]['value'];
+//      $comparison['zipcode'][]  		= $node->field_person_zipcode[0]['value'];
+//      $comparison['country'][]  		= $node->field_person_country[0]['value'];
+//      $comparison['phone'][]  			= $node->field_person_phone[0]['value'];
+//      $comparison['fax'][]          = $node->field_person_fax[0]['value'];
+//      $comparison['email'][]  			= $node->field_person_email[0]['email'];
+//      $comparison['personid'][]  		= $node->field_person_personid[0]['value'];
+//      $comparison['role'][]         = $node->field_person_role[0]['value'];
+//      $comparison['uid'][]          = $node->field_person_uid[0]['uid'];
+//    }
+ */
 
 //TODO change format:
 /*
@@ -198,6 +235,7 @@ function create_person_node($content, &$ref_nids) {
 //  dpm($person_values);
   $fields_names  = person_fields();
   foreach ($person_values as $value) {
+    $un = validate_persons_uniqness($value);
     if (!empty($value['Last Name'])) {
       $node = new StdClass();
       $node->type  = "person";
