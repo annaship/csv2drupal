@@ -53,6 +53,7 @@ function get_data_from_excel_file($file) {
 
 function create_nodes($content, $file_object) {
   $ref_nids = create_person_node($content['person'], &$ref_nids);
+  dpm($ref_nids);
   $ref_nids = create_variable_node($content['variable'], &$ref_nids);
   $ref_nids = create_site_node($content['site'], &$ref_nids);
   $ref_nids = create_datafile_node($content['datafile'], &$ref_nids, $file_object);
@@ -120,39 +121,130 @@ function taking_person_ids($last_name) {
   return $persons_arr;
 }
 
-function validate_persons_uniqness($last_name) {
-  unset ($nid_last);
-  if (!empty ($last_name)) {
-    $persons_arr = array();
-      $sql  = "SELECT nid FROM {content_type_person}
-        WHERE
-          field_person_last_name_value = '%s'";
-      $q_last   = db_query($sql_last, $last_name);
-        while ($nid_last = db_result($q_last)) {
-          $persons_arr[] = $nid_last;
-      }
+/*
+ * SELECT
+  t1.nid, t1.vid
+  FROM content_type_person AS t1 INNER JOIN content_type_person AS t2 ON t1.field_person_last_name_value = t2.field_person_last_name_value
+  where (
+  t1.field_person_first_name_value    = t2.field_person_first_name_value AND
+  t1.field_person_last_name_value     = t2.field_person_last_name_value AND
+  t1.field_person_organization_value  = t2.field_person_organization_value  AND
+  t1.field_person_role_value          = t2.field_person_role_value AND
+  t1.field_person_title_value         = t2.field_person_title_value AND
+  t1.field_person_email_email         = t2.field_person_email_email AND
+  t1.field_person_address_value				= t2.field_person_address_value AND
+  t1.field_person_city_value				  = t2.field_person_city_value AND
+  t1.field_person_state_value				  = t2.field_person_state_value AND
+  t1.field_person_zipcode_value				= t2.field_person_zipcode_value  AND
+  t1.field_person_country_value				= t2.field_person_country_value
+  );
+ */
+
+// TODO: Full Name (String, 10 characters ) =B2&" "&C2
+
+function validate_persons_uniqness($value) {
+  $person_fields = person_fields();
+  if (!empty ($value)) {
+    $sql = "SELECT nid FROM {content_type_person} 
+              WHERE
+                (field_person_address_value			  = '%s' OR field_person_address_value			 is NULL) AND
+                (field_person_city_value				  = '%s' OR field_person_city_value				   is NULL) AND
+                (field_person_country_value   		= '%s' OR field_person_country_value   		 is NULL) AND
+                (field_person_email_email         = '%s' OR field_person_email_email         is NULL) AND
+                (field_person_first_name_value    = '%s' OR field_person_first_name_value    is NULL) AND
+                (field_person_last_name_value     = '%s' OR field_person_last_name_value     is NULL) AND
+                (field_person_organization_value  = '%s' OR field_person_organization_value  is NULL) AND
+                (field_person_role_value          = '%s' OR field_person_role_value          is NULL) AND
+                (field_person_state_value         = '%s' OR field_person_state_value         is NULL) AND
+                (field_person_zipcode_value			  = '%d' OR field_person_zipcode_value			 is NULL)
+           ";
+      $query = db_query($sql,
+        $value['Address'],
+        $value['City'],
+        $value['Country'],
+        $value['Email'],
+        $value['First Name'],
+        $value['Last Name'],
+        $value['Organization'],
+        $value['Role'],
+        $value['State'],
+        $value['Zip Code']
+            );
+      $person_nid = db_result($query);
   }
-  variable_set('old_person_nids', $persons_arr);
-  return $persons_arr;
+//  variable_set('old_person_nids', $persons_arr);
+  return $person_nid;
 }
 /*
- *
-//      $comparison['first_name'][]  	= $node->field_person_first_name[0]['value'];
-//      $comparison['last_name'][]  	= $node->field_person_last_name[0]['value'];
-//      $comparison['organization'][] = $node->field_person_organization[0]['value'];
-//      $comparison['title'][]  			= $node->field_person_title[0]['value'];
-//      $comparison['address'][]  		= $node->field_person_address[0]['value'];
-//      $comparison['city'][]         = $node->field_person_city[0]['value'];
-//      $comparison['state'][]  			= $node->field_person_state[0]['value'];
-//      $comparison['zipcode'][]  		= $node->field_person_zipcode[0]['value'];
-//      $comparison['country'][]  		= $node->field_person_country[0]['value'];
-//      $comparison['phone'][]  			= $node->field_person_phone[0]['value'];
-//      $comparison['fax'][]          = $node->field_person_fax[0]['value'];
-//      $comparison['email'][]  			= $node->field_person_email[0]['email'];
-//      $comparison['personid'][]  		= $node->field_person_personid[0]['value'];
-//      $comparison['role'][]         = $node->field_person_role[0]['value'];
-//      $comparison['uid'][]          = $node->field_person_uid[0]['uid'];
+                (field_person_address_value			  = '%s' OR field_person_address_value			 is NULL) AND
+                (field_person_city_value				  = '%s' OR field_person_city_value				   is NULL) AND
+                (field_person_country_value   		= '%s' OR field_person_country_value   		 is NULL) AND
+                (field_person_email_email         = '%s' OR field_person_email_email         is NULL) AND
+                (field_person_first_name_value    = '%s' OR field_person_first_name_value    is NULL) AND
+                (field_person_last_name_value     = '%s' OR field_person_last_name_value     is NULL) AND
+                (field_person_organization_value  = '%s' OR field_person_organization_value  is NULL) AND
+                (field_person_role_value          = '%s' OR field_person_role_value          is NULL) AND
+                (field_person_state_value         = '%s' OR field_person_state_value         is NULL) AND
+                (field_person_zipcode_value			  = '%d' OR field_person_zipcode_value			 is NULL)
+
+ *  *
+ *                 field_person_zipcode_value			 = '%d'
+
+                field_person_address_value			 = '%s' AND
+                field_person_city_value				   = '%s' AND
+                field_person_country_value   		 = '%s' AND
+                field_person_email_email         = '%s' AND
+                field_person_first_name_value    = '%s' AND
+                field_person_last_name_value     = '%s' AND
+                field_person_organization_value  = '%s' AND
+                field_person_role_value          = '%s' AND
+                field_person_state_value				 = '%s' AND
+                field_person_title_value         = '%s' AND
+
+ *       t1.field_person_first_name_value    = t2.field_person_first_name_value AND
+      t1.field_person_organization_value  = t2.field_person_organization_value  AND
+      t1.field_person_role_value          = t2.field_person_role_value AND
+      t1.field_person_title_value         = t2.field_person_title_value AND
+      t1.field_person_email_email         = t2.field_person_email_email AND
+      t1.field_person_address_value				= t2.field_person_address_value AND
+      t1.field_person_city_value				  = t2.field_person_city_value AND
+      t1.field_person_state_value				  = t2.field_person_state_value AND
+      t1.field_person_zipcode_value				= t2.field_person_zipcode_value  AND
+      t1.field_person_country_value				= t2.field_person_country_value
+
+  //      $comparison['first_name'][]  	= $node->field_person_first_name[0]['value'];
+  //      $comparison['last_name'][]  	= $node->field_person_last_name[0]['value'];
+  //      $comparison['organization'][] = $node->field_person_organization[0]['value'];
+  //      $comparison['title'][]  			= $node->field_person_title[0]['value'];
+  //      $comparison['address'][]  		= $node->field_person_address[0]['value'];
+  //      $comparison['city'][]         = $node->field_person_city[0]['value'];
+  //      $comparison['state'][]  			= $node->field_person_state[0]['value'];
+  //      $comparison['zipcode'][]  		= $node->field_person_zipcode[0]['value'];
+  //      $comparison['country'][]  		= $node->field_person_country[0]['value'];
+  //      $comparison['phone'][]  			= $node->field_person_phone[0]['value'];
+  //      $comparison['fax'][]          = $node->field_person_fax[0]['value'];
+  //      $comparison['email'][]  			= $node->field_person_email[0]['email'];
+  //      $comparison['personid'][]  		= $node->field_person_personid[0]['value'];
+  //      $comparison['role'][]         = $node->field_person_role[0]['value'];
+  //      $comparison['uid'][]          = $node->field_person_uid[0]['uid'];
 //    }
+ */
+
+/*
+ *     $sql = "SELECT t1.nid, t2.nid FROM {content_type_person} AS t1
+      INNER JOIN {content_type_person} AS t2 ON t1.field_person_last_name_value = t2.field_person_last_name_value
+      WHERE
+      t1.field_person_first_name_value    = t2.field_person_first_name_value AND
+      t1.field_person_organization_value  = t2.field_person_organization_value  AND
+      t1.field_person_role_value          = t2.field_person_role_value AND
+      t1.field_person_title_value         = t2.field_person_title_value AND
+      t1.field_person_email_email         = t2.field_person_email_email AND
+      t1.field_person_address_value				= t2.field_person_address_value AND
+      t1.field_person_city_value				  = t2.field_person_city_value AND
+      t1.field_person_state_value				  = t2.field_person_state_value AND
+      t1.field_person_zipcode_value				= t2.field_person_zipcode_value  AND
+      t1.field_person_country_value				= t2.field_person_country_value
+    ";
  */
 
 //TODO change format:
@@ -235,8 +327,12 @@ function create_person_node($content, &$ref_nids) {
 //  dpm($person_values);
   $fields_names  = person_fields();
   foreach ($person_values as $value) {
-    $un = validate_persons_uniqness($value);
-    if (!empty($value['Last Name'])) {
+    $person_nid = validate_persons_uniqness($value);
+    if (!empty($person_nid)) {
+//      dpm($person_nid);
+      $ref_nids['person'][] = $person_nid;
+    }
+    elseif (!empty($value['Last Name'])) {
       $node = new StdClass();
       $node->type  = "person";
       $node->uid   =  get_uid();
@@ -250,24 +346,23 @@ function create_person_node($content, &$ref_nids) {
       $current_destination = drupal_get_destination();
       node_save(&$node);
       $person_nid = $node->nid;
-      variable_set('new_person_nid', $person_nid);
+//      variable_set('new_person_nid', $person_nid);
 
-      if ($persons_arr) {
-//        drupal_set_message('Compare new and old person\'s information');
-        drupal_goto('personell_check');
-//      drupal_goto('personell_check', $current_destination);
-      }
-      else {
-//        dpr('no persons');
-//        dpm('no persons');
-      }
+//      if ($persons_arr) {
+////        drupal_set_message('Compare new and old person\'s information');
+//        drupal_goto('personell_check');
+////      drupal_goto('personell_check', $current_destination);
+//      }
+//      else {
+////        dpr('no persons');
+////        dpm('no persons');
+//      }
 
 //      TODO get $person_nid from variables
       $ref_nids['person'][] = $person_nid;
     }
 //    dpr($node);
   }
-//  dpr($ref_nids);
   return $ref_nids;
 }
 
