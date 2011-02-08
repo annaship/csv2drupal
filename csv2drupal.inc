@@ -35,7 +35,7 @@ function get_data_from_excel_file($file) {
 
     for ($row = 2; $row <= $highestRow; ++$row) {
       for ($col = 0; $col <= $highestColumnIndex; ++$col) {
-        $res = $objWorksheet->getCellByColumnAndRow($col, $row)->getValue();
+        $res = trim($objWorksheet->getCellByColumnAndRow($col, $row)->getValue());
         if (!empty($loadedSheetName)) {
           if (!empty($titles[$col])) {
             ${$sheet_names[$loadedSheetName]}[$titles[$col]][] = $res;
@@ -61,8 +61,6 @@ function create_nodes($content, $file_object) {
   $keywords_taxonomy = create_keywords_node($content['keywords'], &$ref_nids);
   add_referrers($ref_nids);
   variable_set('ref_nids', $ref_nids);
-  dpm('$ref_nids = ');
-  dpm($ref_nids);
   return $ref_nids;
 //  TODO link referrer
 }
@@ -124,25 +122,6 @@ function taking_person_ids($last_name) {
   return $persons_arr;
 }
 
-/*
- * SELECT
-  t1.nid, t1.vid
-  FROM content_type_person AS t1 INNER JOIN content_type_person AS t2 ON t1.field_person_last_name_value = t2.field_person_last_name_value
-  where (
-  t1.field_person_first_name_value    = t2.field_person_first_name_value AND
-  t1.field_person_last_name_value     = t2.field_person_last_name_value AND
-  t1.field_person_organization_value  = t2.field_person_organization_value  AND
-  t1.field_person_role_value          = t2.field_person_role_value AND
-  t1.field_person_title_value         = t2.field_person_title_value AND
-  t1.field_person_email_email         = t2.field_person_email_email AND
-  t1.field_person_address_value				= t2.field_person_address_value AND
-  t1.field_person_city_value				  = t2.field_person_city_value AND
-  t1.field_person_state_value				  = t2.field_person_state_value AND
-  t1.field_person_zipcode_value				= t2.field_person_zipcode_value  AND
-  t1.field_person_country_value				= t2.field_person_country_value
-  );
- */
-
 // TODO: Full Name (String, 10 characters ) =B2&" "&C2
 
 function validate_persons_uniqness($value) {
@@ -177,77 +156,6 @@ function validate_persons_uniqness($value) {
 //  variable_set('old_person_nids', $persons_arr);
   return $person_nid;
 }
-/*
-                (field_person_address_value			  = '%s' OR field_person_address_value			 is NULL) AND
-                (field_person_city_value				  = '%s' OR field_person_city_value				   is NULL) AND
-                (field_person_country_value   		= '%s' OR field_person_country_value   		 is NULL) AND
-                (field_person_email_email         = '%s' OR field_person_email_email         is NULL) AND
-                (field_person_first_name_value    = '%s' OR field_person_first_name_value    is NULL) AND
-                (field_person_last_name_value     = '%s' OR field_person_last_name_value     is NULL) AND
-                (field_person_organization_value  = '%s' OR field_person_organization_value  is NULL) AND
-                (field_person_role_value          = '%s' OR field_person_role_value          is NULL) AND
-                (field_person_state_value         = '%s' OR field_person_state_value         is NULL) AND
-                (field_person_zipcode_value			  = '%d' OR field_person_zipcode_value			 is NULL)
-
- *  *
- *                 field_person_zipcode_value			 = '%d'
-
-                field_person_address_value			 = '%s' AND
-                field_person_city_value				   = '%s' AND
-                field_person_country_value   		 = '%s' AND
-                field_person_email_email         = '%s' AND
-                field_person_first_name_value    = '%s' AND
-                field_person_last_name_value     = '%s' AND
-                field_person_organization_value  = '%s' AND
-                field_person_role_value          = '%s' AND
-                field_person_state_value				 = '%s' AND
-                field_person_title_value         = '%s' AND
-
- *       t1.field_person_first_name_value    = t2.field_person_first_name_value AND
-      t1.field_person_organization_value  = t2.field_person_organization_value  AND
-      t1.field_person_role_value          = t2.field_person_role_value AND
-      t1.field_person_title_value         = t2.field_person_title_value AND
-      t1.field_person_email_email         = t2.field_person_email_email AND
-      t1.field_person_address_value				= t2.field_person_address_value AND
-      t1.field_person_city_value				  = t2.field_person_city_value AND
-      t1.field_person_state_value				  = t2.field_person_state_value AND
-      t1.field_person_zipcode_value				= t2.field_person_zipcode_value  AND
-      t1.field_person_country_value				= t2.field_person_country_value
-
-  //      $comparison['first_name'][]  	= $node->field_person_first_name[0]['value'];
-  //      $comparison['last_name'][]  	= $node->field_person_last_name[0]['value'];
-  //      $comparison['organization'][] = $node->field_person_organization[0]['value'];
-  //      $comparison['title'][]  			= $node->field_person_title[0]['value'];
-  //      $comparison['address'][]  		= $node->field_person_address[0]['value'];
-  //      $comparison['city'][]         = $node->field_person_city[0]['value'];
-  //      $comparison['state'][]  			= $node->field_person_state[0]['value'];
-  //      $comparison['zipcode'][]  		= $node->field_person_zipcode[0]['value'];
-  //      $comparison['country'][]  		= $node->field_person_country[0]['value'];
-  //      $comparison['phone'][]  			= $node->field_person_phone[0]['value'];
-  //      $comparison['fax'][]          = $node->field_person_fax[0]['value'];
-  //      $comparison['email'][]  			= $node->field_person_email[0]['email'];
-  //      $comparison['personid'][]  		= $node->field_person_personid[0]['value'];
-  //      $comparison['role'][]         = $node->field_person_role[0]['value'];
-  //      $comparison['uid'][]          = $node->field_person_uid[0]['uid'];
-//    }
- */
-
-/*
- *     $sql = "SELECT t1.nid, t2.nid FROM {content_type_person} AS t1
-      INNER JOIN {content_type_person} AS t2 ON t1.field_person_last_name_value = t2.field_person_last_name_value
-      WHERE
-      t1.field_person_first_name_value    = t2.field_person_first_name_value AND
-      t1.field_person_organization_value  = t2.field_person_organization_value  AND
-      t1.field_person_role_value          = t2.field_person_role_value AND
-      t1.field_person_title_value         = t2.field_person_title_value AND
-      t1.field_person_email_email         = t2.field_person_email_email AND
-      t1.field_person_address_value				= t2.field_person_address_value AND
-      t1.field_person_city_value				  = t2.field_person_city_value AND
-      t1.field_person_state_value				  = t2.field_person_state_value AND
-      t1.field_person_zipcode_value				= t2.field_person_zipcode_value  AND
-      t1.field_person_country_value				= t2.field_person_country_value
-    ";
- */
 
 //TODO change format:
 /*
