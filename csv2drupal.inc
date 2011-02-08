@@ -595,24 +595,53 @@ function create_referrer($nids) {
 function display_report_page()
 {
   $csv2drupal_submit_time = variable_get(csv2drupal_submit_time, time());
-  $sql = "SELECT nid FROM {node} WHERE created >= %d ORDER BY nid DESC";
-  $db_result = db_query($sql, $csv2drupal_submit_time);
-
-  $header       = array('Title', 'Nid');
-  $rows['data'] = array();
-  while ($res   = db_fetch_object($db_result)) {
-    $nid        = $res->nid;
-    $node       = node_load($nid);
-    $node_nid   = $node->nid;
-    $node_title = $node->title;
-    $node_type  = $node->type;
-    $node_link  = l($nid, 'node/'.$nid);
-    if ($node_type != $old_node_type) {
-      $rows[] = array(array('data' => 'Type = ' . $node_type, 'colspan' => 2, 'font size' => 4, 'align' => 'center'));
-      $old_node_type = $node_type;
+  $ref_nids = array();
+  $ref_nids = variable_get('ref_nids', $ref_nids);
+  dpm('$ref_nids = ');
+  dpm($ref_nids);
+  foreach ($ref_nids as $value) {
+    foreach ($value as $ref_nid) {
+      $sql = "SELECT nid FROM {node} WHERE nid = %d ORDER BY nid DESC";
+      $db_result = db_query($sql, $ref_nid);
+      $header       = array('Title', 'Nid');
+      $rows['data'] = array();
+      while ($res   = db_fetch_object($db_result)) {
+        $nid        = $res->nid;
+        $node       = node_load($nid);
+        $node_nid   = $node->nid;
+        $node_title = $node->title;
+        $node_type  = $node->type;
+        $node_link  = l($nid, 'node/'.$nid);
+        if ($node_type != $old_node_type) {
+          $rows[] = array(array('data' => 'Type = ' . $node_type, 'colspan' => 2, 'font size' => 4, 'align' => 'center'));
+          $old_node_type = $node_type;
+        }
+        $rows[] = array('Title = ' . $node_title, $node_link);
+      }
     }
-    $rows[] = array('Title = ' . $node_title, $node_link);
+        dpm('$rows = ');
+        dpm($rows);
   }
+//  $sql = "SELECT nid FROM {node} WHERE created >= %d ORDER BY nid DESC";
+//  $db_result = db_query($sql, $csv2drupal_submit_time);
+//
+//  $header       = array('Title', 'Nid');
+//  $rows['data'] = array();
+//  while ($res   = db_fetch_object($db_result)) {
+////    dpm('$res = ');
+////    dpm($res);
+//    $nid        = $res->nid;
+//    $node       = node_load($nid);
+//    $node_nid   = $node->nid;
+//    $node_title = $node->title;
+//    $node_type  = $node->type;
+//    $node_link  = l($nid, 'node/'.$nid);
+//    if ($node_type != $old_node_type) {
+//      $rows[] = array(array('data' => 'Type = ' . $node_type, 'colspan' => 2, 'font size' => 4, 'align' => 'center'));
+//      $old_node_type = $node_type;
+//    }
+//    $rows[] = array('Title = ' . $node_title, $node_link);
+//  }
   if (count($rows) == 1)
       $rows[] = array("No nodes was saved");
 
