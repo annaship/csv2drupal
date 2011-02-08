@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://localhost/" />
+<title>referrer</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">referrer</td></tr>
+</thead><tbody>
+<tr>
+	<td>open</td>
+	<td>drupal-local/?q=csv2drupal</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>edit-submit</td>
+	<td></td>
+</tr>
+<!-- Report sopuld have Variables and Datafiles -->
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Type = variable</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>Title = Count g/m^2</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>Type = data_file</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Title = 1982_2000gs81tusbm</td>
+	<td></td>
+</tr>
+<!-- Variables should have referrer to a Datafile -->
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='squeeze']/div/div/div[3]/table[2]/tbody/tr[23]/td[2]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>Associated Data Files:</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertText</td>
+	<td>link=1982_2000gs81tusbm</td>
+	<td>1982_2000gs81tusbm</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=1982_2000gs81tusbm</td>
+	<td></td>
+</tr>
+<!-- Datafile should have Variables and referrer to a Dataset -->
+<tr>
+	<td>assertTextPresent</td>
+	<td>exact:Variables:</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertText</td>
+	<td>link=B1Q1</td>
+	<td>B1Q1</td>
+</tr>
+<tr>
+	<td>assertTextPresent</td>
+	<td>Associated Data Set:</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertText</td>
+	<td>link=Above ground plant biomass in a mesic acidic tussock tundra experimental site from 1982 to 2000 Arctic LTER, Toolik Lake, Alaska.</td>
+	<td>Above ground plant biomass in a mesic acidic tussock tundra experimental site from 1982 to 2000 Arctic LTER, Toolik Lake, Alaska.</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Above ground plant biomass in a mesic acidic tussock tundra experimental site from 1982 to 2000 Arctic LTER, Toolik Lake, Alaska.</td>
+	<td></td>
+</tr>
+<!-- Dataset sould have Variables and Datafiles -->
+<tr>
+	<td>assertTextPresent</td>
+	<td>Data File Structure</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertText</td>
+	<td>link=1982_2000gs81tusbm</td>
+	<td>1982_2000gs81tusbm</td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>drupal-local/?q=csv2drupal</td>
+	<td></td>
+</tr>
+</tbody></table>
+</body>
+</html>

@@ -243,7 +243,7 @@ function create_person_node($content, &$ref_nids) {
       $node->field_person_uid[0]['uid'] = $value['person_uid'];
       $node->field_person_pubs[0]['nid'] = $value['Publications'];
 //      $persons_arr = taking_person_ids($value['Last Name']);
-      $current_destination = drupal_get_destination();
+//      $current_destination = drupal_get_destination();
       node_save(&$node);
       $person_nid = $node->nid;
 ////      variable_set('new_person_nid', $person_nid);
@@ -282,9 +282,6 @@ function create_variable_node($content, &$ref_nids) {
       node_save(&$node);
       $ref_nids['variable'][] = $node->nid;
     }
-//  dpr($node);
-//  dpm($node);
-//  print_r($node);
   }
   return $ref_nids;
 }
@@ -668,7 +665,6 @@ function get_person_ref($dataset_value, $person_ref_nids) {
 }
 
 function add_person_refs(&$node, $dataset_person_refs) {
-  dpm($dataset_person_refs);
   foreach ($dataset_person_refs as $field_name => $value1) {
     $refs = array();
     foreach ($value1 as $ref) {
