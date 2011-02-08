@@ -53,7 +53,6 @@ function get_data_from_excel_file($file) {
 
 function create_nodes($content, $file_object) {
   $ref_nids = create_person_node($content['person'], &$ref_nids);
-//  dpm($ref_nids);
   $ref_nids = create_variable_node($content['variable'], &$ref_nids);
   $ref_nids = create_site_node($content['site'], &$ref_nids);
   $ref_nids = create_datafile_node($content['datafile'], &$ref_nids, $file_object);
@@ -243,7 +242,7 @@ function create_person_node($content, &$ref_nids) {
       $node->field_person_email[0]['email'] = $value['Email'];
       $node->field_person_uid[0]['uid'] = $value['person_uid'];
       $node->field_person_pubs[0]['nid'] = $value['Publications'];
-      $persons_arr = taking_person_ids($value['Last Name']);
+//      $persons_arr = taking_person_ids($value['Last Name']);
       $current_destination = drupal_get_destination();
       node_save(&$node);
       $person_nid = $node->nid;
@@ -556,7 +555,7 @@ function create_dataset_node($content, &$ref_nids) {
 }
 
 function add_referrers($ref_nids) {
-
+// TODO: add referrers to old person
   $data_file_nids = $ref_nids['data_file'];
 
   save_ref_node($ref_nids['variable'], create_referrer($data_file_nids), 'field_datafile_variable_ref');
@@ -624,7 +623,6 @@ function display_report_page()
 
   $header       = array('Title', 'Nid');
   $rows['data'] = array();
-  $rows[] = array(array('data' => 'New created nodes', 'colspan' => 2, 'font size' => 8, 'align' => 'center'));
   while ($res   = db_fetch_object($db_result)) {
 //    dpm('$res = ');
 //    dpm($res);
@@ -635,7 +633,8 @@ function display_report_page()
     $node_type  = $node->type;
     $node_link  = l($nid, 'node/'.$nid);
     if ($node_type != $old_node_type) {
-      $rows[] = array(array('data' => 'Type = ' . $node_type, 'colspan' => 2, 'font size' => 4, 'align' => 'center'));
+      $rows[] = array(array('data' => 'Type = ' . $node_type, 'colspan' => 2, 
+          'font size' => 4, 'align' => 'center'));
       $old_node_type = $node_type;
     }
     $rows[] = array('Title = ' . $node_title, $node_link);
@@ -644,6 +643,7 @@ function display_report_page()
       $rows[] = array("No nodes was saved");
 
   variable_del(csv2drupal_submit_time);
+  drupal_set_message('Followed nodes were just created:');
   return theme_table($header, $rows);
 }
 
@@ -668,6 +668,7 @@ function get_person_ref($dataset_value, $person_ref_nids) {
 }
 
 function add_person_refs(&$node, $dataset_person_refs) {
+  dpm($dataset_person_refs);
   foreach ($dataset_person_refs as $field_name => $value1) {
     $refs = array();
     foreach ($value1 as $ref) {
