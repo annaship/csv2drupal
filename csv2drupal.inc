@@ -53,13 +53,16 @@ function get_data_from_excel_file($file) {
 
 function create_nodes($content, $file_object) {
   $ref_nids = create_person_node($content['person'], &$ref_nids);
-  dpm($ref_nids);
+//  dpm($ref_nids);
   $ref_nids = create_variable_node($content['variable'], &$ref_nids);
   $ref_nids = create_site_node($content['site'], &$ref_nids);
   $ref_nids = create_datafile_node($content['datafile'], &$ref_nids, $file_object);
   $ref_nids = create_dataset_node($content['dataset'], &$ref_nids);
   $keywords_taxonomy = create_keywords_node($content['keywords'], &$ref_nids);
   add_referrers($ref_nids);
+  variable_set('ref_nids', $ref_nids);
+  dpm('$ref_nids = ');
+  dpm($ref_nids);
   return $ref_nids;
 //  TODO link referrer
 }
@@ -143,7 +146,6 @@ function taking_person_ids($last_name) {
 // TODO: Full Name (String, 10 characters ) =B2&" "&C2
 
 function validate_persons_uniqness($value) {
-  $person_fields = person_fields();
   if (!empty ($value)) {
     $sql = "SELECT nid FROM {content_type_person} 
               WHERE
@@ -315,22 +317,13 @@ function add_timezone_to_date_arr(&$date_arr) {
  */
 
 function create_person_node($content, &$ref_nids) {
-//  TODO: show Jim
-//  dpm('Person content: ');
-//  dpm($content);
-//  dpm($ref_nids['person']);
-//  dpr("create_person_node");
   $persons_arr = array ();
   $person_values = create_values($content);
-//  TODO: show Jim
-//  dpm('$person_values: ');
-//  dpm($person_values);
   $fields_names  = person_fields();
   foreach ($person_values as $value) {
-    $person_nid = validate_persons_uniqness($value);
-    if (!empty($person_nid)) {
-//      dpm($person_nid);
-      $ref_nids['person'][] = $person_nid;
+    $nid = validate_persons_uniqness($value);
+    if (!empty($nid)) {
+      $ref_nids['person'][] = $nid;
     }
     elseif (!empty($value['Last Name'])) {
       $node = new StdClass();
@@ -346,19 +339,19 @@ function create_person_node($content, &$ref_nids) {
       $current_destination = drupal_get_destination();
       node_save(&$node);
       $person_nid = $node->nid;
-//      variable_set('new_person_nid', $person_nid);
-
-//      if ($persons_arr) {
-////        drupal_set_message('Compare new and old person\'s information');
-//        drupal_goto('personell_check');
-////      drupal_goto('personell_check', $current_destination);
-//      }
-//      else {
-////        dpr('no persons');
-////        dpm('no persons');
-//      }
-
-//      TODO get $person_nid from variables
+////      variable_set('new_person_nid', $person_nid);
+//
+////      if ($persons_arr) {
+//////        drupal_set_message('Compare new and old person\'s information');
+////        drupal_goto('personell_check');
+//////      drupal_goto('personell_check', $current_destination);
+////      }
+////      else {
+//////        dpr('no persons');
+//////        dpm('no persons');
+////      }
+//
+////      TODO get $person_nid from variables
       $ref_nids['person'][] = $person_nid;
     }
 //    dpr($node);
@@ -719,17 +712,20 @@ function display_report_page()
   return theme_table($header, $rows);
 }
 
-function  get_person_ref($dataset_value, $person_ref_nids) {
+function get_person_ref($dataset_value, $person_ref_nids) {
   $dataset_person_refs = array();
   $dataset_person_ref_fields = dataset_person_ref_fields();
   foreach ($dataset_person_ref_fields as $dataset_field_name => $dataset_role) {
     $name = $dataset_value[$dataset_role];
     is_array($name) ? $names = $name : $names = (array) $name;
-    foreach ($person_ref_nids as $person_ref_nid) {
-      $node = node_load($person_ref_nid);
-      $title = $node->title;
-      if (in_array(trim($title), $names)) {
-        $dataset_person_refs[$dataset_field_name][] = $person_ref_nid;
+    if (!empty ($person_ref_nids)) {
+      foreach ($person_ref_nids as $person_ref_nid) {
+//        dpm($person_ref_nid);
+        $node = node_load($person_ref_nid);
+        $title = $node->title;
+        if (in_array(trim($title), $names)) {
+          $dataset_person_refs[$dataset_field_name][] = $person_ref_nid;
+        }
       }
     }
   }
