@@ -136,6 +136,7 @@ function validate_persons_uniqness($value) {
     $person_fields = person_fields();
 //    TODO: remove keys and change key/value places for count
 //    TODO: into field_names file
+//    TODO: check for other CCT
     $forbiddenf_fields = array(
         'field_person_phone' => 'field_person_phone',
         'field_person_email' => 'field_person_email',
