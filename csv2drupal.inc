@@ -123,18 +123,17 @@ function taking_person_ids($last_name) {
 
 // TODO: Full Name (String, 10 characters ) =B2&" "&C2
 /*
-   $person_fields = array (
+   $fields_names = array (
     'field_person_first_name'   => 'First Name',
     'field_person_last_name'    => 'Last Name',
     'field_person_organization' => 'Organization',
 
  */
-function validate_persons_uniqness($value) {
+function validate_persons_uniqness($value, $fields_names, $content_type) {
   $and_part = $full_field_name = "";
   $i = 0;
   if (!empty ($value)) {
-    $person_fields = person_fields();
-//    TODO: remove keys and change key/value places for count
+    dpm($value);
 //    TODO: move into field_names file
 //    TODO: check for other CCT
 //    TODO: use field_person_email_email
@@ -142,8 +141,8 @@ function validate_persons_uniqness($value) {
         'field_person_phone',
         'field_person_email',
     );
-    $array_length  = count($person_fields) - count(array_intersect_key($person_fields, array_flip($forbiddenf_fields)));
-    foreach ($person_fields as $field_name => $tag_name) {
+    $array_length  = count($fields_names) - count(array_intersect_key($fields_names, array_flip($forbiddenf_fields)));
+    foreach ($fields_names as $field_name => $tag_name) {
       if (!in_array($field_name, $forbiddenf_fields)) {
         $i++;
         $full_field_name = $field_name . '_value';
@@ -154,22 +153,9 @@ function validate_persons_uniqness($value) {
       }
     }
 
-    $sql_values1 = "field_person_address_value, " .
-       $value['Address'] . ", field_person_address_value, field_person_city_value, " .
-       $value['City'] . ", field_person_city_value, field_person_country_value, " .
-       $value['Country'] . ", field_person_country_value, field_person_email_email, " .
-       $value['Email'] . ", field_person_email_email, field_person_first_name_value, " .
-       $value['First Name'] . ", field_person_first_name_value, field_person_last_name_value, " .
-       $value['Last Name'] . ", field_person_last_name_value, field_person_organization_value, " .
-       $value['Organization'] . ", field_person_organization_value, field_person_role_value, " .
-       $value['Role'] . ", field_person_role_value, field_person_state_value, " .
-       $value['State'] . ", field_person_state_value, field_person_zipcode_value, " .
-       $value['Zip Code'] . ", field_person_zipcode_value, field_person_address_value, " .
-       $value['Address'] . ", field_person_address_value, field_person_city_value, " .
-       $value['City'] . ", field_person_city_value, field_person_address_value, " .
-       $value['Address'] . ", field_person_address_value";
+//    $content_type_name = "person";
     
-    $sql = "SELECT nid FROM {content_type_person}
+    $sql = "SELECT nid FROM {content_type_" . $content_type . "}
               WHERE " . $a
            ;
     $query = db_query($sql);
@@ -249,11 +235,12 @@ function add_timezone_to_date_arr(&$date_arr) {
  */
 
 function create_person_node($content, &$ref_nids) {
+  $content_type = 'person';
   $persons_arr = array ();
   $person_values = create_values($content);
   $fields_names  = person_fields();
   foreach ($person_values as $value) {
-    $nid = validate_persons_uniqness($value);
+    $nid = validate_persons_uniqness($value, $fields_names, $content_type);
     if (!empty($nid)) {
       $ref_nids['person'][] = $nid;
     }
@@ -292,13 +279,15 @@ function create_person_node($content, &$ref_nids) {
 }
 
 function create_variable_node($content, &$ref_nids) {
+  $content_type = 'variable';
   $variable_values = create_values($content);
   $fields_names    = variable_fields();
   foreach ($variable_values as $value) {
-    $nid = validate_variable_uniqness($value);
+
+    $nid = validate_persons_uniqness($value, $fields_names, $content_type);
     if (!empty($nid)) {
-      $ref_nids['person'][] = $nid;
-    }
+      $ref_nids['variable'][] = $nid;
+    }    
     if (!empty($value['Variable Name'])) {
       $node        = new StdClass();
       $node->type  = "variable";
