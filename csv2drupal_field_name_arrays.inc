@@ -122,3 +122,23 @@ function research_site_fields() {
   );
   return $research_site_fields;
 }
+
+/*
+      $full_name   = $value['First Name'] . " " . $value['Last Name'];
+      $node->title = $full_name;
+      $node->title = $value['Variable Name'];
+      research_site $node->title = $value['Title'];
+      data_file $node->title  = $value['Data File Structure Name'];
+      data_set $node->title                                      = $value['Title'];
+
+ */
+
+function tags_to_title() {
+  $tags_to_title = array (
+    'variable'      => 'Variable Name',
+    'research_site' => 'Title',
+    'data_file'     => 'Data File Structure Name',
+    'data_set'      => 'Title',
+  );
+  return $tags_to_title;
+}

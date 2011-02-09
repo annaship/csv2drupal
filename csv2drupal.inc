@@ -130,40 +130,104 @@ function taking_person_ids($last_name) {
 
  */
 function validate_uniqness($value, $fields_names, $content_type) {
+  dpm('START');
   $and_part = $full_field_name = "";
-  $i = 0;
+  $i = $m = 0;
+//  $nids = array();
   if (!empty ($value)) {
+    $tags_to_title = tags_to_title();
+
 //    dpm($value);
 //    TODO: move into field_names file
 //    TODO: check for other CCT
 //    TODO: use field_person_email_email
+//    TODO: move int separate function
     $forbiddenf_fields = array(
         'field_person_phone',
         'field_person_email',
         'field_var_missingvalues',
         'field_code_definition',
+        'field_research_site_image',
     );
     $array_length  = count($fields_names) - count(array_intersect_key($fields_names, array_flip($forbiddenf_fields)));
     foreach ($fields_names as $field_name => $tag_name) {
       if (!in_array($field_name, $forbiddenf_fields)) {
         $i++;
         $full_field_name = $field_name . '_value';
-        $a .= "(" . $full_field_name . " = '" . $value[$tag_name] . "' OR " . $full_field_name . " is NULL)";
-        if ($i < $array_length) {
-          $a .= " AND ";
-        }
+        $condition .= "(" . $full_field_name . " = '" . $value[$tag_name] . "' OR " . $full_field_name . " is NULL) AND ";
+//        if ($i < $array_length) {
+//          $condition .= " AND ";
+//        }
       }
     }
-
-//    $content_type_name = "person";
-    
-    $sql = "SELECT nid FROM {content_type_" . $content_type . "}
-              WHERE " . $a
-           ;
+   $title_value = 'Imnavait Creek';
+    $sql   = "SELECT node.nid FROM {content_type_" . $content_type . "} as content_type
+              JOIN {node} on content_type.nid = node.nid
+              WHERE " . $condition . " node.title = '" . $title_value . "';";
     $query = db_query($sql);
-    $person_nid = db_result($query);
+    $nid   = db_result($query);
+
+    /* TODO:
+ * 1) make $title_value automatically (
+ *     'variable'      => 'Variable Name',
+ * $title_value = $value[$tags_to_title[$content_type]] )
+ * 2) check if    $title_value = 'Imnavait Creek';
+ * only 'Imnavait Creek' not created anew, but others did
+ *
+ *
+ */
+    /*
+     * 37657
+SELECT node.nid FROM content_type_research_site as content_type JOIN node on content_type.nid = node.nid WHERE
+(field_research_site_elevation_value = '' OR field_research_site_elevation_value is NULL) AND
+(field_research_site_landform_value = '' OR field_research_site_landform_value is NULL) AND
+(field_research_site_geology_value = '' OR field_research_site_geology_value is NULL) AND
+(field_research_site_soils_value = '' OR field_research_site_soils_value is NULL) AND
+(field_research_site_hydrology_value = '' OR field_research_site_hydrology_value is NULL) AND
+(field_research_site_vegetation_value = '' OR field_research_site_vegetation_value is NULL) AND
+(field_research_site_climate_value = '' OR field_research_site_climate_value is NULL) AND
+(field_research_site_history_value = '' OR field_research_site_history_value is NULL) AND
+(field_research_site_siteid_value = '' OR field_research_site_siteid_value is NULL)
+AND node.title = 'Imnavait Creek';
+     */
+
+//    while($nid = db_result($query)) {
+////      $m++;
+////      dpm($i . ") $nid");
+//      if (!empty ($nid)) {
+//        $node  = node_load($nid);
+//        $title = $node->title;
+//        dpm('$content_type = ' . $content_type);
+//        dpm('$title = ' . $title);
+//        foreach ($tags_to_title as $tag => $tag_title) {
+//          if ($value[$tag_title] == $title) {
+//        dpm('$value[$tag_title] = ' . $value[$tag_title]);
+//        dpm('URA!');
+//        dpm('old_nid = ' . $nid);
+//        dpm('new_nid = ' . $node->nid);
+//            $nid = $node->nid;
+//          }
+//        }
+//      }
+//     }
+//     dpm($nids);
+//    $nid  = db_result($query);
+
+//    if (!empty ($nid)) {
+//      $node  = node_load($nid);
+//      $title = $node->title;
+//      dpm('$content_type = ' . $content_type);
+//      dpm('$title = ' . $title);
+//      foreach ($tags_to_title as $tag => $tag_title) {
+//        if ($value[$tag_title] == $title) {
+//      dpm('$value[$tag_title] = ' . $value[$tag_title]);
+//          $nid = $node->nid;
+//        }
+//      }
+//    }
   }
-  return $person_nid;
+  dpm('result_nid = ' . $nid);
+  return $nid;
 }
 
 function validate_variable_uniqness($value) {
@@ -310,7 +374,12 @@ function create_site_node($content, &$ref_nids) {
   $research_site_values = create_values($content);
   $fields_names = research_site_fields();
   foreach ($research_site_values as $value) {
-    if (!empty($value['Title'])) {
+    $nid = validate_uniqness($value, $fields_names, $content_type);
+//    dpm($value);
+    if (!empty($nid)) {
+      $ref_nids[$content_type][] = $nid;
+    }
+    elseif (!empty($value['Title'])) {
       $node = new StdClass();
       $node->type  = $content_type;
       $node->uid   =  get_uid();

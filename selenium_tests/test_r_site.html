@@ -47,7 +47,7 @@
 	<td>edit-op</td>
 	<td></td>
 </tr>
-<!-- check if new person created -->
+<!-- check if new nodes are created -->
 <tr>
 	<td>open</td>
 	<td>/drupal6-local/?q=csv2drupal</td>
@@ -60,31 +60,25 @@
 </tr>
 <tr>
 	<td>verifyTextPresent</td>
-	<td>Type = person</td>
+	<td>Type = research_site</td>
 	<td></td>
 </tr>
 <tr>
 	<td>verifyTextPresent</td>
-	<td>Title = Beth Bernhardt</td>
+	<td>Title = Imnavait Creek</td>
 	<td></td>
 </tr>
 <tr>
-	<td>verifyElementPresent</td>
-	<td>//div[@id='squeeze']/div/div/div[4]/table[2]/tbody/tr[9]/td[2]/a</td>
+	<td>clickAndWait</td>   
+	<td>//div[@id='squeeze']/div/div/div[4]/table[2]/tbody/tr[6]/td[2]/a</td>
 	<td></td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
-	<td>//div[@id='squeeze']/div/div/div[4]/table[2]/tbody/tr[9]/td[2]/a</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyTextPresent</td>
-	<td>Beth Bernhardt</td>
-	<td></td>
-</tr>
-<!-- check if new person not created if already esists,
-but is in dataset -->
+	<td>assertText</td>
+	<td>//div[@id='tabs-wrapper']/h2</td>
+	<td>Imnavait Creek</td>
+</tr>     
+<!-- check if new node not created if already exists, but is in a ref -->
 <tr>
 	<td>open</td>
 	<td>/drupal6-local/?q=csv2drupal</td>
@@ -97,7 +91,7 @@ but is in dataset -->
 </tr>
 <tr>
 	<td>verifyTextNotPresent</td>
-	<td>Type = person</td>
+	<td>Type = research_site</td>
 	<td></td>
 </tr>
 <tr>
@@ -105,41 +99,8 @@ but is in dataset -->
 	<td>//div[@id='squeeze']/div/div/div[4]/table[2]/tbody/tr[2]/td[2]/a</td>
 	<td></td>
 </tr>
-<tr>
-	<td>verifyTextPresent</td>
-	<td>Associated Researcher</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyTextPresent</td>
-	<td>Beth Bernhardt</td>
-	<td></td>
-</tr>
-<!-- <tr>
-  <td>clickAndWait</td>
-  <td>//div[@id='squeeze']/div/div/div[3]/div/div/fieldset/div/div[2]/div[4]/a</td>
-  <td></td>
-</tr> -->
-<tr>
-	<td>verifyText</td>
-	<td>link=Beth Bernhardt</td>
-	<td>Beth Bernhardt</td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>link=Beth Bernhardt</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyTextPresent</td>
-	<td>Beth Bernhardt</td>
-	<td></td>
-</tr>
-<tr>
-	<td>open</td>
-	<td>/drupal6-local/?q=csv2drupal</td>
-	<td></td>
-</tr>
+
+
 </tbody></table>
 </body>
 </html>
