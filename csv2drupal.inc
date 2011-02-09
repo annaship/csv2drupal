@@ -135,13 +135,14 @@ function validate_persons_uniqness($value) {
   if (!empty ($value)) {
     $person_fields = person_fields();
 //    TODO: remove keys and change key/value places for count
-//    TODO: into field_names file
+//    TODO: move into field_names file
 //    TODO: check for other CCT
+//    TODO: use field_person_email_email
     $forbiddenf_fields = array(
-        'field_person_phone' => 'field_person_phone',
-        'field_person_email' => 'field_person_email',
+        'field_person_phone',
+        'field_person_email',
     );
-    $array_length  = count($person_fields) - count(array_intersect_key($person_fields, $forbiddenf_fields));
+    $array_length  = count($person_fields) - count(array_intersect_key($person_fields, array_flip($forbiddenf_fields)));
     foreach ($person_fields as $field_name => $tag_name) {
       if (!in_array($field_name, $forbiddenf_fields)) {
         $i++;
@@ -153,7 +154,20 @@ function validate_persons_uniqness($value) {
       }
     }
 
-    $sql_values1 = "field_person_address_value, " . $value['Address'] . ", field_person_address_value, field_person_city_value, " . $value['City'] . ", field_person_city_value, field_person_country_value, " . $value['Country'] . ", field_person_country_value, field_person_email_email, " . $value['Email'] . ", field_person_email_email, field_person_first_name_value, " . $value['First Name'] . ", field_person_first_name_value, field_person_last_name_value, " . $value['Last Name'] . ", field_person_last_name_value, field_person_organization_value, " . $value['Organization'] . ", field_person_organization_value, field_person_role_value, " . $value['Role'] . ", field_person_role_value, field_person_state_value, " . $value['State'] . ", field_person_state_value, field_person_zipcode_value, " . $value['Zip Code'] . ", field_person_zipcode_value, field_person_address_value, " . $value['Address'] . ", field_person_address_value, field_person_city_value, " . $value['City'] . ", field_person_city_value, field_person_address_value, " . $value['Address'] . ", field_person_address_value";
+    $sql_values1 = "field_person_address_value, " .
+       $value['Address'] . ", field_person_address_value, field_person_city_value, " .
+       $value['City'] . ", field_person_city_value, field_person_country_value, " .
+       $value['Country'] . ", field_person_country_value, field_person_email_email, " .
+       $value['Email'] . ", field_person_email_email, field_person_first_name_value, " .
+       $value['First Name'] . ", field_person_first_name_value, field_person_last_name_value, " .
+       $value['Last Name'] . ", field_person_last_name_value, field_person_organization_value, " .
+       $value['Organization'] . ", field_person_organization_value, field_person_role_value, " .
+       $value['Role'] . ", field_person_role_value, field_person_state_value, " .
+       $value['State'] . ", field_person_state_value, field_person_zipcode_value, " .
+       $value['Zip Code'] . ", field_person_zipcode_value, field_person_address_value, " .
+       $value['Address'] . ", field_person_address_value, field_person_city_value, " .
+       $value['City'] . ", field_person_city_value, field_person_address_value, " .
+       $value['Address'] . ", field_person_address_value";
     
     $sql = "SELECT nid FROM {content_type_person}
               WHERE " . $a
