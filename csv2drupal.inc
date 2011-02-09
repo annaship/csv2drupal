@@ -122,40 +122,66 @@ function taking_person_ids($last_name) {
 }
 
 // TODO: Full Name (String, 10 characters ) =B2&" "&C2
+/*
+   $person_fields = array (
+    'field_person_first_name'   => 'First Name',
+    'field_person_last_name'    => 'Last Name',
+    'field_person_organization' => 'Organization',
 
+ */
 function validate_persons_uniqness($value) {
   if (!empty ($value)) {
-    $sql = "SELECT nid FROM {content_type_person} 
+    $person_fields = person_fields();
+    foreach ($person_fields as $field_name => $tag_name) {
+    $sql = "SELECT nid FROM {content_type_person}
               WHERE
-                (field_person_address_value			  = '%s' OR field_person_address_value			 is NULL) AND
-                (field_person_city_value				  = '%s' OR field_person_city_value				   is NULL) AND
-                (field_person_country_value   		= '%s' OR field_person_country_value   		 is NULL) AND
-                (field_person_email_email         = '%s' OR field_person_email_email         is NULL) AND
-                (field_person_first_name_value    = '%s' OR field_person_first_name_value    is NULL) AND
-                (field_person_last_name_value     = '%s' OR field_person_last_name_value     is NULL) AND
-                (field_person_organization_value  = '%s' OR field_person_organization_value  is NULL) AND
-                (field_person_role_value          = '%s' OR field_person_role_value          is NULL) AND
-                (field_person_state_value         = '%s' OR field_person_state_value         is NULL) AND
-                (field_person_zipcode_value			  = '%d' OR field_person_zipcode_value			 is NULL)
+                (%s			  = '%s' OR %s			 is NULL)
            ";
-      $query = db_query($sql,
-        $value['Address'],
-        $value['City'],
-        $value['Country'],
-        $value['Email'],
-        $value['First Name'],
-        $value['Last Name'],
-        $value['Organization'],
-        $value['Role'],
-        $value['State'],
-        $value['Zip Code']
-            );
-      $person_nid = db_result($query);
+    }
+
+    $query = db_query($sql,
+      $field_name . '_value', $value[$tag_name], $field_name . '_value'
+    );
+    $person_nid = db_result($query);
+    dpm($field_name);
+    dpm($value[$tag_name]);
+//              WHERE" . $and_part . $last_field
+//      count($array);
+
+//    $sql = "SELECT nid FROM {content_type_person}
+//              WHERE
+//                (field_person_address_value			  = '%s' OR field_person_address_value			 is NULL) AND
+//                (field_person_city_value				  = '%s' OR field_person_city_value				   is NULL) AND
+//                (field_person_country_value   		= '%s' OR field_person_country_value   		 is NULL) AND
+//                (field_person_email_email         = '%s' OR field_person_email_email         is NULL) AND
+//                (field_person_first_name_value    = '%s' OR field_person_first_name_value    is NULL) AND
+//                (field_person_last_name_value     = '%s' OR field_person_last_name_value     is NULL) AND
+//                (field_person_organization_value  = '%s' OR field_person_organization_value  is NULL) AND
+//                (field_person_role_value          = '%s' OR field_person_role_value          is NULL) AND
+//                (field_person_state_value         = '%s' OR field_person_state_value         is NULL) AND
+//                (field_person_zipcode_value			  = '%d' OR field_person_zipcode_value			 is NULL)
+//           ";
+//      $query = db_query($sql,
+//        $value['Address'],
+//        $value['City'],
+//        $value['Country'],
+//        $value['Email'],
+//        $value['First Name'],
+//        $value['Last Name'],
+//        $value['Organization'],
+//        $value['Role'],
+//        $value['State'],
+//        $value['Zip Code']
+//            );
+//      $person_nid = db_result($query);
   }
 //  variable_set('old_person_nids', $persons_arr);
   return $person_nid;
 }
 
+function validate_variable_uniqness($value) {
+
+}
 //TODO change format:
 /*
 dd-mmm-yyyy format
@@ -267,18 +293,19 @@ function create_person_node($content, &$ref_nids) {
 }
 
 function create_variable_node($content, &$ref_nids) {
-//  dpr('here in variable');
   $variable_values = create_values($content);
   $fields_names    = variable_fields();
   foreach ($variable_values as $value) {
+    $nid = validate_variable_uniqness($value);
+    if (!empty($nid)) {
+      $ref_nids['person'][] = $nid;
+    }
     if (!empty($value['Variable Name'])) {
       $node        = new StdClass();
       $node->type  = "variable";
       $node->uid   =  get_uid();
       $node->title = $value['Variable Name'];
       $node = add_node_value($node, $value, $fields_names);
-  //      $node->field_attribute_assoc_datafile[0]['value'] = $value['Associated Data Files'];
-//      field_attribute_assoc_datafile
       node_save(&$node);
       $ref_nids['variable'][] = $node->nid;
     }
