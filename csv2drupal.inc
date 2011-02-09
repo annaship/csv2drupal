@@ -242,11 +242,11 @@ function create_person_node($content, &$ref_nids) {
   foreach ($person_values as $value) {
     $nid = validate_persons_uniqness($value, $fields_names, $content_type);
     if (!empty($nid)) {
-      $ref_nids['person'][] = $nid;
+      $ref_nids[$content_type][] = $nid;
     }
     elseif (!empty($value['Last Name'])) {
       $node = new StdClass();
-      $node->type  = "person";
+      $node->type  = $content_type;
       $node->uid   =  get_uid();
       $full_name   = $value['First Name'] . " " . $value['Last Name'];
       $node->title = $full_name;
@@ -271,7 +271,7 @@ function create_person_node($content, &$ref_nids) {
 ////      }
 //
 ////      TODO get $person_nid from variables
-      $ref_nids['person'][] = $person_nid;
+      $ref_nids[$content_type][] = $person_nid;
     }
 //    dpr($node);
   }
@@ -286,29 +286,29 @@ function create_variable_node($content, &$ref_nids) {
 
     $nid = validate_persons_uniqness($value, $fields_names, $content_type);
     if (!empty($nid)) {
-      $ref_nids['variable'][] = $nid;
+      $ref_nids[$content_type][] = $nid;
     }    
     if (!empty($value['Variable Name'])) {
       $node        = new StdClass();
-      $node->type  = "variable";
+      $node->type  = $content_type;
       $node->uid   =  get_uid();
       $node->title = $value['Variable Name'];
       $node = add_node_value($node, $value, $fields_names);
       node_save(&$node);
-      $ref_nids['variable'][] = $node->nid;
+      $ref_nids[$content_type][] = $node->nid;
     }
   }
   return $ref_nids;
 }
 
 function create_site_node($content, &$ref_nids) {
-//  dpr("create_site_node");
+  $content_type = 'research_site';
   $research_site_values = create_values($content);
   $fields_names = research_site_fields();
   foreach ($research_site_values as $value) {
     if (!empty($value['Title'])) {
       $node = new StdClass();
-      $node->type  = "research_site";
+      $node->type  = $content_type;
       $node->uid   =  get_uid();
       $node->title = $value['Title'];
       $node        = add_node_value($node, $value, $fields_names);
@@ -410,7 +410,7 @@ function create_site_node($content, &$ref_nids) {
 
 
       node_save(&$node);
-      $ref_nids['research_site'][] = $node->nid;
+      $ref_nids[$content_type][] = $node->nid;
 //      $site_nid = $node->nid;
 //      $sql = "SELECT X(field_research_site_pt_coords_geo) as longitude,
 //             Y(field_research_site_pt_coords_geo) as latitude,
@@ -490,13 +490,13 @@ function create_file_object($file) {
 }
 
 function create_datafile_node($content, &$ref_nids, $file_object) {
-
+  $content_type     = 'data_file';
   $data_file_values = create_values($content);
   $fields_names     = datafile_fields();
   foreach ($data_file_values as $value) {
     if (!empty($value['Data File Structure Name'])) {
       $node = new StdClass();
-      $node->type   = "data_file";
+      $node->type   = $content_type;
       $node->uid    =  get_uid();
       $node->title  = $value['Data File Structure Name'];
       $node = add_node_value($node, $value, $fields_names);
@@ -515,7 +515,7 @@ function create_datafile_node($content, &$ref_nids, $file_object) {
 
       $node->field_data_file[0] = (array) $file_object;
       node_save(&$node);
-      $ref_nids['data_file'][] = $node->nid;
+      $ref_nids[$content_type][] = $node->nid;
     }
   }
   return $ref_nids;
@@ -527,16 +527,13 @@ function create_keywords_node($content, &$ref_nids) {
 }
 
 function create_dataset_node($content, &$ref_nids) {
-  //  TODO: show Jim
-//  dpm('Content: ');
-//  dpm($content);
-//  dpm($ref_nids['person']);
+  $content_type     = 'data_set';
   $dataset_values = create_values($content);
   $fields_names   = dataset_fields();
   foreach ($dataset_values as $value) {
     if (!empty($value['Title'])) {
       $node = new StdClass();
-      $node->type                                       = "data_set";
+      $node->type                                       = $content_type;
       $node->uid                                        =  get_uid();
       $node->title                                      = $value['Title'];
       $node = add_node_value($node, $value, $fields_names);
@@ -557,7 +554,7 @@ function create_dataset_node($content, &$ref_nids) {
         }
       }
       node_save(&$node);
-      $ref_nids['data_set'][] = $node->nid;
+      $ref_nids[$content_type][] = $node->nid;
     }
   }
 //  dpm($ref_nids);
