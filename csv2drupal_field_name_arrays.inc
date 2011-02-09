@@ -94,13 +94,13 @@ function variable_fields() {
   $variable_fields = array (
     'field_attribute_label'         => 'Variable Name',
     'field_var_definition'          => 'Variable Description',
-//    'field_var_missingvalues'       => 'Missing Value Code',
+    'field_var_missingvalues'       => 'Missing Value Code',
     'field_attribute_unit'          => 'Units',
     'field_attribute_maximum'       => 'Maximum Value',
     'field_attribute_minimum'       => 'Minimum Value',
     'field_attribute_precision'     => 'Precision',
     'field_attribute_formatstring'  => 'DateTime Format',
-//    'field_code_definition'         => 'Code Information',
+    'field_code_definition'         => 'Code Information',
   );
   return $variable_fields;
 }

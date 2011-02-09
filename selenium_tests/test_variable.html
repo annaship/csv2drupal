@@ -47,7 +47,7 @@
 	<td>edit-op</td>
 	<td></td>
 </tr>
-<!-- check if new person created -->
+<!-- check if new variables are created -->
 <tr>
 	<td>open</td>
 	<td>/drupal6-local/?q=csv2drupal</td>
@@ -63,86 +63,74 @@
 	<td>Type = variable</td>
 	<td></td>
 </tr>
-<!-- <tr>
-  <td>verifyTextPresent</td>
-  <td>Title = Beth Bernhardt</td>
-  <td></td>
-</tr>
 <tr>
+	<td>verifyTextPresent</td>
+	<td>Title = Count g/m^2</td>
+	<td></td>
+</tr>
+<!-- <tr>
   <td>verifyElementPresent</td>
-  <td>//div[@id='squeeze']/div/div/div[4]/table[2]/tbody/tr[9]/td[2]/a</td>
+  <td>//div[@id='squeeze']/div/div/div[4]/table[2]/tbody/tr[21]/td[2]/a</td>
   <td></td>
-</tr> -->
-<!-- /html/body/div[2]/div/div[3]/div/div/div/div[4]/table[2]/tbody/tr[9]/td[2]/a
- -->
-<!-- <tr>
-  <td>clickAndWait</td>
-  <td>//div[@id='squeeze']/div/div/div[4]/table[2]/tbody/tr[9]/td[2]/a</td>
-  <td></td>
+</tr>              -->
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='squeeze']/div/div/div[4]/table[2]/tbody/tr[21]/td[2]/a</td>
+	<td></td>
 </tr>
 <tr>
-  <td>verifyTextPresent</td>
-  <td>Beth Bernhardt</td>
-  <td></td>
-</tr> -->
+	<td>verifyTextPresent</td>
+	<td>Count g/m^2</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Associated Data Files:</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>1982_2000gs81tusbm</td>
+	<td></td>
+</tr>
 <!-- check if new person not created if already esists,
 but is in dataset -->
+<tr>
+	<td>open</td>
+	<td>/drupal6-local/?q=csv2drupal</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>edit-submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextNotPresent</td>
+	<td>Type = variable</td>
+	<td></td>
+</tr>
+<!-- go to data_file -->
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='squeeze']/div/div/div[4]/table[2]/tbody/tr[11]/td[2]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>exact:Variables:</td>
+	<td></td>
+</tr>
 <!-- <tr>
-  <td>open</td>
-  <td>/drupal6-local/?q=csv2drupal</td>
-  <td></td>
-</tr>
-<tr>
-  <td>clickAndWait</td>
-  <td>edit-submit</td>
-  <td></td>
-</tr>
-<tr>
-  <td>verifyTextNotPresent</td>
-  <td>Type = person</td>
-  <td></td>
-</tr>
-<tr>
-  <td>clickAndWait</td>
-  <td>//div[@id='squeeze']/div/div/div[4]/table[2]/tbody/tr[2]/td[2]/a</td>
-  <td></td>
-</tr>
-<tr>
-  <td>verifyTextPresent</td>
-  <td>Associated Researcher</td>
-  <td></td>
-</tr>
-<tr>
-  <td>verifyTextPresent</td>
-  <td>Beth Bernhardt</td>
-  <td></td>
+  <td>assertText</td>
+  <td>//a[contains(text(),'Count&nbsp;&nbsp;g/m^2')]</td>
+  <td>Count g/m^2</td>
 </tr> -->
-<!-- <tr>
-  <td>clickAndWait</td>
-  <td>//div[@id='squeeze']/div/div/div[3]/div/div/fieldset/div/div[2]/div[4]/a</td>
-  <td></td>
-</tr> -->
-<!-- <tr>
-  <td>verifyText</td>
-  <td>link=Beth Bernhardt</td>
-  <td>Beth Bernhardt</td>
-</tr>
 <tr>
-  <td>clickAndWait</td>
-  <td>link=Beth Bernhardt</td>
-  <td></td>
+	<td>clickAndWait</td>
+	<td>//a[contains(text(),'Count&nbsp;&nbsp;g/m^2')]</td>
+	<td></td>
 </tr>
-<tr>
-  <td>verifyTextPresent</td>
-  <td>Beth Bernhardt</td>
-  <td></td>
-</tr>
-<tr>
-  <td>open</td>
-  <td>/drupal6-local/?q=csv2drupal</td>
-  <td></td>
-</tr> -->
 </tbody></table>
 </body>
 </html>
-

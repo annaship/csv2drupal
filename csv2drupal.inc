@@ -140,6 +140,8 @@ function validate_uniqness($value, $fields_names, $content_type) {
     $forbiddenf_fields = array(
         'field_person_phone',
         'field_person_email',
+        'field_var_missingvalues',
+        'field_code_definition',
     );
     $array_length  = count($fields_names) - count(array_intersect_key($fields_names, array_flip($forbiddenf_fields)));
     foreach ($fields_names as $field_name => $tag_name) {
@@ -566,7 +568,6 @@ function create_dataset_node($content, &$ref_nids) {
 }
 
 function add_referrers($ref_nids) {
-// TODO: add referrers to old person
   $data_file_nids = $ref_nids['data_file'];
 
   save_ref_node($ref_nids['variable'], create_referrer($data_file_nids), 'field_datafile_variable_ref');
