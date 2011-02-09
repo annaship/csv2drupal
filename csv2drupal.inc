@@ -129,11 +129,11 @@ function taking_person_ids($last_name) {
     'field_person_organization' => 'Organization',
 
  */
-function validate_persons_uniqness($value, $fields_names, $content_type) {
+function validate_uniqness($value, $fields_names, $content_type) {
   $and_part = $full_field_name = "";
   $i = 0;
   if (!empty ($value)) {
-    dpm($value);
+//    dpm($value);
 //    TODO: move into field_names file
 //    TODO: check for other CCT
 //    TODO: use field_person_email_email
@@ -240,7 +240,9 @@ function create_person_node($content, &$ref_nids) {
   $person_values = create_values($content);
   $fields_names  = person_fields();
   foreach ($person_values as $value) {
-    $nid = validate_persons_uniqness($value, $fields_names, $content_type);
+    $nid = validate_uniqness($value, $fields_names, $content_type);
+//    dpm('$nid = ');
+//    dpm($nid);
     if (!empty($nid)) {
       $ref_nids[$content_type][] = $nid;
     }
@@ -284,11 +286,11 @@ function create_variable_node($content, &$ref_nids) {
   $fields_names    = variable_fields();
   foreach ($variable_values as $value) {
 
-    $nid = validate_persons_uniqness($value, $fields_names, $content_type);
+    $nid = validate_uniqness($value, $fields_names, $content_type);
     if (!empty($nid)) {
       $ref_nids[$content_type][] = $nid;
     }    
-    if (!empty($value['Variable Name'])) {
+    elseif (!empty($value['Variable Name'])) {
       $node        = new StdClass();
       $node->type  = $content_type;
       $node->uid   =  get_uid();
