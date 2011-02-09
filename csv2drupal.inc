@@ -131,68 +131,35 @@ function taking_person_ids($last_name) {
  */
 function validate_persons_uniqness($value) {
   $and_part = $full_field_name = "";
+  $i = 0;
   if (!empty ($value)) {
     $person_fields = person_fields();
-    $last_field    = "(%s = '%s' OR %s is NULL)";
-    $array_length  = count($person_fields);
-    for ($i = 1; $i < $array_length; $i++) {
-      $and_part .= $last_field . " AND ";
-    }
+//    TODO: remove keys and change key/value places for count
+//    TODO: into field_names file
+    $forbiddenf_fields = array(
+        'field_person_phone' => 'field_person_phone',
+        'field_person_email' => 'field_person_email',
+    );
+    $array_length  = count($person_fields) - count(array_intersect_key($person_fields, $forbiddenf_fields));
     foreach ($person_fields as $field_name => $tag_name) {
-      for ($i = 1; $i <= $array_length; $i++) {
+      if (!in_array($field_name, $forbiddenf_fields)) {
+        $i++;
         $full_field_name = $field_name . '_value';
-        $sql_values .= "$full_field_name, $value[$tag_name], $full_field_name ";
+        $a .= "(" . $full_field_name . " = '" . $value[$tag_name] . "' OR " . $full_field_name . " is NULL)";
+        if ($i < $array_length) {
+          $a .= " AND ";
+        }
       }
     }
+
     $sql_values1 = "field_person_address_value, " . $value['Address'] . ", field_person_address_value, field_person_city_value, " . $value['City'] . ", field_person_city_value, field_person_country_value, " . $value['Country'] . ", field_person_country_value, field_person_email_email, " . $value['Email'] . ", field_person_email_email, field_person_first_name_value, " . $value['First Name'] . ", field_person_first_name_value, field_person_last_name_value, " . $value['Last Name'] . ", field_person_last_name_value, field_person_organization_value, " . $value['Organization'] . ", field_person_organization_value, field_person_role_value, " . $value['Role'] . ", field_person_role_value, field_person_state_value, " . $value['State'] . ", field_person_state_value, field_person_zipcode_value, " . $value['Zip Code'] . ", field_person_zipcode_value, field_person_address_value, " . $value['Address'] . ", field_person_address_value, field_person_city_value, " . $value['City'] . ", field_person_city_value, field_person_address_value, " . $value['Address'] . ", field_person_address_value";
     
-//    dpm('$sql_values = ' . $sql_values);
-//    dpm('$and_part = ' . $and_part);
     $sql = "SELECT nid FROM {content_type_person}
-              WHERE" . $and_part . $last_field
+              WHERE " . $a
            ;
-    $query = db_query($sql, $sql_values1);
+    $query = db_query($sql);
     $person_nid = db_result($query);
-
-/*
- *
-SELECT nid FROM content_type_person WHERE(field_person_address_value, 7 MBL St, field_person_address_value, field_person_city_value, Woods Hole, field_person_city_value, field_person_country_value, USA, field_person_country_value, field_person_email_email, gshaver@mbl.edu, field_person_email_email, field_person_first_name_value, , field_person_first_name_value, field_person_last_name_value, Shaver, field_person_last_name_value, field_person_organization_value, Marine Biological Lab, field_person_organization_value, field_person_role_value, Lead Principal Investigator, field_person_role_value, field_person_state_value, MA, field_person_state_value, field_person_zipcode_value, 02543, field_person_zipcode_value, field_person_address_value, 7 MBL St, field_person_address_value, field_person_city_value, Woods Hole, field_person_city_value, field_person_address_value, 7 MBL St, field_person_address_value = '' OR is NULL) AND ( = '' OR is NULL) AND ( = '' OR is NULL) AND ( = '' OR is NULL) AND ( = '' OR is NULL) AND ( = '' OR is NULL) AND ( = '' OR is NULL) AND ( = '' OR is NULL) AND ( = '' OR is NULL) AND ( = '' OR is NULL) AND ( = '' OR is NULL) AND ( = '' OR is NULL) AND ( = '' OR is NULL) AND ( = '' OR is NULL) 
- */
-//    dpm($field_name);
-//    dpm($value[$tag_name]);
-//              WHERE" . $and_part . $last_field
-//      count($array);
-////              WHERE
-//                (%s			  = '%s' OR %s			 is NULL)
-
-//    $sql = "SELECT nid FROM {content_type_person}
-//              WHERE
-//                (field_person_address_value			  = '%s' OR field_person_address_value			 is NULL) AND
-//                (field_person_city_value				  = '%s' OR field_person_city_value				   is NULL) AND
-//                (field_person_country_value   		= '%s' OR field_person_country_value   		 is NULL) AND
-//                (field_person_email_email         = '%s' OR field_person_email_email         is NULL) AND
-//                (field_person_first_name_value    = '%s' OR field_person_first_name_value    is NULL) AND
-//                (field_person_last_name_value     = '%s' OR field_person_last_name_value     is NULL) AND
-//                (field_person_organization_value  = '%s' OR field_person_organization_value  is NULL) AND
-//                (field_person_role_value          = '%s' OR field_person_role_value          is NULL) AND
-//                (field_person_state_value         = '%s' OR field_person_state_value         is NULL) AND
-//                (field_person_zipcode_value			  = '%d' OR field_person_zipcode_value			 is NULL)
-//           ";
-//      $query = db_query($sql,
-//        $value['Address'],
-//        $value['City'],
-//        $value['Country'],
-//        $value['Email'],
-//        $value['First Name'],
-//        $value['Last Name'],
-//        $value['Organization'],
-//        $value['Role'],
-//        $value['State'],
-//        $value['Zip Code']
-//            );
-//      $person_nid = db_result($query);
   }
-//  variable_set('old_person_nids', $persons_arr);
   return $person_nid;
 }
 
