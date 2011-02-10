@@ -69,13 +69,13 @@
 	<td></td>
 </tr>
 <tr>
-	<td>verifyElementPresent</td>
-	<td>//div[@id='squeeze']/div/div/div[4]/table[2]/tbody/tr[9]/td[2]/a</td>
-	<td></td>
+	<td>storeTable</td>
+	<td>//div[@id='squeeze']/div/div/div[4]/table[2].2.1</td>
+	<td>dataset1_link</td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>//div[@id='squeeze']/div/div/div[4]/table[2]/tbody/tr[9]/td[2]/a</td>
+	<td>link=${dataset1_link}</td>
 	<td></td>
 </tr>
 <tr>
@@ -83,8 +83,8 @@
 	<td>Beth Bernhardt</td>
 	<td></td>
 </tr>
-<!-- check if new person not created if already esists,
-but is in dataset -->
+<!-- new person should not be created if already exists,
+but to be in dataset -->
 <tr>
 	<td>open</td>
 	<td>/drupal6-local/?q=csv2drupal</td>
@@ -96,13 +96,13 @@ but is in dataset -->
 	<td></td>
 </tr>
 <tr>
-	<td>verifyTextNotPresent</td>
-	<td>Type = person</td>
+	<td>verifyTextPresent</td>
+	<td>No new nodes was saved</td>
 	<td></td>
 </tr>
 <tr>
-	<td>clickAndWait</td>    
-	<td>//div[@id='squeeze']/div/div/div[3]/table[2]/tbody/tr[2]/td[2]/a</td>
+	<td>open</td>
+	<td>/drupal6-local/?q=node/${dataset1_link}</td>
 	<td></td>
 </tr>
 <tr>
@@ -115,16 +115,6 @@ but is in dataset -->
 	<td>Beth Bernhardt</td>
 	<td></td>
 </tr>
-<!-- <tr>
-  <td>clickAndWait</td>
-  <td>//div[@id='squeeze']/div/div/div[3]/div/div/fieldset/div/div[2]/div[4]/a</td>
-  <td></td>
-</tr> -->
-<tr>
-	<td>verifyText</td>
-	<td>link=Beth Bernhardt</td>
-	<td>Beth Bernhardt</td>
-</tr>
 <tr>
 	<td>clickAndWait</td>
 	<td>link=Beth Bernhardt</td>
@@ -140,6 +130,24 @@ but is in dataset -->
 	<td>/drupal6-local/?q=csv2drupal</td>
 	<td></td>
 </tr>
-</tbody></table>
-</body>
-</html>
+<!-- <tr>
+  <td>storeTable</td>
+  <td>//div[@id='squeeze']/div/div/div[4]/table[2].16.0</td>
+  <td>title2</td>
+</tr>
+<tr>
+  <td>storeTable</td>
+  <td>//div[@id='squeeze']/div/div/div[4]/table[2].16.1</td>
+  <td>link2</td>
+</tr>
+<tr>
+  <td>storeTable</td>
+  <td>//div[@id='squeeze']/div/div/div[4]/table[2].2.1</td>
+  <td>dataset1_link</td>
+</tr> -->
+<!-- <tr>
+	<td>storeTable</td>
+	<td>//div[@id='squeeze']/div/div/div[4]/table[2].16.1</td>
+	<td>second_dataset_id</td>
+</tr>
+ -->

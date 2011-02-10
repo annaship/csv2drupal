@@ -69,8 +69,18 @@
 	<td></td>
 </tr>
 <tr>
+	<td>storeTable</td>
+	<td>//div[@id='squeeze']/div/div/div[4]/table[2].22.1</td>
+	<td>variable_Count</td>
+</tr>
+<tr>
+	<td>storeTable</td>
+	<td>//div[@id='squeeze']/div/div/div[4]/table[2].18.1</td>
+	<td>data_file2</td>
+</tr>
+<tr>
 	<td>clickAndWait</td>
-	<td>//div[@id='squeeze']/div/div/div[4]/table[2]/tbody/tr[22]/td[2]/a</td>
+	<td>link=${variable_Count}</td>
 	<td></td>
 </tr>
 <tr>
@@ -101,14 +111,14 @@ but is in dataset -->
 	<td></td>
 </tr>
 <tr>
-	<td>verifyTextNotPresent</td>
-	<td>Type = variable</td>
+	<td>verifyTextPresent</td>
+	<td>No new nodes was saved</td>
 	<td></td>
 </tr>
 <!-- go to data_file -->
 <tr>
-	<td>clickAndWait</td>
-	<td>//div[@id='squeeze']/div/div/div[3]/table[2]/tbody/tr[8]/td[2]/a</td>
+	<td>open</td>
+	<td>/drupal6-local/?q=node/${data_file2}</td>
 	<td></td>
 </tr>
 <tr>

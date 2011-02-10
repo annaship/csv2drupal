@@ -11,6 +11,42 @@
 <thead>
 <tr><td rowspan="1" colspan="3">referrer</td></tr>
 </thead><tbody>
+  <tr>
+	<td>open</td>
+	<td>/drupal6-local/?q=csv2drupal</td>
+	<td></td>
+</tr>
+<!-- <tr>
+    <td>type</td>
+    <td>edit-name</td>
+    <td>anna</td>
+  </tr>
+  <tr>
+    <td>type</td>
+    <td>edit-pass</td>
+    <td>My password1</td>
+  </tr>
+  <tr>
+    <td>clickAndWait</td>
+    <td>edit-submit</td>
+    <td></td>
+  </tr> -->
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Execute PHP Code</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>edit-code</td>
+	<td>$q = db_query('SELECT nid FROM node WHERE nid &gt; 3110;');<br />while ($nid = db_result($q)) {<br />&nbsp;&nbsp;node_delete($nid);<br />}</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>edit-op</td>
+	<td></td>
+</tr>
+<!-- create new nodes -->
 <tr>
 	<td>open</td>
 	<td>/drupal6-local/?q=csv2drupal</td>
@@ -21,7 +57,7 @@
 	<td>edit-submit</td>
 	<td></td>
 </tr>
-<!-- Report shpuld have Variables and Datafiles -->
+<!-- Report sould have Variables and Datafiles -->
 <tr>
 	<td>verifyTextPresent</td>
 	<td>Type = variable</td>

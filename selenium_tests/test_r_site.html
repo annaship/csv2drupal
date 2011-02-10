@@ -69,8 +69,18 @@
 	<td></td>
 </tr>
 <tr>
+	<td>storeTable</td>
+	<td>//div[@id='squeeze']/div/div/div[4]/table[2].6.1</td>
+	<td>r_site_imnavat</td>
+</tr>
+<tr>
+	<td>storeTable</td>
+	<td>//div[@id='squeeze']/div/div/div[4]/table[2].2.1</td>
+	<td>dataset1</td>
+</tr>
+<tr>
 	<td>clickAndWait</td>
-	<td>//div[@id='squeeze']/div/div/div[4]/table[2]/tbody/tr[6]/td[2]/a</td>
+	<td>link=${r_site_imnavat}</td>
 	<td></td>
 </tr>
 <tr>
@@ -78,7 +88,7 @@
 	<td>//div[@id='tabs-wrapper']/h2</td>
 	<td>Imnavait Creek</td>
 </tr>
-<!-- check if new node not created if already exists, but is in a ref -->
+<!-- shouldn't create a new node if already exists, but to be in a ref -->
 <tr>
 	<td>open</td>
 	<td>/drupal6-local/?q=csv2drupal</td>
@@ -94,11 +104,15 @@
 	<td>Type = research_site</td>
 	<td></td>
 </tr>
-<!-- go to dataset
-/html/body/div[2]/div/div[3]/div/div/div/div[3]/table[2]/tbody/tr[2]/td[2]/a -->
 <tr>
-	<td>clickAndWait</td>
-	<td>//div[@id='squeeze']/div/div/div[3]/table[2]/tbody/tr[2]/td[2]/a</td>
+	<td>verifyTextPresent</td>
+	<td>No new nodes was saved</td>
+	<td></td>
+</tr>
+<!-- go to dataset -->
+<tr>
+	<td>open</td>
+	<td>/drupal6-local/?q=node/${dataset1}</td>
 	<td></td>
 </tr>
 <tr>

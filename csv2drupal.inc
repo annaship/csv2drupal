@@ -657,13 +657,7 @@ function display_report_page()
     }
     $rows[] = array('Title = ' . $node_title, $node_link);
   }
-  if (count($rows) == 1) {
-    $rows[] = long_cell('No new nodes was saved');
-  }
-  else {
-    drupal_set_message('Followed nodes were just created:');
-  }
-
+  count($rows) == 1 ? $rows[] = long_cell('No new nodes was saved') : drupal_set_message('Followed nodes were just created:');
   variable_del(csv2drupal_submit_time);
   return theme_table($header, $rows);
 }
