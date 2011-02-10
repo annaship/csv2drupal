@@ -135,10 +135,22 @@ function research_site_fields() {
 
 function tags_to_title() {
   $tags_to_title = array (
+    'person'        => 'Full Name',
     'variable'      => 'Variable Name',
     'research_site' => 'Title',
     'data_file'     => 'Data File Structure Name',
     'data_set'      => 'Title',
   );
   return $tags_to_title;
+}
+
+function forbiddenf_fields() {
+  $forbiddenf_fields = array(
+    'field_person_phone',
+    'field_person_email',
+    'field_var_missingvalues',
+    'field_code_definition',
+    'field_research_site_image',
+  );
+  return $forbiddenf_fields;
 }
