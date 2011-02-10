@@ -152,7 +152,7 @@ function validate_uniqness($value, $fields_names, $content_type) {
     $array_length  = count($fields_names) - count(array_intersect_key($fields_names, array_flip($forbiddenf_fields)));
     foreach ($fields_names as $field_name => $tag_name) {
       if (!in_array($field_name, $forbiddenf_fields)) {
-        $i++;
+//        $i++;
         $full_field_name = $field_name . '_value';
         $condition .= "(" . $full_field_name . " = '" . $value[$tag_name] . "' OR " . $full_field_name . " is NULL) AND ";
 //        if ($i < $array_length) {
@@ -160,12 +160,13 @@ function validate_uniqness($value, $fields_names, $content_type) {
 //        }
       }
     }
-   $title_value = 'Imnavait Creek';
+    $title_value = 'Imnavait Creek';
     $sql   = "SELECT node.nid FROM {content_type_" . $content_type . "} as content_type
               JOIN {node} on content_type.nid = node.nid
               WHERE " . $condition . " node.title = '" . $title_value . "';";
     $query = db_query($sql);
     $nid   = db_result($query);
+    dpm($nid);
 
     /* TODO:
  * 1) make $title_value automatically (
