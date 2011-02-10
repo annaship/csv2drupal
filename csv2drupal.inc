@@ -541,12 +541,8 @@ function create_dataset_node($content, &$ref_nids) {
     $nid = validate_uniqness($value, $fields_names, $content_type);
     if (!empty($nid)) {
       $ref_nids[$content_type][] = $nid;
-      dpm('ref_nids = ');
-      dpm($ref_nids);
     }
     elseif (!empty($value['Title'])) {
-      dpm('value = ');
-      dpm($values);
       $node = new StdClass();
       $node->type                                       = $content_type;
       $node->uid                                        =  get_uid();
@@ -656,16 +652,26 @@ function display_report_page()
     $node_type  = $node->type;
     $node_link  = l($nid, 'node/'.$nid);
     if ($node_type != $old_node_type) {
-      $rows[] = array(array('data' => 'Type = ' . $node_type, 'colspan' => 2, 
-          'font size' => 4, 'align' => 'center'));
+      $rows[] = long_cell('Type = ' . $node_type);
       $old_node_type = $node_type;
     }
     $rows[] = array('Title = ' . $node_title, $node_link);
   }
-  count($rows) == 1 ? $rows[] = array("No new nodes was saved") : drupal_set_message('Followed nodes were just created:');
+  if (count($rows) == 1) {
+    $rows[] = long_cell('No new nodes was saved');
+  }
+  else {
+    drupal_set_message('Followed nodes were just created:');
+  }
 
   variable_del(csv2drupal_submit_time);
   return theme_table($header, $rows);
+}
+
+function long_cell($long_cell_value) {
+  $long_cell = array(array('data' => $long_cell_value, 'colspan' => 2,
+          'font size' => 4, 'align' => 'center'));
+  return $long_cell;
 }
 
 function get_person_ref($dataset_value, $person_ref_nids) {
