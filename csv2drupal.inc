@@ -498,7 +498,10 @@ function create_datafile_node($content, &$ref_nids, $file_object) {
   $data_file_values = create_values($content);
   $fields_names     = datafile_fields();
   foreach ($data_file_values as $value) {
-    if (!empty($value['Data File Structure Name'])) {
+    if (!empty($nid)) {
+      $ref_nids[$content_type][] = $nid;
+    }
+    elseif (!empty($value['Data File Structure Name'])) {
       $node = new StdClass();
       $node->type   = $content_type;
       $node->uid    =  get_uid();
@@ -535,7 +538,11 @@ function create_dataset_node($content, &$ref_nids) {
   $dataset_values = create_values($content);
   $fields_names   = dataset_fields();
   foreach ($dataset_values as $value) {
-    if (!empty($value['Title'])) {
+    dpm($value);
+    if (!empty($nid)) {
+      $ref_nids[$content_type][] = $nid;
+    }
+    elseif (!empty($value['Title'])) {
       $node = new StdClass();
       $node->type                                       = $content_type;
       $node->uid                                        =  get_uid();

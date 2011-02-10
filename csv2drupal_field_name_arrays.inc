@@ -151,6 +151,11 @@ function forbiddenf_fields() {
     'field_var_missingvalues',
     'field_code_definition',
     'field_research_site_image',
+    'field_beg_end_date',
+    'field_methods',
+    'field_instrumentation',
+    'field_quality',
+//    'field_dataset_related_links',
   );
   return $forbiddenf_fields;
 }
