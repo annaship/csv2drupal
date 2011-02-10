@@ -305,8 +305,6 @@ function create_site_node($content, &$ref_nids) {
   $fields_names = research_site_fields();
   foreach ($research_site_values as $value) {
     $nid = validate_uniqness($value, $fields_names, $content_type);
-
-//    dpm($value);
     if (!empty($nid)) {
       $ref_nids[$content_type][] = $nid;
     }
@@ -498,6 +496,7 @@ function create_datafile_node($content, &$ref_nids, $file_object) {
   $data_file_values = create_values($content);
   $fields_names     = datafile_fields();
   foreach ($data_file_values as $value) {
+    $nid = validate_uniqness($value, $fields_names, $content_type);
     if (!empty($nid)) {
       $ref_nids[$content_type][] = $nid;
     }
@@ -538,11 +537,16 @@ function create_dataset_node($content, &$ref_nids) {
   $dataset_values = create_values($content);
   $fields_names   = dataset_fields();
   foreach ($dataset_values as $value) {
-    dpm($value);
+//    check only by Title!
+    $nid = validate_uniqness($value, $fields_names, $content_type);
     if (!empty($nid)) {
       $ref_nids[$content_type][] = $nid;
+      dpm('ref_nids = ');
+      dpm($ref_nids);
     }
     elseif (!empty($value['Title'])) {
+      dpm('value = ');
+      dpm($values);
       $node = new StdClass();
       $node->type                                       = $content_type;
       $node->uid                                        =  get_uid();
@@ -658,11 +662,9 @@ function display_report_page()
     }
     $rows[] = array('Title = ' . $node_title, $node_link);
   }
-  if (count($rows) == 1)
-      $rows[] = array("No nodes was saved");
+  count($rows) == 1 ? $rows[] = array("No new nodes was saved") : drupal_set_message('Followed nodes were just created:');
 
   variable_del(csv2drupal_submit_time);
-  drupal_set_message('Followed nodes were just created:');
   return theme_table($header, $rows);
 }
 

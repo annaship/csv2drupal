@@ -146,16 +146,23 @@ function tags_to_title() {
 
 function forbiddenf_fields() {
   $forbiddenf_fields = array(
-    'field_person_phone',
-    'field_person_email',
-    'field_var_missingvalues',
-    'field_code_definition',
-    'field_research_site_image',
     'field_beg_end_date',
-    'field_methods',
+    'field_code_definition',
+    'field_dataset_abstract',
+    'field_dataset_add_info',
+    'field_dataset_id',
+    'field_dataset_maintenance',
+    'field_dataset_publication_date',
+    'field_dataset_purpose',
+    'field_dataset_related_links',
+    'field_dataset_short_name',
     'field_instrumentation',
+    'field_methods',
+    'field_person_email',
+    'field_person_phone',
     'field_quality',
-//    'field_dataset_related_links',
+    'field_research_site_image',
+    'field_var_missingvalues',
   );
   return $forbiddenf_fields;
 }
