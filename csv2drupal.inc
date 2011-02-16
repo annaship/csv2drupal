@@ -5,15 +5,9 @@ require_once 'csv2drupal_field_name_arrays.inc';
 //module_load_include('module', 'geo', 'geo');
 
 function get_data_from_excel_file($file) {
-  $sheet_names = array(
-    'DataSet-CCK'   => 'dataset',
-    'DataFile-CCK'  => 'datafile',
-    'Site-CCK'      => 'site',
-    'Person-CCK'    => 'person',
-    'Variable-CCK'  => 'variable',
-    'Keywords'      => 'keywords',
-  );
 
+  $sheet_names = sheet_names();
+  
   $objReader = PHPExcel_IOFactory::createReaderForFile($file);
   $objReader->setLoadSheetsOnly(0);
   $objReader->setReadDataOnly(true);
@@ -37,14 +31,15 @@ function get_data_from_excel_file($file) {
       for ($col = 0; $col <= $highestColumnIndex; ++$col) {
         $res = trim($objWorksheet->getCellByColumnAndRow($col, $row)->getValue());
         if (!empty($loadedSheetName)) {
+          $lowloadedSheetName = strtolower($loadedSheetName);
           if (!empty($titles[$col])) {
-            ${$sheet_names[$loadedSheetName]}[$titles[$col]][] = $res;
+            ${$sheet_names[$lowloadedSheetName]}[$titles[$col]][] = $res;
           }
         }
       }
     }
-    if (in_array($sheet_names[$loadedSheetName], $sheet_names)) {
-      $content[$sheet_names[$loadedSheetName]] = ${$sheet_names[$loadedSheetName]};
+    if (in_array($sheet_names[$lowloadedSheetName], $sheet_names)) {
+      $content[$sheet_names[$lowloadedSheetName]] = ${$sheet_names[$lowloadedSheetName]};
     }
   }
 //  dpr($content);
@@ -306,6 +301,7 @@ function create_variable_node($content, &$ref_nids) {
 }
 
 function create_site_node($content, &$ref_nids) {
+//  TODO: 2000 has "location" and "coordinates". Include!
   $content_type = 'research_site';
   $research_site_values = create_values($content);
   $fields_names = research_site_fields();
@@ -519,7 +515,7 @@ function create_datafile_node($content, &$ref_nids, $file_object) {
           $node->field_datafile_variable_ref[]['nid'] = $variable;
         }
       }
-//only create those links if sites are in datafile!
+//TODO: compare names and save only if it's the same
       if (!empty($value['Sites']) && $ref_nids['research_site']) {
         foreach ($ref_nids['research_site'] as $dataset_site) {
           $node->field_datafile_site_ref[]['nid']     = $dataset_site;

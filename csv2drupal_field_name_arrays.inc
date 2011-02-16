@@ -1,5 +1,26 @@
 <?php
 
+function sheet_names() {
+  $sheet_names = array(
+    'dataset-cck'   => 'dataset',
+    'datafile-cck'  => 'datafile',
+    'site-cck'      => 'site',
+    'person-cck'    => 'person',
+    'variable-cck'  => 'variable',
+    'keywords'      => 'keywords',
+  );
+  return $sheet_names;
+}
+
+//  $sheet_names = array(
+//    'DataSet-CCK'   => 'dataset',
+//    'DataFile-CCK'  => 'datafile',
+//    'Site-CCK'      => 'site',
+//    'Person-CCK'    => 'person',
+//    'Variable-CCK'  => 'variable',
+//    'Keywords'      => 'keywords',
+//  );
+
 function dataset_fields() {
   $dataset_fields = array(
     'field_beg_end_date'              => 'Date Range',
