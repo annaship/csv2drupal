@@ -66,6 +66,9 @@ function get_uid() {
 
 //restructures arrays from Excel
 function create_values($content) {
+  //TODO: why person in common method?
+    dpm($content);
+
   $dataset_person_ref_fields = dataset_person_ref_fields();
   $values = array();
   if ($content) {

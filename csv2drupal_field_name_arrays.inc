@@ -109,10 +109,7 @@ field_attribute_maximum_value
 field_attribute_minimum_value
 field_attribute_precision_value
 field_attribute_formatstring_value
-   */
-
-function variable_fields() {
-  $variable_fields = array (
+   *
     'field_attribute_label'         => 'Variable Name',
     'field_var_definition'          => 'Variable Description',
     'field_var_missingvalues'       => 'Missing Value Code',
@@ -122,6 +119,21 @@ function variable_fields() {
     'field_attribute_precision'     => 'Precision',
     'field_attribute_formatstring'  => 'DateTime Format',
     'field_code_definition'         => 'Code Information',
+
+   Name 	Label 	Definition 	Missing Values 	unit 	Maximum Value 	Minimum Value 	precision 	Date Format 	Code-Definition 	Associated Data Files
+   */
+
+function variable_fields() {
+  $variable_fields = array (
+    'field_attribute_label'         => 'Label',
+    'field_var_definition'          => 'Definition',
+    'field_var_missingvalues'       => 'Missing Values',
+    'field_attribute_unit'          => 'unit',
+    'field_attribute_maximum'       => 'Maximum Value',
+    'field_attribute_minimum'       => 'Minimum Value',
+    'field_attribute_precision'     => 'precision',
+    'field_attribute_formatstring'  => 'Date Format',
+    'field_code_definition'         => 'Code-Definition',
   );
   return $variable_fields;
 }
@@ -159,7 +171,8 @@ function tags_to_title() {
     'person'        => 'Full Name',
     'variable'      => 'Variable Name',
     'research_site' => 'Title',
-    'data_file'     => 'Data File Structure Name',
+    'data_file'     => 'Associated Data Files',
+//    'data_file'     => 'Data File Structure Name',
     'data_set'      => 'Title',
   );
   return $tags_to_title;
