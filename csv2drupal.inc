@@ -113,9 +113,9 @@ function taking_person_ids($last_name) {
         WHERE
           field_person_last_name_value = '%s'";
       $q_last   = db_query($sql_last, $last_name);
-        while ($nid_last = db_result($q_last)) {
-          $persons_arr[] = $nid_last;
-      }
+      while ($nid_last = db_result($q_last)) {
+        $persons_arr[] = $nid_last;
+    }
   }
   variable_set('old_person_nids', $persons_arr);
   return $persons_arr;
