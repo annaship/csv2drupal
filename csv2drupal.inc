@@ -6,11 +6,11 @@ require_once 'csv2drupal_field_name_arrays.inc';
 
 function get_data_from_excel_file($file) {
   $sheet_names = array(
-    'DataSet-csv'   => 'dataset',
-    'DataFile-csv'  => 'datafile',
-    'Site-csv'      => 'site',
-    'Person-csv'    => 'person',
-    'Variable-csv'  => 'variable',
+    'DataSet-CCK'   => 'dataset',
+    'DataFile-CCK'  => 'datafile',
+    'Site-CCK'      => 'site',
+    'Person-CCK'    => 'person',
+    'Variable-CCK'  => 'variable',
     'Keywords'      => 'keywords',
   );
 
@@ -136,6 +136,8 @@ function validate_uniqness($value, $fields_names, $content_type) {
     $query = db_query($sql);
     $nid   = db_result($query);
   }
+  //TODO: remove!!!
+  $nid = '';
   return $nid;
 }
 
@@ -163,6 +165,7 @@ function create_sql($value, $fields_names, $content_type) {
 
 //TODO change format:
 /*
+ * Jul-23-2000 - Aug-01-2000
 dd-mmm-yyyy format
  *  * Publication Date	field_dataset_publication_date	Datetime
  * Date Range	field_beg_end_date	Date
@@ -171,7 +174,13 @@ dd-mmm-yyyy format
 
 //TODO: add check for single vs. range
 function convert_date_range($date_range) {
-  if (preg_match_all("/(\d{1,2}).(\d{1,2}).(\d{2,4})/", $date_range, $matches, PREG_SET_ORDER)) {
+   if (preg_match_all("/(\w{1,3}).(\d{1,2}).(\d{2,4})/", $date_range, $matches, PREG_SET_ORDER)) {
+    foreach ($matches as $match) {
+      $date = str_replace('-', ' ', $match[0]);
+      $dates[] = strftime("%G-%m-%d 00:00:00", strtotime($date));
+    }
+  }
+  elseif (preg_match_all("/(\d{1,2}).(\d{1,2}).(\d{2,4})/", $date_range, $matches, PREG_SET_ORDER)) {
     foreach ($matches as $match) {
       $date = str_replace('-', '/', $match[0]);
       $dates[] = strftime("%G-%m-%d 00:00:00", strtotime($date));
@@ -235,10 +244,7 @@ function create_person_node($content, &$ref_nids) {
   $fields_names  = person_fields();
   foreach ($person_values as $value) {
     $value['Full Name'] = $value['First Name'] . " " . $value['Last Name'];
-//    dpm($value);
     $nid = validate_uniqness($value, $fields_names, $content_type);
-//    dpm('$nid = ');
-//    dpm($nid);
     if (!empty($nid)) {
       $ref_nids[$content_type][] = $nid;
     }
@@ -513,7 +519,8 @@ function create_datafile_node($content, &$ref_nids, $file_object) {
           $node->field_datafile_variable_ref[]['nid'] = $variable;
         }
       }
-      if ($ref_nids['research_site']) {
+//only create those links if sites are in datafile!
+      if (!empty($value['Sites']) && $ref_nids['research_site']) {
         foreach ($ref_nids['research_site'] as $dataset_site) {
           $node->field_datafile_site_ref[]['nid']     = $dataset_site;
         }
