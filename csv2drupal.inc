@@ -80,37 +80,6 @@ function create_values($content) {
   return $values;
 }
 
-
-//function create_values($content) {
-//  //TODO: why person in common method?
-//    dpm($content);
-//
-//  $dataset_person_ref_fields = dataset_person_ref_fields();
-//  $values = array();
-//  if ($content) {
-//    foreach ($content as $key => $value) {
-//      foreach ($value as $number => $data) {
-//        if (in_array($key, $dataset_person_ref_fields) AND (preg_match("/,/", $data))) {
-//          $data = get_person_array($data);
-//        }
-//        $values[$number][$key] = $data;
-//      }
-//    }
-//  }
-//  return $values;
-//}
-
-function  get_person_array($data) {
-  $person_names = array();
-  if (preg_match_all("/([^,]+)/", $data, $matches, PREG_SET_ORDER)) {
-    foreach ($matches as $match) {
-      $person_names[] = trim($match[1]);
-    }
-  }
-  return $person_names;
-}
-
-
 function add_node_value(&$node, $value, $fields_names) {
 //  dpm($value);
   foreach ($fields_names as $node_field_name => $csv_title) {
@@ -118,31 +87,7 @@ function add_node_value(&$node, $value, $fields_names) {
   }
   return $node;
 }
-//
-function taking_person_ids($last_name) {
-  unset ($nid_last);
-  if (isset ($last_name)) {
-    $persons_arr = array();
-      $sql_last  = "SELECT nid FROM {content_type_person}
-        WHERE
-          field_person_last_name_value = '%s'";
-      $q_last   = db_query($sql_last, $last_name);
-      while ($nid_last = db_result($q_last)) {
-        $persons_arr[] = $nid_last;
-    }
-  }
-  variable_set('old_person_nids', $persons_arr);
-  return $persons_arr;
-}
 
-// TODO: Full Name (String, 10 characters ) =B2&" "&C2
-/*
-   $fields_names = array (
-    'field_person_first_name'   => 'First Name',
-    'field_person_last_name'    => 'Last Name',
-    'field_person_organization' => 'Organization',
-
- */
 function validate_uniqness($value, $fields_names, $content_type) {
   $sql = $query = $nid = "";
   if (!empty ($value)) {
@@ -305,26 +250,10 @@ function create_person_node($content, &$ref_nids) {
       $node->field_person_email[0]['email'] = $value['Email'];
       $node->field_person_uid[0]['uid'] = $value['person_uid'];
       $node->field_person_pubs[0]['nid'] = $value['Publications'];
-//      $persons_arr = taking_person_ids($value['Last Name']);
-//      $current_destination = drupal_get_destination();
       node_save(&$node);
       $person_nid = $node->nid;
-////      variable_set('new_person_nid', $person_nid);
-//
-////      if ($persons_arr) {
-//////        drupal_set_message('Compare new and old person\'s information');
-////        drupal_goto('personell_check');
-//////      drupal_goto('personell_check', $current_destination);
-////      }
-////      else {
-//////        dpr('no persons');
-//////        dpm('no persons');
-////      }
-//
-////      TODO get $person_nid from variables
       $ref_nids[$content_type][] = $person_nid;
     }
-//    dpr($node);
   }
   return $ref_nids;
 }
@@ -589,7 +518,7 @@ function create_keywords_node($content, &$ref_nids) {
 }
 
 function create_dataset_node($content, &$ref_nids) {
-  $content_type     = 'data_set';
+  $content_type   = 'data_set';
   $dataset_values = create_values($content);
   $fields_names   = dataset_fields();
   foreach ($dataset_values as $value) {
@@ -724,32 +653,95 @@ function long_cell($long_cell_value) {
   return $long_cell;
 }
 
+function get_person_array($data) {
+  $person_names = array();
+  if (preg_match_all("/([^,]+)/", $data, $matches, PREG_SET_ORDER)) {
+    foreach ($matches as $match) {
+      $person_names[] = trim($match[1]);
+    }
+  }
+  return $person_names;
+}
+
 function get_person_ref($dataset_value, $person_ref_nids) {
   $dataset_person_refs = array();
   $dataset_person_ref_fields = dataset_person_ref_fields();
-  foreach ($dataset_person_ref_fields as $dataset_field_name => $dataset_role) {
-    $name = $dataset_value[$dataset_role];
-    is_array($name) ? $names = $name : $names = (array) $name;
-    if (!empty ($person_ref_nids)) {
-      foreach ($person_ref_nids as $person_ref_nid) {
-//        dpm($person_ref_nid);
-        $node = node_load($person_ref_nid);
-        $title = $node->title;
-        if (in_array(trim($title), $names)) {
+  $person_titles_nids = array();
+  if (!empty ($person_ref_nids)) {
+    foreach ($person_ref_nids as $person_ref_nid) {
+      $node = node_load($person_ref_nid);
+      $title = $node->title;
+      $person_titles_n_nids[] = array($person_ref_nid => trim($title));
+    }
+
+    foreach ($dataset_person_ref_fields as $dataset_field_name => $dataset_role) {
+      $name = get_person_array($dataset_value[$dataset_role]);
+      if (!empty($name)) {
+        is_array($name) ? $names = $name : $names = (array) $name;
+//        TODO: print $person_titles_n_nids, $names and find intersect
+        if (array_intersect($person_titles_n_nids, $names)) {
+          dpm('array_intersect($person_titles_n_nids, $names = ');
+          dpm(array_intersect($person_titles_n_nids, $names));
           $dataset_person_refs[$dataset_field_name][] = $person_ref_nid;
         }
       }
     }
   }
+
+//  foreach ($dataset_person_ref_fields as $dataset_field_name => $dataset_role) {
+//    $name = $dataset_value[$dataset_role];
+//    is_array($name) ? $names = $name : $names = (array) $name;
+//    if (!empty ($person_ref_nids)) {
+//      foreach ($person_ref_nids as $person_ref_nid) {
+//        dpm('$person_ref_nid = ');
+//        dpm($person_ref_nid);
+//        $node = node_load($person_ref_nid);
+//        $title = $node->title;
+//        if (in_array(trim($title), $names)) {
+//          $dataset_person_refs[$dataset_field_name][] = $person_ref_nid;
+//        }
+//      }
+//    }
+//  }
   return $dataset_person_refs;
 }
 
+/*
+
+//function create_values($content) {
+//  //TODO: why person in common method?
+//    dpm($content);
+//
+//  $dataset_person_ref_fields = dataset_person_ref_fields();
+//  $values = array();
+//  if ($content) {
+//    foreach ($content as $key => $value) {
+//      foreach ($value as $number => $data) {
+//        if (in_array($key, $dataset_person_ref_fields) AND (preg_match("/,/", $data))) {
+//          $data = get_person_array($data);
+//        }
+//        $values[$number][$key] = $data;
+//      }
+//    }
+//  }
+//  return $values;
+//}
+
+
+ */
+
+
 function add_person_refs(&$node, $dataset_person_refs) {
+//  $dataset_person_refs wrong
   foreach ($dataset_person_refs as $field_name => $value1) {
+//    dpm('$field_name = ');
+//    dpm($field_name);
     $refs = array();
     foreach ($value1 as $ref) {
       $refs[]['nid'] = $ref;
     }
+//      dpm('$refs');
+//      dpm($refs);
     $node->$field_name = $refs;
   }
   return $node;

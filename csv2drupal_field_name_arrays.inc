@@ -39,6 +39,31 @@ function dataset_fields() {
   return $dataset_fields;
 }
 
+/*
+ Title
+Abstract
+Short Name
+Dataset ID
+Purpose
+Additional Information
+Data File Structure
+Related Links
+Related Bibliography
+Maintenance
+Owner
+Contact
+Data Manager
+Field Crew
+Lab Crew
+Associated Researcher
+Publication Date
+Site
+Date Range
+Methods
+Instrumentation
+Quality Assurance
+ */
+
 function dataset_person_ref_fields() {
   $dataset_person_ref_fields = array(
     'field_dataset_owner_ref'        => 'Owner',
