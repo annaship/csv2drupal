@@ -169,7 +169,7 @@ function research_site_fields() {
 function tags_to_title() {
   $tags_to_title = array (
     'person'        => 'Full Name',
-    'variable'      => 'Variable Name',
+    'variable'      => 'Label',
     'research_site' => 'Title',
     'data_file'     => 'Associated Data Files',
 //    'data_file'     => 'Data File Structure Name',

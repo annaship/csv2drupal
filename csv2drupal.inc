@@ -64,25 +64,41 @@ function get_uid() {
   return $user->uid;
 }
 
+/*
+ 
+ *
+ */
+
 //restructures arrays from Excel
 function create_values($content) {
-  //TODO: why person in common method?
-    dpm($content);
-
-  $dataset_person_ref_fields = dataset_person_ref_fields();
   $values = array();
-  if ($content) {
-    foreach ($content as $key => $value) {
-      foreach ($value as $number => $data) {
-        if (in_array($key, $dataset_person_ref_fields) AND (preg_match("/,/", $data))) {
-          $data = get_person_array($data);
-        }
-        $values[$number][$key] = $data;
-      }
+  foreach ($content as $key => $value) {
+    foreach ($value as $number => $data) {
+      $values[$number][$key] = $data;
     }
   }
   return $values;
 }
+
+
+//function create_values($content) {
+//  //TODO: why person in common method?
+//    dpm($content);
+//
+//  $dataset_person_ref_fields = dataset_person_ref_fields();
+//  $values = array();
+//  if ($content) {
+//    foreach ($content as $key => $value) {
+//      foreach ($value as $number => $data) {
+//        if (in_array($key, $dataset_person_ref_fields) AND (preg_match("/,/", $data))) {
+//          $data = get_person_array($data);
+//        }
+//        $values[$number][$key] = $data;
+//      }
+//    }
+//  }
+//  return $values;
+//}
 
 function  get_person_array($data) {
   $person_names = array();
@@ -283,18 +299,26 @@ function create_person_node($content, &$ref_nids) {
 function create_variable_node($content, &$ref_nids) {
   $content_type = 'variable';
   $variable_values = create_values($content);
+  $tags_to_title   = tags_to_title();
+  $title_label = $tags_to_title['variable'];
+  dpm('$variable_values = ');
+  dpm($variable_values);
+  dpm('$variable_values = ');
+  dpm($variable_values);
   $fields_names    = variable_fields();
   foreach ($variable_values as $value) {
+  dpm('$variable_value = ');
+  dpm($value);
 
     $nid = validate_uniqness($value, $fields_names, $content_type);
     if (!empty($nid)) {
       $ref_nids[$content_type][] = $nid;
     }    
-    elseif (!empty($value['Variable Name'])) {
+    elseif (!empty($value[$title_label])) {
       $node        = new StdClass();
       $node->type  = $content_type;
       $node->uid   =  get_uid();
-      $node->title = $value['Variable Name'];
+      $node->title = $value[$title_label];
       $node = add_node_value($node, $value, $fields_names);
       node_save(&$node);
       $ref_nids[$content_type][] = $node->nid;
