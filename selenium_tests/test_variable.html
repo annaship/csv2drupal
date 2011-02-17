@@ -64,39 +64,34 @@
 	<td></td>
 </tr>
 <tr>
-	<td>verifyTextPresent</td>
-	<td>Title = Count</td>
-	<td></td>
+	<td>storeText</td>
+	<td>//tr/td[contains(text(), 'Type = variable')]/../following-sibling::tr/td[2]</td>
+	<td>var_nid</td>
 </tr>
 <tr>
-	<td>storeTable</td>
-	<td>//div[@id='squeeze']/div/div/div[4]/table[2].22.1</td>
-	<td>variable_Count</td>
-</tr>
-<tr>
-	<td>storeTable</td>
-	<td>//div[@id='squeeze']/div/div/div[4]/table[2].18.1</td>
-	<td>data_file2</td>
+	<td>storeText</td>
+	<td>//tr/td[contains(text(), 'Type = data_file')]/../following-sibling::tr/td[2]</td>
+	<td>file_nid</td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>link=${variable_Count}</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyTextPresent</td>
-	<td>Count</td>
+	<td>link=${var_nid}</td>
 	<td></td>
 </tr>
 <tr>
 	<td>verifyTextPresent</td>
 	<td>Associated Data Files:</td>
 	<td></td>
+</tr>     
+<tr>                             
+	<td>storeText</td>
+	<td>//div[@class="field-label"]/../div[@class="field-items"]</td>
+	<td>var_name</td>
 </tr>
 <tr>
-	<td>verifyTextPresent</td>
-	<td>1982_2000gs81tusbm</td>
-	<td></td>
+	<td>storeText</td>
+	<td>//div[contains(text(), 'Associated Data Files:')]/../div[@class="field-items"]</td>
+	<td>file_name</td>
 </tr>
 <!-- check if new person not created if already esists,
 but is in dataset -->
@@ -118,24 +113,33 @@ but is in dataset -->
 <!-- go to data_file -->
 <tr>
 	<td>open</td>
-	<td>/drupal6-local/?q=node/${data_file2}</td>
+	<td>/drupal6-local/?q=node/${file_nid}</td>
 	<td></td>
 </tr>
 <tr>
 	<td>verifyTextPresent</td>
 	<td>exact:Variables:</td>
 	<td></td>
-</tr>
-<!-- <tr>
-  <td>assertText</td>
-  <td>//a[contains(text(),'Count&nbsp;&nbsp;g/m^2')]</td>
-  <td>Count</td>
-</tr> -->
+</tr>                                       
 <tr>
-	<td>clickAndWait</td>
-	<td>//a[contains(text(),'Count&nbsp;&nbsp;g/m^2')]</td>
+	<td>verifyElementPresent</td>
+	<td>//a[@href="/drupal6-local/?q=node/${var_nid}"]</td>
 	<td></td>
-</tr>
+</tr>                                       
+  <td>clickAndWait</td>
+  <td>//a[@href="/drupal6-local/?q=node/${var_nid}"]</td>
+  <td></td>
+</tr>   
+<tr>
+	<td>verifyTextPresent</td>
+	<td>${var_name}</td>
+	<td></td>
+</tr>     
+<tr>
+	<td>verifyTextPresent</td>
+	<td>${file_name}</td>
+	<td></td>
+</tr>     
 </tbody></table>
 </body>
 </html>

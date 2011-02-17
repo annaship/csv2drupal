@@ -150,15 +150,19 @@ function validate_uniqness($value, $fields_names, $content_type) {
     $query = db_query($sql);
     $nid   = db_result($query);
   }
-  //TODO: remove!!!
-  $nid = '';
   return $nid;
 }
 
 function create_sql($value, $fields_names, $content_type) {
   $full_field_name = "";
-  $i = $m = 0;
+  $i = 0;
   $tags_to_title = tags_to_title();
+  $content_type_titles_only = array(
+    'data_file',
+    'research_site',
+    'data_set'
+  );
+
 
   //    TODO: check for other CCT
   //    TODO: use field_person_email_email
@@ -166,16 +170,45 @@ function create_sql($value, $fields_names, $content_type) {
   $array_length  = count($fields_names) - count(array_intersect_key($fields_names, array_flip($forbiddenf_fields)));
   foreach ($fields_names as $field_name => $tag_name) {
     if (!in_array($field_name, $forbiddenf_fields)) {
+      $i++;
       $full_field_name = $field_name . '_value';
-      $condition .= "(" . $full_field_name . " = '" . $value[$tag_name] . "' OR " . $full_field_name . " is NULL) AND ";
+      $condition .= "(" . $full_field_name . " = '" . $value[$tag_name] . "' OR " . $full_field_name . " is NULL)";
+      if ($i < $array_length) {
+        $condition .= " AND ";
+      }
     }
+  }
+  $title_value = $value[$tags_to_title[$content_type]];
+  if (in_array($content_type, $content_type_titles_only)) {
+    $sql = "SELECT node.nid FROM {content_type_" . $content_type . "} as content_type
+        JOIN {node} on content_type.nid = node.nid
+        WHERE node.title = '" . $title_value . "';";
+  }
+  else {
+    $sql   = "SELECT node.nid FROM {content_type_" . $content_type . "} as content_type
+          JOIN {node} on content_type.nid = node.nid
+          WHERE " . $condition . ";";
+  }
+  return $sql;
+}
+
+/*
+   foreach ($fields_names as $field_name => $tag_name) {
+    if (!in_array($field_name, $forbiddenf_fields)) {
+      $full_field_name = $field_name . '_value';
+      $condition .= "(" . $full_field_name . " = '" . $value[$tag_name] . "' OR " . $full_field_name . " is NULL) ";
+      $i++;
+      if ($i < $array_length) {
+        $condition .= " AND ";
+      }
+  }
   }
   $title_value = $value[$tags_to_title[$content_type]];
   $sql   = "SELECT node.nid FROM {content_type_" . $content_type . "} as content_type
           JOIN {node} on content_type.nid = node.nid
-          WHERE " . $condition . " node.title = '" . $title_value . "';";
-  return $sql;
-}
+          WHERE node.title = '" . $title_value . "' OR " . $condition . ";";
+
+ */
 
 //TODO change format:
 /*
@@ -301,15 +334,8 @@ function create_variable_node($content, &$ref_nids) {
   $variable_values = create_values($content);
   $tags_to_title   = tags_to_title();
   $title_label = $tags_to_title['variable'];
-  dpm('$variable_values = ');
-  dpm($variable_values);
-  dpm('$variable_values = ');
-  dpm($variable_values);
   $fields_names    = variable_fields();
   foreach ($variable_values as $value) {
-  dpm('$variable_value = ');
-  dpm($value);
-
     $nid = validate_uniqness($value, $fields_names, $content_type);
     if (!empty($nid)) {
       $ref_nids[$content_type][] = $nid;

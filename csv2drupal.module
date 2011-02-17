@@ -90,8 +90,8 @@ function csv2drupal_form_submit($form, $form_state) {
   $file = file_save_upload('upload');
     if ($file) {
       $dest_path = file_directory_path() . '/upload';
-  //    $result = file_copy($file, $dest_path, FILE_EXISTS_RENAME);
-      $result = file_copy($file, $dest_path, FILE_EXISTS_REPLACE);
+      $result = file_copy($file, $dest_path, FILE_EXISTS_RENAME);
+//      $result = file_copy($file, $dest_path, FILE_EXISTS_REPLACE);
 
       if ($result) {
         $filepath = $file->filepath;

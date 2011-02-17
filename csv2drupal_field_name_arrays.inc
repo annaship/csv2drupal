@@ -171,8 +171,7 @@ function tags_to_title() {
     'person'        => 'Full Name',
     'variable'      => 'Label',
     'research_site' => 'Title',
-    'data_file'     => 'Associated Data Files',
-//    'data_file'     => 'Data File Structure Name',
+    'data_file'     => 'Data File Structure Name',
     'data_set'      => 'Title',
   );
   return $tags_to_title;

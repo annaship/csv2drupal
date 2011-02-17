@@ -3,150 +3,54 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="selenium.base" href="http://localhost/" />
-<title>New Test</title>
+<link rel="selenium.base" href="http://127.0.0.1/" />
+<title>test_home_person</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">Person duplicates</td></tr>
+<tr><td rowspan="1" colspan="3">test_home_person</td></tr>
 </thead><tbody>
-<!-- clean old test data -->
+  <!-- remove all new nodes -->
+<tr>
+	<td>open</td>
+	<td>/drupal6-local/?q=csv2drupal</td>
+	<td></td>
+</tr>
 <!-- <tr>
-  <td>open</td>
-  <td>/drupal-local/?q=devel/php</td>
-  <td></td>
+  <td>type</td>
+  <td>edit-name</td>
+  <td>anna</td>
 </tr>
 <tr>
   <td>type</td>
-  <td>edit-code</td>
-  <td>$q = db_query('SELECT nid FROM node WHERE nid &gt; 37932;');<br />while ($nid = db_result($q)) {<br />&nbsp;&nbsp;node_delete($nid);<br />}</td>
+  <td>edit-pass</td>
+  <td>My password1</td>
 </tr>
 <tr>
   <td>clickAndWait</td>
-  <td>edit-op</td>
+  <td>edit-submit</td>
   <td></td>
 </tr> -->
-<!-- Create persons -->
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Execute PHP Code</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>edit-code</td>
+	<td>$q = db_query('SELECT nid FROM node WHERE nid &gt; 3110;');<br />while ($nid = db_result($q)) {<br />&nbsp;&nbsp;node_delete($nid);<br />}</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>edit-op</td>
+	<td></td>
+</tr>
+<!-- check if new nodes are created -->
 <tr>
 	<td>open</td>
-	<td>/drupal-local/</td>
-	<td></td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>//div[@id='admin-menu']/ul/li[4]/ul/li[5]/a</td>
-	<td></td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>//div[@id='squeeze']/div/div/div[2]/dl/dt[6]/a</td>
-	<td></td>
-</tr>
-<tr>
-	<td>type</td>
-	<td>edit-title</td>
-	<td>Test good Name</td>
-</tr>
-<tr>
-	<td>type</td>
-	<td>edit-field-person-first-name-0-value</td>
-	<td>Test_good</td>
-</tr>
-<tr>
-	<td>type</td>
-	<td>edit-field-person-last-name-0-value</td>
-	<td>Name</td>
-</tr>
-<tr>
-	<td>type</td>
-	<td>edit-field-person-email-0-email</td>
-	<td>aa@aa.net</td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>edit-submit</td>
-	<td></td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>link=Create content</td>
-	<td></td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>//div[@id='squeeze']/div/div/div[2]/dl/dt[6]/a</td>
-	<td></td>
-</tr>
-<tr>
-	<td>type</td>
-	<td>edit-title</td>
-	<td>Test bad Name</td>
-</tr>
-<tr>
-	<td>type</td>
-	<td>edit-field-person-first-name-0-value</td>
-	<td>Test_bad</td>
-</tr>
-<tr>
-	<td>type</td>
-	<td>edit-field-person-last-name-0-value</td>
-	<td>Name</td>
-</tr>
-<tr>
-	<td>type</td>
-	<td>edit-field-person-email-0-email</td>
-	<td>a@a.net</td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>edit-submit</td>
-	<td></td>
-</tr>
-<!-- Assign Bad name as ref to dataset -->
-<tr>
-	<td>clickAndWait</td>
-	<td>link=Content</td>
-	<td></td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>edit-reset</td>
-	<td></td>
-</tr>
-<tr>
-	<td>select</td>
-	<td>edit-type</td>
-	<td>label=Data Set</td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>edit-submit</td>
-	<td></td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>link=End of growing season percent cover and biomass data for effluent enrichment vs. reference sites.</td>
-	<td></td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>link=Edit</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>edit-field-dataset-fieldcrew-ref-0-nid-nid</td>
-	<td></td>
-</tr>
-<tr>
-	<td>type</td>
-	<td>edit-field-dataset-fieldcrew-ref-0-nid-nid</td>
-	<td></td>
-</tr>
-<tr>
-	<td>type</td>
-	<td>edit-field-dataset-fieldcrew-ref-1-nid-nid</td>
+	<td>/drupal6-local/?q=csv2drupal</td>
 	<td></td>
 </tr>
 <tr>
@@ -155,171 +59,70 @@
 	<td></td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
-	<td>link=Edit</td>
+	<td>verifyTextPresent</td>
+	<td>Type = research_site</td>
 	<td></td>
 </tr>
 <tr>
-	<td>type</td>
-	<td>edit-field-dataset-fieldcrew-ref-0-nid-nid</td>
-	<td>Test bad Name</td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>edit-field-dataset-datafile-ref-field-dataset-datafile-ref-add-more</td>
+	<td>verifyTextPresent</td>
+	<td>Title = LTER Moist Acidic Tussock Tundra</td>
 	<td></td>
 </tr>
 <tr>
+	<td>storeTable</td>
+	<td>//div[@id='squeeze']/div/div/div[4]/table[2].6.1</td>
+	<td>r_site_1</td>
+</tr>
+<tr>
+	<td>storeTable</td>
+	<td>//div[@id='squeeze']/div/div/div[4]/table[2].2.1</td>
+	<td>dataset1</td>
+</tr>
+<tr>
 	<td>clickAndWait</td>
-	<td>edit-submit</td>
+	<td>link=${r_site_1}</td>
 	<td></td>
 </tr>
 <tr>
 	<td>assertText</td>
-	<td>link=Test bad Name</td>
-	<td>Test bad Name</td>
+	<td>//div[@id='tabs-wrapper']/h2</td>
+	<td>LTER Moist Acidic Tussock Tundra</td>
 </tr>
-<!-- run check  -->
+<!-- shouldn't create a new node if already exists, but to be in a ref -->
 <tr>
 	<td>open</td>
-	<td>/drupal-local/?q=duplicates_check</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyTextPresent</td>
-	<td>Test_good</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>//form[@id='duplicates-check-form']/div/table[2]/tbody/tr[18]/td[5]/div/input</td>
-	<td></td>
-</tr>
-<tr>
-	<td>storeText</td>
-	<td>//form[@id='duplicates-check-form']/div/table[2]/tbody/tr[18]/td[1]</td>
-	<td>test_good</td>
-</tr>
-<tr>
-	<td>verifyTextPresent</td>
-	<td>Test_bad</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>//form[@id='duplicates-check-form']/div/table[2]/tbody/tr[19]/td[5]/div/input</td>
-	<td></td>
-</tr>
-<tr>
-	<td>storeText</td>
-	<td>//form[@id='duplicates-check-form']/div/table[2]/tbody/tr[19]/td[1]</td>
-	<td>test_bad</td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>edit-submit</td>
-	<td></td>
-</tr>
-<!-- run edit -->
-<tr>
-	<td>verifyText</td>
-	<td>edit-2-first-name</td>
-	<td></td>
-</tr>
-<tr>
-	<td>select</td>
-	<td>edit-1-state</td>
-	<td>label=Alabama</td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>edit-2-keep-this-node</td>
+	<td>/drupal6-local/?q=csv2drupal</td>
 	<td></td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
 	<td>edit-submit</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyTextPresent</td>
-	<td>Person Test bad Name has been deleted.</td>
 	<td></td>
 </tr>
 <tr>
 	<td>verifyTextNotPresent</td>
-	<td>Test_bad</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyTextNotPresent</td>
-	<td>Test_good</td>
-	<td></td>
-</tr>
-<tr>
-	<td>open</td>
-	<td>/drupal-local/?q=node/${test_good}</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyText</td>
-	<td>//div[@id='tabs-wrapper']/h2</td>
-	<td>Test good Name</td>
-</tr>
-<tr>
-	<td>open</td>
-	<td>/drupal-local/?q=node/${test_bad}</td>
+	<td>Type = research_site</td>
 	<td></td>
 </tr>
 <tr>
 	<td>verifyTextPresent</td>
-	<td>Page not found</td>
+	<td>No new nodes was saved</td>
 	<td></td>
 </tr>
-<!-- check if ref changed -->
+<!-- go to dataset -->
 <tr>
-	<td>clickAndWait</td>
-	<td>link=Content</td>
-	<td></td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>edit-reset</td>
+	<td>open</td>
+	<td>/drupal6-local/?q=node/${dataset1}</td>
 	<td></td>
 </tr>
 <tr>
-	<td>select</td>
-	<td>edit-type</td>
-	<td>label=Data Set</td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>edit-submit</td>
+	<td>verifyElementPresent</td>
+	<td>link=LTER Moist Acidic Tussock Tundra</td>
 	<td></td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
-	<td>link=End of growing season percent cover and biomass data for effluent enrichment vs. reference sites.</td>
-	<td></td>
-</tr>
-<tr>
-	<td>assertText</td>
-	<td>link=Test good Name</td>
-	<td>Test good Name</td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>link=Test good Name</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyText</td>
-	<td>//div[@id='tabs-wrapper']/h2</td>
-	<td>Test good Name</td>
-</tr>
-<tr>
-	<td>verifyTextPresent</td>
-	<td>State: <br />Alabama</td>
+	<td>verifyElementPresent</td>
+	<td>link=Tussock Tundra - 1981 plots</td>
 	<td></td>
 </tr>
 </tbody></table>
