@@ -1,7 +1,0 @@
-git log -S"create_values"
- git log -p
- Try git bisect: 
- http://www.kernel.org/pub/software/scm/git/docs/git-bisect.html 
-
- You might also want to look at the `--reverse` flag in git blame: 
- http://www.kernel.org/pub/software/scm/git/docs/git-blame.html

@@ -10,12 +10,12 @@ require_once("csv2drupal.inc");
 function csv2drupal_menu() {
 
   $items = array();
-  $items['csv2drupal'] = array (
+  $items['csv2drupal'] = array(
     'title' => t('Export CSV files into predefined custom content types for the LTER project'),
     'page callback' => 'drupal_get_form',
     'access arguments' => array('administer nodes'),
     'type' => MENU_CALLBACK,
-    'page arguments'=>array('csv2drupal_form'),
+    'page arguments' => array('csv2drupal_form'),
 //    'file' => 'csv2drupal_form.inc',
     );
 
@@ -26,10 +26,6 @@ function csv2drupal_menu() {
 
   return $items;
 }
-
-//function csv2drupal_page() {
-//  return drupal_get_form('csv2drupal_form');
-//}
 
 function csv2drupal_form($form_state) {
   $form = array();
@@ -54,7 +50,7 @@ function csv2drupal_form($form_state) {
     '#maxlength' => 128,
   );
 
-  $form['submit'] = array (
+  $form['submit'] = array(
   '#type' => 'submit',
   '#value' => t('Upload'),
   );
@@ -80,7 +76,6 @@ function csv2drupal_form_submit($form, $form_state) {
     $files = file_scan_directory($dir_name, '\.xls');
     foreach ($files as $file) {
       $filepath = $file->filename;
-//      drupal_set_message($filepath);
       $content = get_data_from_excel_file($filepath);
       $file_object = create_file_object($filepath);
       $nids[$file->basename] = create_nodes($content, $file_object);
@@ -105,6 +100,5 @@ function csv2drupal_form_submit($form, $form_state) {
       form_set_error('csv2drupal_form', t("Failed to save the file."));
     }
   }
-//  dpm($nids);
   return $nids;
 }

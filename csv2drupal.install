@@ -1,9 +1,2 @@
 <?php
-
-  function csv2drupal_install() {
-  }
-
-  function csv2drupal_uninstall() {
-  }
-
-?>
+// $Id: csv2drupal.install, v 0.2 2011-2-18 ashipunova $

@@ -1,4 +1,5 @@
 <?php
+// $Id: csv2drupal.inc, v 0.2 2011/02/18 ashipunova Exp ashipunova $
 
 require_once 'includes/PHPExcel/IOFactory.php';
 require_once 'csv2drupal_field_name_arrays.inc';
@@ -8,41 +9,40 @@ function get_data_from_excel_file($file) {
 
   $sheet_names = sheet_names();
   
-  $objReader = PHPExcel_IOFactory::createReaderForFile($file);
-  $objReader->setLoadSheetsOnly(0);
-  $objReader->setReadDataOnly(true);
-  $objPHPExcel = PHPExcel_IOFactory::load($file);
+  $obj_reader = PHPExcel_IOFactory::createReaderForFile($file);
+  $obj_reader->setLoadSheetsOnly(0);
+  $obj_reader->setReadDataOnly(true);
+  $obj_php_excel = PHPExcel_IOFactory::load($file);
 
-  $loadedSheetNames = $objPHPExcel->getSheetNames();
-  foreach ($loadedSheetNames as $sheetIndex => $loadedSheetName) {
-    $objWorksheet = $objPHPExcel->setActiveSheetIndex($sheetIndex);
-    $dim = $objWorksheet->calculateWorksheetDimension();
-    $highestRow = $objWorksheet->getHighestRow();
-    $highestColumn = $objWorksheet->getHighestColumn();
-    $highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);
+  $loaded_sheet_names = $obj_php_excel->getSheetNames();
+  foreach ($loaded_sheet_names as $sheet_index => $loaded_sheet_name) {
+    $obj_worksheet = $obj_php_excel->setActiveSheetIndex($sheet_index);
+    $dim = $obj_worksheet->calculateWorksheetDimension();
+    $highest_row = $obj_worksheet->getHighestRow();
+    $highest_column = $obj_worksheet->getHighestColumn();
+    $highest_column_index = PHPExcel_Cell::columnIndexFromString($highest_column);
 
     //get titles
     $titles = array();
-    for ($col = 0; $col <= $highestColumnIndex; ++$col) {
-      $titles[] = trim($objWorksheet->getCellByColumnAndRow($col, "1")->getValue());
+    for ($col = 0; $col <= $highest_column_index; ++$col) {
+      $titles[] = trim($obj_worksheet->getCellByColumnAndRow($col, "1")->getValue());
     }
 
-    for ($row = 2; $row <= $highestRow; ++$row) {
-      for ($col = 0; $col <= $highestColumnIndex; ++$col) {
-        $res = trim($objWorksheet->getCellByColumnAndRow($col, $row)->getValue());
-        if (!empty($loadedSheetName)) {
-          $lowloadedSheetName = strtolower($loadedSheetName);
+    for ($row = 2; $row <= $highest_row; ++$row) {
+      for ($col = 0; $col <= $highest_column_index; ++$col) {
+        $res = trim($obj_worksheet->getCellByColumnAndRow($col, $row)->getValue());
+        if (!empty($loaded_sheet_name)) {
+          $lowloaded_sheet_name = strtolower($loaded_sheet_name);
           if (!empty($titles[$col])) {
-            ${$sheet_names[$lowloadedSheetName]}[$titles[$col]][] = $res;
+            ${$sheet_names[$lowloaded_sheet_name]}[$titles[$col]][] = $res;
           }
         }
       }
     }
-    if (in_array($sheet_names[$lowloadedSheetName], $sheet_names)) {
-      $content[$sheet_names[$lowloadedSheetName]] = ${$sheet_names[$lowloadedSheetName]};
+    if (in_array($sheet_names[$lowloaded_sheet_name], $sheet_names)) {
+      $content[$sheet_names[$lowloaded_sheet_name]] = ${$sheet_names[$lowloaded_sheet_name]};
     }
   }
-//  dpr($content);
   return $content;
 }
 
@@ -56,7 +56,6 @@ function create_nodes($content, $file_object) {
   add_referrers($ref_nids);
   variable_set('ref_nids', $ref_nids);
   return $ref_nids;
-//  TODO link referrer
 }
 
 function get_uid() {
@@ -81,7 +80,6 @@ function create_values($content) {
 }
 
 function add_node_value(&$node, $value, $fields_names) {
-//  dpm($value);
   foreach ($fields_names as $node_field_name => $csv_title) {
     $node->$node_field_name = array(array('value' => $value[$csv_title]));
   }
@@ -108,8 +106,6 @@ function create_sql($value, $fields_names, $content_type) {
     'data_set'
   );
 
-
-  //    TODO: check for other CCT
   //    TODO: use field_person_email_email
   $forbiddenf_fields = forbiddenf_fields();
   $array_length  = count($fields_names) - count(array_intersect_key($fields_names, array_flip($forbiddenf_fields)));
@@ -137,33 +133,6 @@ function create_sql($value, $fields_names, $content_type) {
   return $sql;
 }
 
-/*
-   foreach ($fields_names as $field_name => $tag_name) {
-    if (!in_array($field_name, $forbiddenf_fields)) {
-      $full_field_name = $field_name . '_value';
-      $condition .= "(" . $full_field_name . " = '" . $value[$tag_name] . "' OR " . $full_field_name . " is NULL) ";
-      $i++;
-      if ($i < $array_length) {
-        $condition .= " AND ";
-      }
-  }
-  }
-  $title_value = $value[$tags_to_title[$content_type]];
-  $sql   = "SELECT node.nid FROM {content_type_" . $content_type . "} as content_type
-          JOIN {node} on content_type.nid = node.nid
-          WHERE node.title = '" . $title_value . "' OR " . $condition . ";";
-
- */
-
-//TODO change format:
-/*
- * Jul-23-2000 - Aug-01-2000
-dd-mmm-yyyy format
- *  * Publication Date	field_dataset_publication_date	Datetime
- * Date Range	field_beg_end_date	Date
- *
- *  */
-
 //TODO: add check for single vs. range
 function convert_date_range($date_range) {
    if (preg_match_all("/(\w{1,3}).(\d{1,2}).(\d{2,4})/", $date_range, $matches, PREG_SET_ORDER)) {
@@ -184,7 +153,6 @@ function convert_date_range($date_range) {
       $dates[] = strftime("%G-%m-%d 00:00:00", strtotime($date));
     }
   }
-//  dpr($dates);
   return $dates;
 }
 
@@ -207,31 +175,13 @@ function create_single_date_arr($date_value) {
 function add_timezone_to_date_arr(&$date_arr) {
   $date_arr['timezone']     = 'America/New_York';
   $date_arr['timezone_db']  = 'America/New_York';
-  $date_arr['date_type']    = 'datetime'; // TODO: or 'date', ask Inigo
+  $date_arr['date_type']    = 'datetime';
   return $date_arr;
 }
 
-/*
- function _mymodule_somepage_callback($nid) {
-  $query = db_query("SELECT * FROM {mytablename}");
-
-  $data = array();
-
-  $i = 0;
-  while ($row = db_fetch_array($query)) {
-    $data[$i] = $row;
-    $i++;
-  }
-
-  $output = theme_table(array('ID', 'Look', 'Taste'), $data);
-  return $output;
-}
-
- */
-
 function create_person_node($content, &$ref_nids) {
   $content_type  = 'person';
-  $persons_arr   = array ();
+  $persons_arr   = array();
   $person_values = create_values($content);
   $fields_names  = person_fields();
   foreach ($person_values as $value) {
@@ -241,7 +191,7 @@ function create_person_node($content, &$ref_nids) {
       $ref_nids[$content_type][] = $nid;
     }
     elseif (!empty($value['Last Name'])) {
-      $node = new StdClass();
+      $node = new stdClass();
       $node->type  = $content_type;
       $node->uid   = get_uid();
       $full_name   = $value['Full Name'];
@@ -270,7 +220,7 @@ function create_variable_node($content, &$ref_nids) {
       $ref_nids[$content_type][] = $nid;
     }    
     elseif (!empty($value[$title_label])) {
-      $node        = new StdClass();
+      $node        = new stdClass();
       $node->type  = $content_type;
       $node->uid   =  get_uid();
       $node->title = $value[$title_label];
@@ -293,7 +243,7 @@ function create_site_node($content, &$ref_nids) {
       $ref_nids[$content_type][] = $nid;
     }
     elseif (!empty($value['Title'])) {
-      $node = new StdClass();
+      $node = new stdClass();
       $node->type  = $content_type;
       $node->uid   =  get_uid();
       $node->title = $value['Title'];
@@ -441,10 +391,11 @@ function create_file_object($file) {
   $dest = file_directory_path();
 
   // Copy the file to the Drupal files directory
-  if(!file_copy($file, $dest)) {
+  if (!file_copy($file, $dest)) {
       echo "Failed to move file: $file.\n";
       return;
-  } else {
+  }
+  else {
       // file_move might change the name of the file
       $name = basename($file);
   }
@@ -460,17 +411,12 @@ function create_file_object($file) {
   $file_obj->status     = FILE_STATUS_TEMPORARY;
   $file_obj->timestamp  = time();
   $file_obj->list       = 1;
-  $file_obj->new        = true;
+  $file_obj->new        = TRUE;
 
   // Save file to files table
   drupal_write_record('files', $file_obj);
   // change file status to permanent
   file_set_status($file_obj, 1);
-
-  // Attach the file object to your node
-//  $node->files[$file_obj->fid] = $file_obj;
-//  dpr($file_obj);
-//  dpm($file_obj);
 
   return $file_obj;
 }
@@ -485,7 +431,7 @@ function create_datafile_node($content, &$ref_nids, $file_object) {
       $ref_nids[$content_type][] = $nid;
     }
     elseif (!empty($value['Data File Structure Name'])) {
-      $node = new StdClass();
+      $node = new stdClass();
       $node->type   = $content_type;
       $node->uid    =  get_uid();
       $node->title  = $value['Data File Structure Name'];
@@ -497,7 +443,6 @@ function create_datafile_node($content, &$ref_nids, $file_object) {
           $node->field_datafile_variable_ref[]['nid'] = $variable;
         }
       }
-//TODO: compare names and save only if it's the same
       if (!empty($value['Sites']) && $ref_nids['research_site']) {
         foreach ($ref_nids['research_site'] as $dataset_site) {
           $node->field_datafile_site_ref[]['nid']     = $dataset_site;
@@ -522,13 +467,12 @@ function create_dataset_node($content, &$ref_nids) {
   $dataset_values = create_values($content);
   $fields_names   = dataset_fields();
   foreach ($dataset_values as $value) {
-//    check only by Title!
     $nid = validate_uniqness($value, $fields_names, $content_type);
     if (!empty($nid)) {
       $ref_nids[$content_type][] = $nid;
     }
     elseif (!empty($value['Title'])) {
-      $node = new StdClass();
+      $node = new stdClass();
       $node->type                                       = $content_type;
       $node->uid                                        =  get_uid();
       $node->title                                      = $value['Title'];
@@ -553,9 +497,6 @@ function create_dataset_node($content, &$ref_nids) {
       $ref_nids[$content_type][] = $node->nid;
     }
   }
-//  dpm($ref_nids);
-//  dpr($node);
-//  dpm($node);
   return $ref_nids;
 }
 
@@ -595,47 +536,21 @@ function create_referrer($nids) {
   return $reffers;
 }
 
-function display_report_page()
-{
+function display_report_page() {
   $csv2drupal_submit_time = variable_get(csv2drupal_submit_time, time());
-//  $ref_nids = variable_get('ref_nids', '');
-//  dpm('$ref_nids = ');
-//  dpm($ref_nids);
-//  foreach ($ref_nids as $value) {
-//    foreach ($value as $ref_nid) {
-//      $sql = "SELECT nid FROM {node} WHERE nid = %d ORDER BY nid DESC";
-//      $db_result = db_query($sql, $ref_nid);
-//      $header       = array('Title', 'Nid');
-//      $rows['data'] = array();
-//      while ($res   = db_fetch_object($db_result)) {
-//        $nid        = $res->nid;
-//        $node       = node_load($nid);
-//        $node_nid   = $node->nid;
-//        $node_title = $node->title;
-//        $node_type  = $node->type;
-//        $node_link  = l($nid, 'node/'.$nid);
-//        if ($node_type != $old_node_type) {
-//          $rows[] = array(array('data' => 'Type = ' . $node_type, 'colspan' => 2, 'font size' => 4, 'align' => 'center'));
-//          $old_node_type = $node_type;
-//        }
-//        $rows[] = array('Title = ' . $node_title, $node_link);
-//      }
-//    }
-//  }
+
   $sql = "SELECT nid FROM {node} WHERE created >= %d ORDER BY nid DESC";
   $db_result = db_query($sql, $csv2drupal_submit_time);
 
   $header       = array('Title', 'Nid');
   $rows['data'] = array();
   while ($res   = db_fetch_object($db_result)) {
-//    dpm('$res = ');
-//    dpm($res);
     $nid        = $res->nid;
     $node       = node_load($nid);
     $node_nid   = $node->nid;
     $node_title = $node->title;
     $node_type  = $node->type;
-    $node_link  = l($nid, 'node/'.$nid);
+    $node_link  = l($nid, 'node/' . $nid);
     if ($node_type != $old_node_type) {
       $rows[] = long_cell('Type = ' . $node_type);
       $old_node_type = $node_type;
@@ -653,121 +568,32 @@ function long_cell($long_cell_value) {
   return $long_cell;
 }
 
-function _trim_text($str)
-{
+function _trim_text($str) {
     $str = trim($str);
     $str = preg_replace('/ +/', ' ', $str);
     return $str;
 }
 
 function get_person_array($data) {
-  $m = 0;
   $person_names = array();
   if (preg_match_all("/([^,]+)/", $data, $matches, PREG_SET_ORDER)) {
     foreach ($matches as $match) {
-//        dpm('$matches = ');
-//        dpm($matches);
-      $m++;
       $person_names[] = _trim_text($match[1]);
     }
   }
-  return array ($person_names, $m);
-//  return $person_names;
+  return $person_names;
 }
 
 function get_person_ref($dataset_value, $person_ref_nids) {
   $dataset_person_refs = array();
   $dataset_person_ref_fields = dataset_person_ref_fields();
-  /*
-   1) take all names, connect to role
-   2) clean names up (get_person_array) > $names
-   3) convert $names to array
-   4) foreach $person_ref_nids load node
-   5) take node->title
-   6) if node->title in $names, save node-> field = nid of this name
-   *
-   * name <=> role
-   * name <=> nid
-   *
-   * $person_ref_nids - nid - node - title
-   * $dataset_value[role] - name
-   *
-   */
-
-  $time_start = microtime(true);
-
-  // 1)-3)
-//  foreach ($dataset_person_ref_fields as $dataset_field_name => $dataset_role) {
-//    $a = get_person_array($dataset_value[$dataset_role]);
-//    $clean_names[$dataset_role] = $a[0];
-//
-////    $clean_names[$dataset_role] = get_person_array($dataset_value[$dataset_role]);
-//  }
-//
-//  // 4)-5)
-//  foreach ($person_ref_nids as $person_ref_nid) {
-//    $node = node_load($person_ref_nid);
-//    $title = $node->title;
-//    $titles_n_nids[$person_ref_nid] = _trim_text($title);
-//  }
-//
-//  // 6)
-//  foreach ($clean_names as $role => $value) {
-//    if (!empty($value)) {
-//      $dataset_field_name = array_search($role, $dataset_person_ref_fields);
-//      foreach ($value as $clean_name) {
-//        $nid = array_search($clean_name, $titles_n_nids);
-//        $dataset_person_refs[$dataset_field_name][] = $nid;
-//      }
-//    }
-//  }
-
-//  dpm('1) $i1 = ' . $i1);
-////        dpm('1) $dataset_person_refs = ');
-////        dpm($dataset_person_refs);
-//
+  
   foreach ($dataset_person_ref_fields as $dataset_field_name => $dataset_role) {
-    $b = get_person_array($dataset_value[$dataset_role]);
-    $name = $b[0];
-
-//    $name = get_person_array($dataset_value[$dataset_role]);
-    is_array($name) ? $names = $name : $names = (array) $name;
-    if (!empty ($person_ref_nids)) {
-      foreach ($person_ref_nids as $person_ref_nid) {
-        $node = node_load($person_ref_nid);
-//        dpm('$node ');
-
-        $title = $node->title;
-        if (in_array(trim($title), $names)) {
-          $dataset_person_refs[$dataset_field_name][] = $person_ref_nid;
-        }
-      }
-    }
-  }
-//    dpm('2) $i2 = ' . $i2);
-
-//        dpm('2) $dataset_person_refs = ');
-//        dpm($dataset_person_refs);
-  $time_end = microtime(true);
-  $time = $time_end - $time_start;
-  dpm('$time = ' . $time);
-  return $dataset_person_refs;
-}
-
-/*
- function get_person_ref($dataset_value, $person_ref_nids) {
-  $dataset_person_refs = array();
-  $dataset_person_ref_fields = dataset_person_ref_fields();
-  foreach ($dataset_person_ref_fields as $dataset_field_name => $dataset_role) {
-//    $name = $dataset_value[$dataset_role];
     $name = get_person_array($dataset_value[$dataset_role]);
     is_array($name) ? $names = $name : $names = (array) $name;
     if (!empty ($person_ref_nids)) {
       foreach ($person_ref_nids as $person_ref_nid) {
-        dpm('$person_ref_nid = ');
-        dpm($person_ref_nid);
         $node = node_load($person_ref_nid);
-        dpm('$node ');
 
         $title = $node->title;
         if (in_array(trim($title), $names)) {
@@ -776,99 +602,15 @@ function get_person_ref($dataset_value, $person_ref_nids) {
       }
     }
   }
-        dpm('$dataset_person_refs = ');
-        dpm($dataset_person_refs);
   return $dataset_person_refs;
 }
 
- */
-
-//function get_person_ref($dataset_value, $person_ref_nids) {
-//  $dataset_person_refs = array();
-//  $dataset_person_ref_fields = dataset_person_ref_fields();
-//  $person_titles_n_nids = array();
-//  if (!empty ($person_ref_nids)) {
-//    foreach ($person_ref_nids as $person_ref_nid) {
-//      $node = node_load($person_ref_nid);
-//      $title = $node->title;
-//      $person_titles_n_nids[] = array($person_ref_nid => trim($title));
-//    }
-//
-//    foreach ($dataset_person_ref_fields as $dataset_field_name => $dataset_role) {
-//      $name = get_person_array($dataset_value[$dataset_role]);
-//      if (!empty($name)) {
-//        is_array($name) ? $names = $name : $names = (array) $name;
-////        TODO: print $person_titles_n_nids, $names and find intersect
-//
-//        dpm('$person_titles_n_nids = ');
-//        dpm($person_titles_n_nids);
-//        dpm('$names = ');
-//        dpm($names);
-//        forea
-//        $inter = array_intersect($person_titles_n_nids, $names);
-//        if (!empty($inter)) {
-//          dpm('array_intersect($person_titles_n_nids, $names = ');
-//          dpm($inter);
-//          $dataset_person_refs[$dataset_field_name][] = $person_ref_nid;
-//        }
-//      }
-//    }
-//  }
-
-//  foreach ($dataset_person_ref_fields as $dataset_field_name => $dataset_role) {
-//    $name = $dataset_value[$dataset_role];
-//    is_array($name) ? $names = $name : $names = (array) $name;
-//    if (!empty ($person_ref_nids)) {
-//      foreach ($person_ref_nids as $person_ref_nid) {
-//        dpm('$person_ref_nid = ');
-//        dpm($person_ref_nid);
-//        $node = node_load($person_ref_nid);
-//        $title = $node->title;
-//        if (in_array(trim($title), $names)) {
-//          $dataset_person_refs[$dataset_field_name][] = $person_ref_nid;
-//        }
-//      }
-//    }
-//  }
-//  return $dataset_person_refs;
-//}
-
-/*
-
-//function create_values($content) {
-//  //TODO: why person in common method?
-//    dpm($content);
-//
-//  $dataset_person_ref_fields = dataset_person_ref_fields();
-//  $values = array();
-//  if ($content) {
-//    foreach ($content as $key => $value) {
-//      foreach ($value as $number => $data) {
-//        if (in_array($key, $dataset_person_ref_fields) AND (preg_match("/,/", $data))) {
-//          $data = get_person_array($data);
-//        }
-//        $values[$number][$key] = $data;
-//      }
-//    }
-//  }
-//  return $values;
-//}
-
-
- */
-
-
 function add_person_refs(&$node, $dataset_person_refs) {
-//  $dataset_person_refs wrong
   foreach ($dataset_person_refs as $field_name => $value1) {
-//    dpm('$field_name = ');
-//    dpm($field_name);
     $refs = array();
     foreach ($value1 as $ref) {
       $refs[]['nid'] = $ref;
     }
-//      dpm('$refs');
-//      dpm($refs);
     $node->$field_name = $refs;
   }
   return $node;

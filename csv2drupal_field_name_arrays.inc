@@ -1,4 +1,5 @@
 <?php
+// $Id: csv2drupal_field_name_arrays.inc, v 0.2 2011/02/18 ashipunova Exp ashipunova $
 
 function sheet_names() {
   $sheet_names = array(
@@ -25,16 +26,16 @@ function dataset_fields() {
   $dataset_fields = array(
     'field_beg_end_date'              => 'Date Range',
     'field_dataset_abstract'          => 'Abstract',
-    'field_dataset_add_info' 				  => 'Additional Information',
-    'field_dataset_id' 						    => 'Dataset ID',
+    'field_dataset_add_info'           => 'Additional Information',
+    'field_dataset_id'                 => 'Dataset ID',
     'field_dataset_maintenance'       => 'Maintenance',
     'field_dataset_publication_date'  => 'Publication Date',
-    'field_dataset_purpose' 					=> 'Purpose',
-    'field_dataset_related_links' 		=> 'Related Links',
-    'field_dataset_short_name'    		=> 'Short Name',
-    'field_instrumentation'       		=> 'Instrumentation',
-    'field_methods' 									=> 'Methods',
-    'field_quality' 									=> 'Quality Assurance',
+    'field_dataset_purpose'           => 'Purpose',
+    'field_dataset_related_links'     => 'Related Links',
+    'field_dataset_short_name'        => 'Short Name',
+    'field_instrumentation'           => 'Instrumentation',
+    'field_methods'                   => 'Methods',
+    'field_quality'                   => 'Quality Assurance',
   );
   return $dataset_fields;
 }
@@ -77,7 +78,7 @@ function dataset_person_ref_fields() {
 }
 
 function datafile_fields() {
-  $datafile_fields = array (
+  $datafile_fields = array(
     'field_datafile_description'  => 'Description',
 //    'field_data_file'             => 'Data File',
     'field_num_header_line'       => 'Number of Header Lines',
@@ -95,7 +96,7 @@ function datafile_fields() {
 }
 
 function person_fields() {
-  $person_fields = array (
+  $person_fields = array(
     'field_person_first_name'   => 'First Name',
     'field_person_last_name'    => 'Last Name',
     'field_person_organization' => 'Organization',
@@ -145,11 +146,11 @@ field_attribute_formatstring_value
     'field_attribute_formatstring'  => 'DateTime Format',
     'field_code_definition'         => 'Code Information',
 
-   Name 	Label 	Definition 	Missing Values 	unit 	Maximum Value 	Minimum Value 	precision 	Date Format 	Code-Definition 	Associated Data Files
+   Name   Label   Definition   Missing Values   unit   Maximum Value   Minimum Value   precision   Date Format   Code-Definition   Associated Data Files
    */
 
 function variable_fields() {
-  $variable_fields = array (
+  $variable_fields = array(
     'field_attribute_label'         => 'Label',
     'field_var_definition'          => 'Definition',
     'field_var_missingvalues'       => 'Missing Values',
@@ -164,7 +165,7 @@ function variable_fields() {
 }
 
 function research_site_fields() {
-  $research_site_fields = array (
+  $research_site_fields = array(
     'field_research_site_image'       => 'Image',
 //    'field_research_site_pt_coords'   => 'Coordinates',
     'field_research_site_elevation'   => 'Elevation',
@@ -192,7 +193,7 @@ function research_site_fields() {
  */
 
 function tags_to_title() {
-  $tags_to_title = array (
+  $tags_to_title = array(
     'person'        => 'Full Name',
     'variable'      => 'Label',
     'research_site' => 'Title',
