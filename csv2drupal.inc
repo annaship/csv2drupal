@@ -693,68 +693,64 @@ function get_person_ref($dataset_value, $person_ref_nids) {
    * $dataset_value[role] - name
    *
    */
-$i1 = $i2 = 0;
+
+  $time_start = microtime(true);
+
   // 1)-3)
-  foreach ($dataset_person_ref_fields as $dataset_field_name => $dataset_role) {
-    $a = get_person_array($dataset_value[$dataset_role]);
-    $clean_names[$dataset_role] = $a[0];
-    $b1 = $a[1];
-
-//    $clean_names[$dataset_role] = get_person_array($dataset_value[$dataset_role]);
-    $i1 = $i1 + $b1;
-    $i1++;
-  }
-
-  // 4)-5)
-  foreach ($person_ref_nids as $person_ref_nid) {
-    $node = node_load($person_ref_nid);
-    $title = $node->title;
-    $titles_n_nids[$person_ref_nid] = _trim_text($title);
-    $i1++;
-  }
-
-  // 6)
-  foreach ($clean_names as $role => $value) {
-    if (!empty($value)) {
-      $dataset_field_name = array_search($role, $dataset_person_ref_fields);
-      foreach ($value as $clean_name) {
-        $nid = array_search($clean_name, $titles_n_nids);
-        $dataset_person_refs[$dataset_field_name][] = $nid;
-    $i1++;
-      }
-    }
-  }
+//  foreach ($dataset_person_ref_fields as $dataset_field_name => $dataset_role) {
+//    $a = get_person_array($dataset_value[$dataset_role]);
+//    $clean_names[$dataset_role] = $a[0];
+//
+////    $clean_names[$dataset_role] = get_person_array($dataset_value[$dataset_role]);
+//  }
+//
+//  // 4)-5)
+//  foreach ($person_ref_nids as $person_ref_nid) {
+//    $node = node_load($person_ref_nid);
+//    $title = $node->title;
+//    $titles_n_nids[$person_ref_nid] = _trim_text($title);
+//  }
+//
+//  // 6)
+//  foreach ($clean_names as $role => $value) {
+//    if (!empty($value)) {
+//      $dataset_field_name = array_search($role, $dataset_person_ref_fields);
+//      foreach ($value as $clean_name) {
+//        $nid = array_search($clean_name, $titles_n_nids);
+//        $dataset_person_refs[$dataset_field_name][] = $nid;
+//      }
+//    }
+//  }
 
 //  dpm('1) $i1 = ' . $i1);
 ////        dpm('1) $dataset_person_refs = ');
 ////        dpm($dataset_person_refs);
 //
-//$dataset_person_refs = array();
-//  foreach ($dataset_person_ref_fields as $dataset_field_name => $dataset_role) {
-//    $b = get_person_array($dataset_value[$dataset_role]);
-//    $name = $b[0];
-//    $b2 = $b[1];
-//    $i2 = $i2 + $b2;
-//
-////    $name = get_person_array($dataset_value[$dataset_role]);
-//    is_array($name) ? $names = $name : $names = (array) $name;
-//    if (!empty ($person_ref_nids)) {
-//      foreach ($person_ref_nids as $person_ref_nid) {
-//        $node = node_load($person_ref_nid);
-////        dpm('$node ');
-//
-//        $title = $node->title;
-//        if (in_array(trim($title), $names)) {
-//          $dataset_person_refs[$dataset_field_name][] = $person_ref_nid;
-//    $i2++;
-//        }
-//      }
-//    }
-//  }
+  foreach ($dataset_person_ref_fields as $dataset_field_name => $dataset_role) {
+    $b = get_person_array($dataset_value[$dataset_role]);
+    $name = $b[0];
+
+//    $name = get_person_array($dataset_value[$dataset_role]);
+    is_array($name) ? $names = $name : $names = (array) $name;
+    if (!empty ($person_ref_nids)) {
+      foreach ($person_ref_nids as $person_ref_nid) {
+        $node = node_load($person_ref_nid);
+//        dpm('$node ');
+
+        $title = $node->title;
+        if (in_array(trim($title), $names)) {
+          $dataset_person_refs[$dataset_field_name][] = $person_ref_nid;
+        }
+      }
+    }
+  }
 //    dpm('2) $i2 = ' . $i2);
 
 //        dpm('2) $dataset_person_refs = ');
 //        dpm($dataset_person_refs);
+  $time_end = microtime(true);
+  $time = $time_end - $time_start;
+  dpm('$time = ' . $time);
   return $dataset_person_refs;
 }
 
