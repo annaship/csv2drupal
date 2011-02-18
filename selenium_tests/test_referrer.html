@@ -64,42 +64,53 @@
 	<td></td>
 </tr>
 <tr>
-	<td>assertTextPresent</td>
-	<td>Title = Count g/m^2</td>
-	<td></td>
-</tr>
-<tr>
-	<td>assertTextPresent</td>
+	<td>verifyTextPresent</td>
 	<td>Type = data_file</td>
 	<td></td>
 </tr>
+<!-- store info about the first file and var -->
 <tr>
-	<td>verifyTextPresent</td>
-	<td>Title = 1982_2000gs81tusbm</td>
+	<td>storeText</td>
+	<td>//tr/td[contains(text(), 'Type = variable')]/../following-sibling::tr/td[2]</td>
+	<td>var_nid</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>//tr/td[contains(text(), 'Type = data_file')]/../following-sibling::tr/td[2]</td>
+	<td>file_nid</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>//tr/td[contains(text(), 'Type = data_set')]/../following-sibling::tr/td[2]</td>
+	<td>data_set_nid</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=${var_nid}</td>
 	<td></td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>//div[@class=&quot;field-label&quot;]/../div[@class=&quot;field-items&quot;]</td>
+	<td>var_name</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>//div[contains(text(), 'Associated Data Files:')]/../div[@class=&quot;field-items&quot;]</td>
+	<td>file_name</td>
 </tr>
 <!-- Variables should have referrer to a Datafile -->
 <tr>
-	<td>clickAndWait</td>
-	<td>//div[@id='squeeze']/div/div/div[4]/table[2]/tbody/tr[23]/td[2]/a</td>
-	<td></td>
-</tr>
-<tr>
-	<td>assertTextPresent</td>
+	<td>verifyTextPresent</td>
 	<td>Associated Data Files:</td>
 	<td></td>
 </tr>
-<tr>
-	<td>assertText</td>
-	<td>link=1982_2000gs81tusbm</td>
-	<td>1982_2000gs81tusbm</td>
-</tr>
+<!-- Datafile should have Variables and referrer to a Dataset -->
 <tr>
 	<td>clickAndWait</td>
-	<td>link=1982_2000gs81tusbm</td>
+	<td>link=${file_name}</td>
 	<td></td>
 </tr>
-<!-- Datafile should have Variables and referrer to a Dataset -->
 <tr>
 	<td>assertTextPresent</td>
 	<td>exact:Variables:</td>
@@ -107,8 +118,8 @@
 </tr>
 <tr>
 	<td>assertText</td>
-	<td>link=B1Q1</td>
-	<td>B1Q1</td>
+	<td>link=${var_name}</td>
+	<td>${var_name}</td>
 </tr>
 <tr>
 	<td>assertTextPresent</td>
@@ -116,13 +127,8 @@
 	<td></td>
 </tr>
 <tr>
-	<td>assertText</td>
-	<td>link=Above ground plant biomass in a mesic acidic tussock tundra experimental site from 1982 to 2000 Arctic LTER, Toolik Lake, Alaska.</td>
-	<td>Above ground plant biomass in a mesic acidic tussock tundra experimental site from 1982 to 2000 Arctic LTER, Toolik Lake, Alaska.</td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>link=Above ground plant biomass in a mesic acidic tussock tundra experimental site from 1982 to 2000 Arctic LTER, Toolik Lake, Alaska.</td>
+	<td>open</td>
+	<td>/drupal6-local/?q=node/${data_set_nid}</td>
 	<td></td>
 </tr>
 <!-- Dataset sould have Variables and Datafiles -->
@@ -131,26 +137,26 @@
 	<td>Data File Structure</td>
 	<td></td>
 </tr>
-<tr>
-	<td>assertText</td>
-	<td>link=1982_2000gs81tusbm</td>
-	<td>1982_2000gs81tusbm</td>
-</tr>
+<!-- <tr>
+  <td>assertText</td>
+  <td>link=${var_name}</td>
+  <td>${var_name}</td>
+</tr> -->
 <tr>
 	<td>assertTextPresent</td>
 	<td>Variable</td>
 	<td></td>
 </tr>
-<tr>
-	<td>assertText</td>
-	<td>link=Treatment</td>
-	<td>Treatment</td>
-</tr>
-<tr>
-	<td>open</td>
-	<td>/drupal6-local/?q=csv2drupal</td>
-	<td></td>
-</tr>
+<!-- <tr>
+  <td>assertText</td>
+  <td>link=${var_name}</td>
+  <td>${var_name}</td>
+</tr> -->
+<!-- <tr>
+  <td>open</td>
+  <td>/drupal6-local/?q=csv2drupal</td>
+  <td></td>
+</tr> -->
 </tbody></table>
 </body>
 </html>

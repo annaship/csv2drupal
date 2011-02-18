@@ -64,18 +64,13 @@
 	<td></td>
 </tr>
 <tr>
-	<td>verifyTextPresent</td>
-	<td>Title = LTER Moist Acidic Tussock Tundra</td>
-	<td></td>
-</tr>
-<tr>
-	<td>storeTable</td>
-	<td>//div[@id='squeeze']/div/div/div[4]/table[2].6.1</td>
+	<td>storeText</td>
+	<td>//tr/td[contains(text(), 'Type = research_site')]/../following-sibling::tr/td[2]</td>
 	<td>r_site_1</td>
 </tr>
 <tr>
-	<td>storeTable</td>
-	<td>//div[@id='squeeze']/div/div/div[4]/table[2].2.1</td>
+	<td>storeText</td>
+	<td>//tr/td[contains(text(), 'Type = data_set')]/../following-sibling::tr/td[contains(text(), 'Type = data_set')]/../following-sibling::tr/td[2]</td>
 	<td>dataset1</td>
 </tr>
 <tr>
@@ -84,9 +79,9 @@
 	<td></td>
 </tr>
 <tr>
-	<td>assertText</td>
-	<td>//div[@id='tabs-wrapper']/h2</td>
-	<td>LTER Moist Acidic Tussock Tundra</td>
+	<td>storeText</td>
+	<td>//h2[@class=&quot;with-tabs&quot;]</td>
+	<td>r_site_title</td>
 </tr>
 <!-- shouldn't create a new node if already exists, but to be in a ref -->
 <tr>
@@ -117,12 +112,7 @@
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
-	<td>link=LTER Moist Acidic Tussock Tundra</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>link=Tussock Tundra - 1981 plots</td>
+	<td>link=${r_site_title}</td>
 	<td></td>
 </tr>
 </tbody></table>
