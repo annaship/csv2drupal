@@ -657,6 +657,8 @@ function get_person_array($data) {
   $person_names = array();
   if (preg_match_all("/([^,]+)/", $data, $matches, PREG_SET_ORDER)) {
     foreach ($matches as $match) {
+        dpm('$matches = ');
+        dpm($matches);
       $person_names[] = trim($match[1]);
     }
   }
@@ -666,27 +668,62 @@ function get_person_array($data) {
 function get_person_ref($dataset_value, $person_ref_nids) {
   $dataset_person_refs = array();
   $dataset_person_ref_fields = dataset_person_ref_fields();
-  $person_titles_nids = array();
-  if (!empty ($person_ref_nids)) {
-    foreach ($person_ref_nids as $person_ref_nid) {
-      $node = node_load($person_ref_nid);
-      $title = $node->title;
-      $person_titles_n_nids[] = array($person_ref_nid => trim($title));
-    }
+  foreach ($dataset_person_ref_fields as $dataset_field_name => $dataset_role) {
+//    $name = $dataset_value[$dataset_role];
+    $name = get_person_array($dataset_value[$dataset_role]);
+    is_array($name) ? $names = $name : $names = (array) $name;
+    if (!empty ($person_ref_nids)) {
+      foreach ($person_ref_nids as $person_ref_nid) {
+        dpm('$person_ref_nid = ');
+        dpm($person_ref_nid);
+        $node = node_load($person_ref_nid);
+        dpm('$node ');
 
-    foreach ($dataset_person_ref_fields as $dataset_field_name => $dataset_role) {
-      $name = get_person_array($dataset_value[$dataset_role]);
-      if (!empty($name)) {
-        is_array($name) ? $names = $name : $names = (array) $name;
-//        TODO: print $person_titles_n_nids, $names and find intersect
-        if (array_intersect($person_titles_n_nids, $names)) {
-          dpm('array_intersect($person_titles_n_nids, $names = ');
-          dpm(array_intersect($person_titles_n_nids, $names));
+        $title = $node->title;
+        if (in_array(trim($title), $names)) {
           $dataset_person_refs[$dataset_field_name][] = $person_ref_nid;
         }
       }
     }
   }
+        dpm('$dataset_person_refs = ');
+        dpm($dataset_person_refs);
+  return $dataset_person_refs;
+}
+
+
+
+//function get_person_ref($dataset_value, $person_ref_nids) {
+//  $dataset_person_refs = array();
+//  $dataset_person_ref_fields = dataset_person_ref_fields();
+//  $person_titles_n_nids = array();
+//  if (!empty ($person_ref_nids)) {
+//    foreach ($person_ref_nids as $person_ref_nid) {
+//      $node = node_load($person_ref_nid);
+//      $title = $node->title;
+//      $person_titles_n_nids[] = array($person_ref_nid => trim($title));
+//    }
+//
+//    foreach ($dataset_person_ref_fields as $dataset_field_name => $dataset_role) {
+//      $name = get_person_array($dataset_value[$dataset_role]);
+//      if (!empty($name)) {
+//        is_array($name) ? $names = $name : $names = (array) $name;
+////        TODO: print $person_titles_n_nids, $names and find intersect
+//
+//        dpm('$person_titles_n_nids = ');
+//        dpm($person_titles_n_nids);
+//        dpm('$names = ');
+//        dpm($names);
+//        forea
+//        $inter = array_intersect($person_titles_n_nids, $names);
+//        if (!empty($inter)) {
+//          dpm('array_intersect($person_titles_n_nids, $names = ');
+//          dpm($inter);
+//          $dataset_person_refs[$dataset_field_name][] = $person_ref_nid;
+//        }
+//      }
+//    }
+//  }
 
 //  foreach ($dataset_person_ref_fields as $dataset_field_name => $dataset_role) {
 //    $name = $dataset_value[$dataset_role];
@@ -703,8 +740,8 @@ function get_person_ref($dataset_value, $person_ref_nids) {
 //      }
 //    }
 //  }
-  return $dataset_person_refs;
-}
+//  return $dataset_person_refs;
+//}
 
 /*
 
