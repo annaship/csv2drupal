@@ -6,42 +6,55 @@ require_once 'csv2drupal_field_name_arrays.inc';
 //module_load_include('module', 'geo', 'geo');
 
 function get_data_from_excel_file($file) {
-
   $sheet_names = sheet_names();
-  
+
+  try {
   $obj_reader = PHPExcel_IOFactory::createReaderForFile($file);
+} catch (Exception $e) {
+    $emes = $e->getMessage();
+    dpr('Caught exception: ' .  $emes . "\n");
+    dpm('Caught exception: ' .  $emes . "\n");
+}
+
+//$objReader = new PHPExcel_Reader_Excel5();
+//$valid = $objReader->canRead($file);
+//var_dump($valid);
+
+//dpm($valid);
+//dpr($valid);
+
   $obj_reader->setLoadSheetsOnly(0);
   $obj_reader->setReadDataOnly(true);
   $obj_php_excel = PHPExcel_IOFactory::load($file);
 
   $loaded_sheet_names = $obj_php_excel->getSheetNames();
   foreach ($loaded_sheet_names as $sheet_index => $loaded_sheet_name) {
-    $obj_worksheet = $obj_php_excel->setActiveSheetIndex($sheet_index);
-    $dim = $obj_worksheet->calculateWorksheetDimension();
-    $highest_row = $obj_worksheet->getHighestRow();
-    $highest_column = $obj_worksheet->getHighestColumn();
-    $highest_column_index = PHPExcel_Cell::columnIndexFromString($highest_column);
+    $lowloaded_sheet_name = strtolower($loaded_sheet_name);
 
-    //get titles
-    $titles = array();
-    for ($col = 0; $col <= $highest_column_index; ++$col) {
-      $titles[] = trim($obj_worksheet->getCellByColumnAndRow($col, "1")->getValue());
-    }
+    if (in_array($sheet_names[$lowloaded_sheet_name], $sheet_names)) {
+      $obj_worksheet = $obj_php_excel->setActiveSheetIndex($sheet_index);
+      $dim = $obj_worksheet->calculateWorksheetDimension();
+      $highest_row = $obj_worksheet->getHighestRow();
+      $highest_column = $obj_worksheet->getHighestColumn();
+      $highest_column_index = PHPExcel_Cell::columnIndexFromString($highest_column);
 
-    for ($row = 2; $row <= $highest_row; ++$row) {
+      //get titles
+      $titles = array();
       for ($col = 0; $col <= $highest_column_index; ++$col) {
-        $res = trim($obj_worksheet->getCellByColumnAndRow($col, $row)->getValue());
-        if (!empty($loaded_sheet_name)) {
-          $lowloaded_sheet_name = strtolower($loaded_sheet_name);
-          if (!empty($titles[$col])) {
-            ${$sheet_names[$lowloaded_sheet_name]}[$titles[$col]][] = $res;
+        $titles[] = trim($obj_worksheet->getCellByColumnAndRow($col, "1")->getValue());
+      }
+
+      for ($row = 2; $row <= $highest_row; ++$row) {
+        for ($col = 0; $col <= $highest_column_index; ++$col) {
+
+          $res = trim($obj_worksheet->getCellByColumnAndRow($col, $row)->getValue());
+            if (!empty($titles[$col])) {
+              ${$sheet_names[$lowloaded_sheet_name]}[$titles[$col]][] = $res;
           }
         }
-      }
+      }      
     }
-    if (in_array($sheet_names[$lowloaded_sheet_name], $sheet_names)) {
-      $content[$sheet_names[$lowloaded_sheet_name]] = ${$sheet_names[$lowloaded_sheet_name]};
-    }
+    $content[$sheet_names[$lowloaded_sheet_name]] = ${$sheet_names[$lowloaded_sheet_name]};
   }
   return $content;
 }

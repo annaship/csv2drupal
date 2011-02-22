@@ -8,7 +8,8 @@ function sheet_names() {
     'site-cck'      => 'site',
     'person-cck'    => 'person',
     'variable-cck'  => 'variable',
-    'keywords'      => 'keywords',
+    'keywords-cck'  => 'keywords',
+    'species-cck'   => 'species',
   );
   return $sheet_names;
 }
@@ -20,14 +21,15 @@ function sheet_names() {
 //    'Person-CCK'    => 'person',
 //    'Variable-CCK'  => 'variable',
 //    'Keywords'      => 'keywords',
+//    //Species-CCK
 //  );
 
 function dataset_fields() {
   $dataset_fields = array(
     'field_beg_end_date'              => 'Date Range',
     'field_dataset_abstract'          => 'Abstract',
-    'field_dataset_add_info'           => 'Additional Information',
-    'field_dataset_id'                 => 'Dataset ID',
+    'field_dataset_add_info'          => 'Additional Information',
+    'field_dataset_id'                => 'Dataset ID',
     'field_dataset_maintenance'       => 'Maintenance',
     'field_dataset_publication_date'  => 'Publication Date',
     'field_dataset_purpose'           => 'Purpose',

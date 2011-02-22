@@ -64,20 +64,15 @@
 	<td></td>
 </tr>
 <!-- collect dataset and person names and nids -->
-<!-- <tr>
+<tr>
   <td>storeText</td>
   <td>//tr/td[contains(text(), 'Type = person')]/../following-sibling::tr/td[2]</td>
   <td>person_nid</td>
-</tr> -->
+</tr>
 <tr>
 	<td>storeText</td>
 	<td>//tr/td[contains(text(), 'Type = data_set')]/../following-sibling::tr/td[2]</td>
 	<td>data_set_nid</td>
-</tr>
-<tr>
-	<td>storeText</td>
-	<td>//tr/td[contains(text(), 'Type = data_set')]/../following-sibling::tr/td[contains(text(), 'Type = person')]</td>
-	<td>person_nid</td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
