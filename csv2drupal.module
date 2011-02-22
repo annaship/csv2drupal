@@ -68,14 +68,16 @@ function csv2drupal_form($form_state) {
 
 
 function csv2drupal_form_submit($form, $form_state) {
-
+variable_del('file_names');
 //  set submit time, to use on the report page to take only more recent nodes
   variable_set(csv2drupal_submit_time, time());
   $dir_name = $form_state['values']['dir_name'];
+  $file_names = array();
   if (!empty($dir_name)) {
     $files = file_scan_directory($dir_name, '\.xls');
     foreach ($files as $file) {
       $filepath = $file->filename;
+      $file_names[] = $filepath;
       $content = get_data_from_excel_file($filepath);
       $file_object = create_file_object($filepath);
       $nids[$file->basename] = create_nodes($content, $file_object);
@@ -90,6 +92,7 @@ function csv2drupal_form_submit($form, $form_state) {
 
       if ($result) {
         $filepath = $file->filepath;
+        $file_names[] = $filepath;
 //        drupal_set_message($filepath);
         $content = get_data_from_excel_file($filepath);
         $file_object = create_file_object($filepath);
@@ -100,5 +103,6 @@ function csv2drupal_form_submit($form, $form_state) {
       form_set_error('csv2drupal_form', t("Failed to save the file."));
     }
   }
+  variable_set('file_names', $file_names);
   return $nids;
 }

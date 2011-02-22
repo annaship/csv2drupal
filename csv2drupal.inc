@@ -113,7 +113,7 @@ function create_sql($value, $fields_names, $content_type) {
     if (!in_array($field_name, $forbiddenf_fields)) {
       $i++;
       $full_field_name = $field_name . '_value';
-      $condition .= "(" . $full_field_name . " = '" . $value[$tag_name] . "' OR " . $full_field_name . " is NULL)";
+      $condition .= "(" . $full_field_name . " = \"" . $value[$tag_name] . "\" OR " . $full_field_name . " is NULL)";
       if ($i < $array_length) {
         $condition .= " AND ";
       }
@@ -123,7 +123,7 @@ function create_sql($value, $fields_names, $content_type) {
   if (in_array($content_type, $content_type_titles_only)) {
     $sql = "SELECT node.nid FROM {content_type_" . $content_type . "} as content_type
         JOIN {node} on content_type.nid = node.nid
-        WHERE node.title = '" . $title_value . "';";
+        WHERE node.title = \"" . $title_value . "\";";
   }
   else {
     $sql   = "SELECT node.nid FROM {content_type_" . $content_type . "} as content_type

@@ -64,27 +64,32 @@
 	<td></td>
 </tr>
 <!-- collect dataset and person names and nids -->
- <tr>
- 	<td>storeText</td>
- 	<td>//tr/td[contains(text(), 'Type = person')]/../following-sibling::tr/td[2]</td>
- 	<td>person_nid</td>
- </tr>
- <tr>
- 	<td>storeText</td>
- 	<td>//tr/td[contains(text(), 'Type = data_set')]/../following-sibling::tr/td[2]</td>
- 	<td>data_set_nid</td>
- </tr>
- <tr>
- 	<td>clickAndWait</td>
- 	<td>link=${person_nid}</td>
- 	<td></td>
- </tr>
- <tr>
- 	<td>storeText</td>   
- 	<td>//h2[@class="with-tabs"]</td>
- 	<td>person_name</td>
- </tr>        
- <!-- check if new person is in a dataset --> 
+<!-- <tr>
+  <td>storeText</td>
+  <td>//tr/td[contains(text(), 'Type = person')]/../following-sibling::tr/td[2]</td>
+  <td>person_nid</td>
+</tr> -->
+<tr>
+	<td>storeText</td>
+	<td>//tr/td[contains(text(), 'Type = data_set')]/../following-sibling::tr/td[2]</td>
+	<td>data_set_nid</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>//tr/td[contains(text(), 'Type = data_set')]/../following-sibling::tr/td[contains(text(), 'Type = person')]</td>
+	<td>person_nid</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=${person_nid}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>//h2[@class=&quot;with-tabs&quot;]</td>
+	<td>person_name</td>
+</tr>
+<!-- check if new person is in a dataset -->
 <tr>
 	<td>open</td>
 	<td>/drupal6-local/?q=node/${data_set_nid}</td>
@@ -97,51 +102,51 @@
 </tr>
 <!-- new person should not be created if already exists,
  but to be in dataset -->
- <tr>
- 	<td>open</td>
- 	<td>/drupal6-local/?q=csv2drupal</td>
- 	<td></td>
- </tr>
- <tr>
- 	<td>clickAndWait</td>
- 	<td>edit-submit</td>
- 	<td></td>
- </tr>
- <tr>
- 	<td>verifyTextPresent</td>
- 	<td>No new nodes was saved</td>
- 	<td></td>
- </tr>
- <tr>
- 	<td>open</td>
- 	<td>/drupal6-local/?q=node/${data_set_nid}</td>
- 	<td></td>
- </tr>
- <tr>
- 	<td>verifyTextPresent</td>
- 	<td>Associated Researcher</td>
- 	<td></td>
- </tr>
- <tr>
- 	<td>verifyTextPresent</td>
- 	<td>${person_name}</td>
- 	<td></td>
- </tr>
- <tr>
- 	<td>clickAndWait</td>
- 	<td>link=${person_name}</td>
- 	<td></td>
- </tr>
- <tr>
- 	<td>verifyTextPresent</td>
- 	<td>${person_name}</td>
- 	<td></td>
- </tr>
- <tr>
- 	<td>open</td>
- 	<td>/drupal6-local/?q=csv2drupal</td>
- 	<td></td>
- </tr>
+<tr>
+	<td>open</td>
+	<td>/drupal6-local/?q=csv2drupal</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>edit-submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>No new nodes was saved</td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>/drupal6-local/?q=node/${data_set_nid}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Associated Researcher</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>${person_name}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=${person_name}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>${person_name}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>/drupal6-local/?q=csv2drupal</td>
+	<td></td>
+</tr>
 </tbody></table>
 </body>
 </html>
