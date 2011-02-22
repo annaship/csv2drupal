@@ -217,6 +217,7 @@ function forbiddenf_fields() {
     'field_instrumentation',
     'field_quality',
     'field_dataset_related_links',
+    'field_var_definition_value',
   );
   return $forbiddenf_fields;
 }

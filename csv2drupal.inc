@@ -9,19 +9,12 @@ function get_data_from_excel_file($file) {
   $sheet_names = sheet_names();
 
   try {
-  $obj_reader = PHPExcel_IOFactory::createReaderForFile($file);
-} catch (Exception $e) {
+    $obj_reader = PHPExcel_IOFactory::createReaderForFile($file);
+  } catch (Exception $e) {
     $emes = $e->getMessage();
     dpr('Caught exception: ' .  $emes . "\n");
     dpm('Caught exception: ' .  $emes . "\n");
-}
-
-//$objReader = new PHPExcel_Reader_Excel5();
-//$valid = $objReader->canRead($file);
-//var_dump($valid);
-
-//dpm($valid);
-//dpr($valid);
+  }
 
   $obj_reader->setLoadSheetsOnly(0);
   $obj_reader->setReadDataOnly(true);
@@ -126,7 +119,8 @@ function create_sql($value, $fields_names, $content_type) {
     if (!in_array($field_name, $forbiddenf_fields)) {
       $i++;
       $full_field_name = $field_name . '_value';
-      $condition .= "(" . $full_field_name . " = \"" . $value[$tag_name] . "\" OR " . $full_field_name . " is NULL)";
+      $clean_value_tag_name = htmlspecialchars($value[$tag_name]);
+      $condition .= "(" . $full_field_name . " = \"" . $clean_value_tag_name . "\" OR " . $full_field_name . " is NULL)";
       if ($i < $array_length) {
         $condition .= " AND ";
       }
