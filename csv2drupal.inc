@@ -272,10 +272,23 @@ function create_site_node($content, &$ref_nids) {
         $title = $node->title;
         $coordinates = "POINT(" . $coord1 . " " . $coord2 . ")";
 
-        $sql = "UPDATE content_field_research_site_pt_coords
+        if (mysql_num_rows( mysql_query("SHOW TABLES LIKE 'content_field_research_site_pt_coords'"))) {
+//          $table = '%content_field_research_site_pt_coords';
+          $table_name = 'content_field_research_site_pt_coords';
+          dpm('URA!');
+          dpr('URA!');
+        }
+        elseif (mysql_num_rows( mysql_query("SHOW TABLES LIKE 'content_type_research_site' "))) {
+          $table_name = 'content_type_research_site';
+          dpm('content_type_research_site!');
+          dpr('content_type_research_site!');          
+        }
+
+
+        $sql = "UPDATE {%s}
           SET field_research_site_pt_coords_geo=(SELECT GeomFromText('%s'))
           WHERE nid=%d";
-        $db_result = db_query($sql, $coordinates, $nid);
+        $db_result = db_query($sql, $table_name, $coordinates, $nid);
       }
     }
   }
