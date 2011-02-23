@@ -290,13 +290,16 @@ function create_site_node($content, &$ref_nids) {
         $sql = "UPDATE content_field_research_site_pt_coords
           SET field_research_site_pt_coords_geo=(SELECT GeomFromText('POINT(42.7443 -70.91)'))
           WHERE nid=%d";
+ *
+ * POINT(42.7311915944444 -70.826261475)
+
          */
 
         $sql = "UPDATE content_field_research_site_pt_coords
-          SET field_research_site_pt_coords_geo=(SELECT GeomFromText('POINT(42.7443 -70.91)'))
+          SET field_research_site_pt_coords_geo=(SELECT GeomFromText('%s'))
           WHERE nid=%d";
 
-        $db_result = db_query($sql, $nid);
+        $db_result = db_query($sql, $coordinates, $nid);
 //        while ($res   = db_fetch_object($db_result)) {
               dpr('$nid = ');
               dpr($nid);
