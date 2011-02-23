@@ -275,20 +275,46 @@ function create_site_node($content, &$ref_nids) {
         $title = $node->title;
         $coordinates = "POINT(" . $coord1 . " " . $coord2 . ")";
 //        $q_geo = db_result(db_query("SELECT GeomFromText(30, 4326)"));
-        $q_geo = db_result(db_query("SELECT GeomFromText('%s', '%s')", $coord1, $coord2));
+//        $q_geo = db_result(db_query("SELECT GeomFromText('%s', '%s')", $coord1, $coord2));
 //        $q_geo       = db_result(db_query("SELECT GeomFromText('%s')", $coordinates));
 //        $q_geo       = db_result(db_query("SELECT GeomFromText('POINT(68.6167 -149.31)')"));
 //        $node->field_research_site_pt_coords[0]['geo'] = $coordinates;
 
-        $node->field_research_site_pt_coords[0]['geo'] = $q_geo;
+//        $node->field_research_site_pt_coords[0]['geo'] = $q_geo;
+/*
+ * works in jheidi:
+ * INSERT INTO content_field_research_site_pt_coords (vid, nid, field_research_site_pt_coords_geo)
+      VALUES (2410, 2410, (SELECT GeomFromText('POINT(42.74 -70.91)')))
+ * 
+ */
 
-//        $sql = "INSERT INTO {content_field_research_site_pt_coords} (vid, nid, field_research_site_pt_coords_geo)
-//          VALUES ()";
-//
-//        $db_result = db_query($sql, $vid, $nid, $q_geo);
+        /*
+         *
+         UPDATE table_name
+SET column1=value, column2=value2,...
+WHERE some_column=some_value
+
+         *         $sql = "INSERT INTO {content_field_research_site_pt_coords} (vid, nid, field_research_site_pt_coords_geo)
+      VALUES (%d, %d, (SELECT GeomFromText('POINT(42.74 -70.91)')))";
+         *
+UPDATE content_field_research_site_pt_coords
+SET field_research_site_pt_coords_geo=(SELECT GeomFromText('POINT(42.7444 -70.91)'))
+WHERE nid=2410
+         */
+
+        $sql = "UPDATE content_field_research_site_pt_coords
+          SET field_research_site_pt_coords_geo=(SELECT GeomFromText('POINT(42.7443 -70.91)'))
+          WHERE nid=2410";
+
+        $db_result = db_query($sql, $vid, $nid);
+//        while ($res   = db_fetch_object($db_result)) {
+              dpr('$db_result = ');
+              dpr($db_result);
+
 
       }
 
+      node_save(&$node);
 
       dpr($node);
       dpm($node);
