@@ -79,7 +79,8 @@ function create_values($content) {
   $values = array();
   foreach ($content as $key => $value) {
     foreach ($value as $number => $data) {
-      $values[$number][$key] = $data;
+      $clean_data = htmlspecialchars($data);
+      $values[$number][$key] = $clean_data;
     }
   }
   return $values;
@@ -119,8 +120,7 @@ function create_sql($value, $fields_names, $content_type) {
     if (!in_array($field_name, $forbiddenf_fields)) {
       $i++;
       $full_field_name = $field_name . '_value';
-      $clean_value_tag_name = htmlspecialchars($value[$tag_name]);
-      $condition .= "(" . $full_field_name . " = \"" . $clean_value_tag_name . "\" OR " . $full_field_name . " is NULL)";
+      $condition .= "(" . $full_field_name . " = \"" . $value[$tag_name] . "\" OR " . $full_field_name . " is NULL)";
       if ($i < $array_length) {
         $condition .= " AND ";
       }

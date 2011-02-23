@@ -10,7 +10,13 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
 <tr><td rowspan="1" colspan="3">test_home_person</td></tr>
-</thead><tbody>
+</thead><tbody>                                                                                                       
+  <tr>
+  	<td>setTimeout</td>
+  	<td>45000</td>
+  	<td></td>
+  </tr>
+  
   <!-- remove all new nodes -->
 <tr>
 	<td>open</td>
@@ -57,6 +63,11 @@
 	<td>clickAndWait</td>
 	<td>edit-submit</td>
 	<td></td>
+</tr>                                           
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Type = variable</td>
+	<td></td>
 </tr>
 <tr>
 	<td>verifyTextPresent</td>
@@ -76,6 +87,11 @@
 <tr>
 	<td>clickAndWait</td>
 	<td>link=${var_nid}</td>
+	<td></td>
+</tr>     
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Associated Data Files:</td>
 	<td></td>
 </tr>
 <tr>
@@ -110,10 +126,20 @@ but is in dataset -->
 	<td>No new nodes was saved</td>
 	<td></td>
 </tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>No new nodes was saved</td>
+	<td></td>
+</tr>
 <!-- go to data_file -->
 <tr>
 	<td>open</td>
 	<td>/drupal6-local/?q=node/${file_nid}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>exact:Variables:</td>
 	<td></td>
 </tr>
 <tr>
