@@ -256,6 +256,15 @@ function create_site_node($content, &$ref_nids) {
       $node->uid   =  get_uid();
       !empty($value['Title']) ? $node->title = $value['Title'] : $node->title = $value['Location'];
       $node        = add_node_value($node, $value, $fields_names);
+      
+
+
+
+      node_save(&$node);
+      $nid = $node->nid;
+      $vid = $node->vid;
+      $ref_nids[$content_type][] = $nid;
+
       dpr($value['Coordinates']);
       dpm($value['Coordinates']);
       if (preg_match("/(.+),\s*(.+)/", $value['Coordinates'], $matches)) {
@@ -264,13 +273,6 @@ function create_site_node($content, &$ref_nids) {
         $coord1 = $matches[1];
         $coord2 = $matches[2];
         $title = $node->title;
-//        dpr('$title = ' . $title);
-//        dpm('$title = ' . $title);
-//
-//        dpr('$coord1 = ' . $coord1);
-//        dpm('$coord1 = ' . $coord1);
-//        dpr('$coord2 = ' . $coord2);
-//        dpm('$coord2 = ' . $coord2);
         $coordinates = "POINT(" . $coord1 . " " . $coord2 . ")";
 //        $q_geo = db_result(db_query("SELECT GeomFromText(30, 4326)"));
         $q_geo = db_result(db_query("SELECT GeomFromText('%s', '%s')", $coord1, $coord2));
@@ -279,167 +281,20 @@ function create_site_node($content, &$ref_nids) {
 //        $node->field_research_site_pt_coords[0]['geo'] = $coordinates;
 
         $node->field_research_site_pt_coords[0]['geo'] = $q_geo;
-        dpm($node);
-//  $node->field_research_site_pt_coords[0]['geo'] = db_result(db_query("SELECT GeomFromText('%s', 4326)", $items[$k]['wkt']));
 
-//  if(!geo_content_is_empty($items[$k], $field)) {
-//    $items[$k]['geo'] = db_result(db_query("SELECT GeomFromText('%s', 4326)", $items[$k]['wkt']));
-//  }
-
-
-//  // it shows values:
-//  $res = db_query("SELECT ". $geo->AsBinary($geo) .' AS geo  FROM {'. $geo->tableName() .'} ');
-//  $items = array();
-//  while ($row = db_fetch_array($res)) {
-//    $items[] = geo_value(db_decode_blob($row['geo']), 'wkt', 'wkb') ;
-//  }
-//  dpm($items);
-  // Do this conditionally, otherwise a new one gets created with every schema call
-//  if (!$geo) {
-//    $geo = geo_sql_load();
-//    $geo->setTitle('geonamesdb');
-//    $geo->setName('geonamesdb');
-//    $geo->setSRID(GEONAMESDB_WGS84);
-//    $geo->setGeoType(GEO_TYPE_POINT);
-//    $geo->setTableName('geonamesdb_data');
-//    $geo->setColumnName('geo');
+//        $sql = "INSERT INTO {content_field_research_site_pt_coords} (vid, nid, field_research_site_pt_coords_geo)
+//          VALUES ()";
 //
-//    // Save the dataset to the Geo API.
-//    geo_save($geo);
-//  }
-//  $schema['geonamesdb_data']['fields'] = array_merge($schema['geonamesdb_data']['fields'], $geo->sqlFieldDefinition('geo'));
-
-
-
-
-
-
+//        $db_result = db_query($sql, $vid, $nid, $q_geo);
 
       }
 
 
-
-
-      /*
-       * user warning: Incorrect parameter count in the call to native function 'AsBinary' query: geo_field /* anna : geo_field */
-//      SELECT AsBinary() AS geo FROM WHERE vid = 12038 in /Library/WebServer/Documents/drupal6-local/sites/all/modules/geo/modules/geo_field/geo_field.module on line 83.
-//       check $coordinates format!!!
-
-
-//      echo 'HERE!';
-//      dpr($coordinates);
-//      print $coordinates;
-//      $q = db_result(db_query("SELECT PointFromText('%s')", 'POINT(1 1)'));
-////      $q = db_result(db_query("SELECT GeomFromText('%s')", 'POINT(31.5 42.2)'));
-////      PointFromText(Point(a,b))
-////      GeomFromWKB(Point(1,2)
-//      $node->field_research_site_pt_coords[0]['geo'] = $q;
-//      $wkt = geo_value($q, 'wkt', 'wkb');
-//      dpr($wkt);
-//      print_r($wkt);
-//      parse 'Coordinates' here
-      //    'field_research_site_pt_coords'   => 'Coordinates',
-//      $node->field_geofield[0]['geo'] = 'POINT(30 30)';
-      
-//      $nofe->field_research_site_pt_coords[0]['geo'] = 'POINT(30 30)';
-//      $node->field_research_site_pt_coords[0] = array('geo' => '');
-//        $wkb = 'POINT(30 30)';
-//        $g = GeomFromText($wkb);
-//           $geo = geo_load();
-//           $point = $geo->point(1, 2);
-//
-//        dpr($point);
-//        dpr($wkb);
-//        $geo = geo_load();
-//        $geo = geo_load(array('table_name' => $field['geo']));
-//          dpr(geo_field_names());
-//          echo "UUUU";
-//        dpr($geo);
-//        dpm($geo);
-//        $g = $geo->geomFromWKB($wkb);
-//        dpr($g);
-//        $wkt = $g->asText();
-//
-//$wkt = geo('wkt_from_point', 30, 30);
-//echo 'UUU';
-//geo_value($input, $output_format, $input_format = 'wkb')
-//
-//$wkt = geo_value($wkt, 'wkt', $gis_input);
-//$wkb = geo_value($wkt, 'wkb', 'wkt');
-
-//dpr(geo_list());
-//dpm(geo_list());
-//dpm(geo_field_names());
-//dpr(geo_field_names());
-
-//    [4] => GeoSQLMySQL Object
-//        (
-//            [gid:protected] => 4
-//            [name:protected] => field_research_site_pt_coords
-//            [title:protected] => Coordinates
-//            [srid:protected] => 4326
-//            [geo_type:protected] => 0
-//            [table_name:protected] => content_type_research_site
-//            [column_name:protected] => field_research_site_pt_coords_geo
-//            [schema:protected] =>
-//            [indexed:protected] => 1
-//            [count:protected] =>
-//        )
-//
-//)
-//Array
-//(
-//    [0] => field_research_site_pt_coords
-//)
-
-//      $wkb_data = GeomFromText('POINT(30 30)');
-//      dpr($wkb_data);
-//      $data = geo_wkb_get_data('POINT(30 30)', 'wkt');
-//      echo 'URRA!';
-//      dpr($data);
-//      print_r($wkb_data);
-
-//      $node->field_research_site_pt_coords[0]['geo'] = $wkt;
-//      $node->field_research_site_pt_coords[0]['geo'] = 'POINT(30 30)';
-// $node->field_research_site_pt_coords_geo = 'POINT(30 30)';
-
-//    dpr($node);
-
-
-      node_save(&$node);
-      $ref_nids[$content_type][] = $node->nid;
-//      $site_nid = $node->nid;
-//      $sql = "SELECT X(field_research_site_pt_coords_geo) as longitude,
-//             Y(field_research_site_pt_coords_geo) as latitude,
-//             AsText(field_research_site_pt_coords_geo) as geo_point
-//             FROM {content_type_research_site}
-//             WHERE vid=(SELECT max(vid)
-//                        FROM {content_type_research_site}
-//                        WHERE nid = '%d')";
-//
-//      $query = db_query($sql, $site_nid);
-//      $geo_lon_lat_point =  db_fetch_array($query);
-//      dpr($geo_lon_lat_point);
-//      dpm($geo_lon_lat_point);
-
-//      select GeomFromText(select GeomFromText('POINT(31.5 42.2)');
-
-
-//      node_save(&$node);
-
-//      dpr($node);
-//      dpm($node);
-//      print_r($node);
-
-//      if (is_string($shp['data'])) {
-//        $values['geo'] = db_result(db_query("SELECT GeomFromText('%s', %d)", $shp['data'], $srid));
-//      } else {
-//        $values['geo'] = db_result(db_query("SELECT GeomFromText('%s', %d)", $shp['data']['wkt'], $srid));
-//      }
-
+      dpr($node);
+      dpm($node);
+      print_r($node);
 
     }
-//    dpr($node);
   }
   return $ref_nids;
 }
