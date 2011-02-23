@@ -128,13 +128,13 @@ function create_sql($value, $fields_names, $content_type) {
   }
   $title_value = $value[$tags_to_title[$content_type]];
   if (in_array($content_type, $content_type_titles_only)) {
-    $sql = "SELECT node.nid FROM {content_type_" . $content_type . "} as content_type
-        JOIN {node} on content_type.nid = node.nid
-        WHERE node.title = \"" . $title_value . "\";";
+    $sql = "SELECT {node}.nid FROM {content_type_" . $content_type . "} as content_type
+        JOIN {node} on content_type.nid = {node}.nid
+        WHERE {node}.title = \"" . $title_value . "\";";
   }
   else {
-    $sql   = "SELECT node.nid FROM {content_type_" . $content_type . "} as content_type
-          JOIN {node} on content_type.nid = node.nid
+    $sql   = "SELECT {node}.nid FROM {content_type_" . $content_type . "} as content_type
+          JOIN {node} on content_type.nid = {node}.nid
           WHERE " . $condition . ";";
   }
   return $sql;
@@ -257,9 +257,6 @@ function create_site_node($content, &$ref_nids) {
       !empty($value['Title']) ? $node->title = $value['Title'] : $node->title = $value['Location'];
       $node        = add_node_value($node, $value, $fields_names);
       
-
-
-
       node_save(&$node);
       $nid = $node->nid;
       $ref_nids[$content_type][] = $nid;
@@ -272,19 +269,29 @@ function create_site_node($content, &$ref_nids) {
         $title = $node->title;
         $coordinates = "POINT(" . $coord1 . " " . $coord2 . ")";
 
-        if (mysql_num_rows( mysql_query("SHOW TABLES LIKE 'content_field_research_site_pt_coords'"))) {
+//        # warning: mysql_num_rows(): supplied argument is not a valid MySQL
+//         result resource in /data/drupal/sites/all/modules/csv2drupal/csv2drupal.inc on line 273.
+//        remove this:
+        $table_name = 'content_field_research_site_pt_coords';
+/*
+   while ($node = db_fetch_object($result)) {
+    $output .= node_view(node_load($node->nid), 1);
+
+    $num_rows = TRUE;
+  }
+  if ($num_rows) {
+    $output .= theme('pager', NULL, variable_get('default_nodes_main', 10), 0);
+  }
+!!! if/else doesn't work!
+ */
+
+        if (db_result(db_query("SHOW TABLES LIKE 'content_field_research_site_pt_coords'"))) {
 //          $table = '%content_field_research_site_pt_coords';
           $table_name = 'content_field_research_site_pt_coords';
-          dpm('URA!');
-          dpr('URA!');
         }
-        elseif (mysql_num_rows( mysql_query("SHOW TABLES LIKE 'content_type_research_site' "))) {
+        elseif (db_result(db_query("SHOW TABLES LIKE 'content_type_research_site'"))) {
           $table_name = 'content_type_research_site';
-          dpm('content_type_research_site!');
-          dpr('content_type_research_site!');          
         }
-
-
         $sql = "UPDATE {%s}
           SET field_research_site_pt_coords_geo=(SELECT GeomFromText('%s'))
           WHERE nid=%d";
