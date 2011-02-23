@@ -304,17 +304,19 @@ WHERE nid=2410
 
         $sql = "UPDATE content_field_research_site_pt_coords
           SET field_research_site_pt_coords_geo=(SELECT GeomFromText('POINT(42.7443 -70.91)'))
-          WHERE nid=2410";
+          WHERE nid=%d";
 
-        $db_result = db_query($sql, $vid, $nid);
+        $db_result = db_query($sql, $nid);
 //        while ($res   = db_fetch_object($db_result)) {
+              dpr('$nid = ');
+              dpr($nid);
               dpr('$db_result = ');
               dpr($db_result);
 
 
       }
 
-      node_save(&$node);
+//      node_save(&$node);
 
       dpr($node);
       dpm($node);
