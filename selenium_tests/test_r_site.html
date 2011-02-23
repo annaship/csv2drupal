@@ -12,11 +12,11 @@
 <tr><td rowspan="1" colspan="3">test_home_person</td></tr>
 </thead><tbody>
   <tr>
-  	<td>setTimeout</td>
-  	<td>45000</td>
-  	<td></td>
-  </tr>
-  <!-- remove all new nodes -->
+	<td>setTimeout</td>
+	<td>95000</td>
+	<td></td>
+</tr>
+<!-- remove all new nodes -->
 <tr>
 	<td>open</td>
 	<td>/drupal6/?q=csv2drupal</td>
@@ -42,10 +42,13 @@
 	<td>link=Execute PHP Code</td>
 	<td></td>
 </tr>
+<!-- 3110 - work
+417 - work laptop
+ -->
 <tr>
 	<td>type</td>
 	<td>edit-code</td>
-	<td>$q = db_query('SELECT nid FROM node WHERE nid &gt; 3110;');<br />while ($nid = db_result($q)) {<br />&nbsp;&nbsp;node_delete($nid);<br />}</td>
+	<td>$q = db_query('SELECT nid FROM node WHERE nid &gt; 417;');<br />while ($nid = db_result($q)) {<br />&nbsp;&nbsp;node_delete($nid);<br />}</td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
@@ -80,9 +83,14 @@
 </tr>
 <tr>
 	<td>storeText</td>
-	<td>//tr/td[contains(text(), 'Type = data_set')]/../following-sibling::tr/td[contains(text(), 'Type = data_set')]/../following-sibling::tr/td[2]</td>
+	<td>//tr/td[contains(text(), 'Type = data_set')]/../following-sibling::tr/td[2]</td>
 	<td>dataset1</td>
 </tr>
+<!-- <tr>
+  <td>storeText</td>
+  <td>//tr/td[contains(text(), 'Type = data_set')]/../following-sibling::tr/td[contains(text(), 'Type = data_set')]/../following-sibling::tr/td[2]</td>
+  <td>dataset1</td>
+</tr> -->
 <tr>
 	<td>clickAndWait</td>
 	<td>link=${r_site_1}</td>
@@ -118,7 +126,7 @@
 	<td>verifyTextNotPresent</td>
 	<td>Type = research_site</td>
 	<td></td>
-</tr>                  
+</tr>
 <!-- go to dataset -->
 <tr>
 	<td>open</td>
