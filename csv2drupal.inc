@@ -262,59 +262,21 @@ function create_site_node($content, &$ref_nids) {
 
       node_save(&$node);
       $nid = $node->nid;
-      $vid = $node->vid;
       $ref_nids[$content_type][] = $nid;
 
-      dpr($value['Coordinates']);
-      dpm($value['Coordinates']);
       if (preg_match("/(.+),\s*(.+)/", $value['Coordinates'], $matches)) {
-        module_load_include('inc', 'geo', 'includes/geo.api');
-        $geo = geo_load(array('name' => 'field_research_site_pt_coords'));
+//        module_load_include('inc', 'geo', 'includes/geo.api');
+//        $geo = geo_load(array('name' => 'field_research_site_pt_coords'));
         $coord1 = $matches[1];
         $coord2 = $matches[2];
         $title = $node->title;
         $coordinates = "POINT(" . $coord1 . " " . $coord2 . ")";
-        dpr('$coordinates');
-        dpr($coordinates);
-        dpm('$coordinates');
-        dpm($coordinates);
-//        $q_geo = db_result(db_query("SELECT GeomFromText(30, 4326)"));
-//        $q_geo = db_result(db_query("SELECT GeomFromText('%s', '%s')", $coord1, $coord2));
-//        $q_geo       = db_result(db_query("SELECT GeomFromText('%s')", $coordinates));
-//        $q_geo       = db_result(db_query("SELECT GeomFromText('POINT(68.6167 -149.31)')"));
-//        $node->field_research_site_pt_coords[0]['geo'] = $coordinates;
-
-//        $node->field_research_site_pt_coords[0]['geo'] = $q_geo;
-/*
- * works:
-        $sql = "UPDATE content_field_research_site_pt_coords
-          SET field_research_site_pt_coords_geo=(SELECT GeomFromText('POINT(42.7443 -70.91)'))
-          WHERE nid=%d";
- *
- * POINT(42.7311915944444 -70.826261475)
-
-         */
 
         $sql = "UPDATE content_field_research_site_pt_coords
           SET field_research_site_pt_coords_geo=(SELECT GeomFromText('%s'))
           WHERE nid=%d";
-
         $db_result = db_query($sql, $coordinates, $nid);
-//        while ($res   = db_fetch_object($db_result)) {
-              dpr('$nid = ');
-              dpr($nid);
-              dpr('$db_result = ');
-              dpr($db_result);
-
-
       }
-
-//      node_save(&$node);
-
-//      dpr($node);
-//      dpm($node);
-//      print_r($node);
-
     }
   }
   return $ref_nids;
