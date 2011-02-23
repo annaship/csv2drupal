@@ -249,17 +249,22 @@ function create_site_node($content, &$ref_nids) {
     if (!empty($nid)) {
       $ref_nids[$content_type][] = $nid;
     }
-    elseif (!empty($value['Title'])) {
+//    'Location' is used as a 'Title' if latter is absent
+    elseif (!empty($value['Title']) or !empty($value['Location'])) {
       $node = new stdClass();
       $node->type  = $content_type;
       $node->uid   =  get_uid();
-      $node->title = $value['Title'];
+      !empty($value['Title']) ? $node->title = $value['Title'] : $node->title = $value['Location'];
       $node        = add_node_value($node, $value, $fields_names);
-//      dpr($value['Coordinates']);
-//      dpm($value['Coordinates']);
-      if (preg_match("/(.+),\s(.+)/", $value['Coordinates'], $matches)) {
+      dpr($value['Coordinates']);
+      dpm($value['Coordinates']);
+      if (preg_match("/(.+),\s*(.+)/", $value['Coordinates'], $matches)) {
         $coord1 = $matches[1];
         $coord2 = $matches[2];
+      dpr('$coord1 = ' . $coord1);
+      dpm('$coord1 = ' . $coord1);
+      dpr('$coord2 = ' . $coord2);
+      dpm('$coord2 = ' . $coord2);
         $coordinates = "POINT(" . $coord1 . " " . $coord2 . ")";
         $q_geo       = db_result(db_query("SELECT GeomFromText('%s')", $coordinates));
 //        $q_geo       = db_result(db_query("SELECT GeomFromText('POINT(68.6167 -149.31)')"));
