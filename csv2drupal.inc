@@ -127,35 +127,39 @@ function validate_uniqness($value, $fields_names, $content_type) {
 
 function check_unique($table, $field, $compared) {
 //  db_connect ();
-
-  $sql = ' SELECT nid
-    FROM ' . mysql_real_escape_string($table) . '
-    WHERE ' . mysql_real_escape_string($field) . '_value IS NOT NULL
-    AND ' . mysql_real_escape_string($field) . '_value = "' . mysql_real_escape_string($compared) . '"';
-  $result = db_query(db_rewrite_sql($sql));
-  while ($res = db_result($result)) {
-    $not_uniq_nids[] = $res;
+  if (!empty($field)) {
+    $sql = ' SELECT nid
+      FROM ' . mysql_real_escape_string($table) . '
+      WHERE ' . mysql_real_escape_string($field) . '_value IS NOT NULL
+      AND ' . mysql_real_escape_string($field) . '_value = "' . mysql_real_escape_string($compared) . '"';
+      dpm('$sql = ');
+      dpm($sql);
+    $result = db_query(db_rewrite_sql($sql));
+    while ($res = db_result($result)) {
+      $not_uniq_nids[] = $res;
+    }
   }
-    dpm('$not_uniq_nids = ');
-    dpm($not_uniq_nids);
     return $not_uniq_nids;
 }
 
 function create_sql($value, $fields_names, $content_type) {
-  $table    = 'content_type_data_set';
-//  "content_type_" . $content_type;
-  $field    = 'field_dataset_short_name';
-  $compared = $value['Short Name'];
-  $aaa = check_unique($table, $field, $compared);
-  dpm('$aaa = ');
-  dpm($aaa);
   $what_to_check = array(
     'data_file'     => array('Data File Structure Name'),
-    'data_set'      => array('Short Name'),
+    'data_set'      => array('field_dataset_short_name' => 'Short Name'),
     'person'        => array('Full Name', 'Organization'),
 //    'variable'      => 'Label',
     'research_site' => array('Location', 'Coordinates'),
   );
+  $table    = "content_type_" . $content_type;
+  if(!empty($what_to_check[$content_type])) {
+    $field    = array_search('Short Name', $what_to_check[$content_type]);
+    dpm('$field = ' . $field);
+  }
+  $compared = $value['Short Name'];
+
+  $not_uniq_nids = check_unique($table, $field, $compared);
+    dpm('$not_uniq_nids = ');
+    dpm($not_uniq_nids);
 //  dpm($fields_names);
 //  field_person_first_name (String, 10 characters ) First Name
 //field_person_last_name (String, 9 characters ) Last Name
