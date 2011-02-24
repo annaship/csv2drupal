@@ -261,75 +261,42 @@ function create_site_node($content, &$ref_nids) {
       $nid = $node->nid;
       $ref_nids[$content_type][] = $nid;
 
-      if (preg_match("/(.+),\s*(.+)/", $value['Coordinates'], $matches)) {
-//        module_load_include('inc', 'geo', 'includes/geo.api');
-//        $geo = geo_load(array('name' => 'field_research_site_pt_coords'));
-        $coord1 = $matches[1];
-        $coord2 = $matches[2];
-        $title = $node->title;
-        $coordinates = "POINT(" . $coord1 . " " . $coord2 . ")";
-
-//        # warning: mysql_num_rows(): supplied argument is not a valid MySQL
-//         result resource in /data/drupal/sites/all/modules/csv2drupal/csv2drupal.inc on line 273.
-//        remove this:
-//        $table_name = 'content_field_research_site_pt_coords';
-/*
-   while ($node = db_fetch_object($result)) {
-    $output .= node_view(node_load($node->nid), 1);
-
-    $num_rows = TRUE;
-  }
-  if ($num_rows) {
-    $output .= theme('pager', NULL, variable_get('default_nodes_main', 10), 0);
-  }
-!!! if/else doesn't work on serever!
- *
- SELECT DISTINCT TABLE_NAME, COLUMN_NAME
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE column_name LIKE 'employee%'
-AND TABLE_SCHEMA='YourDatabase'
- */
-//        global $db_url;
-//
-//  $url = parse_url($db_url);
-//        $aa = db_status_report();
-//  dpm('db_status_report	= ');
-//  dpm($aa);
-/*
- $result = db_query(db_rewrite_sql($sql));
-
-while ($data = db_fetch_object($result)) {
-$node = node_load( $data->nid );
-print node_view( $node, TRUE );
-}
-
-
- */
-        $table_name = '';
-        global $db_prefix;
-
-        $table_name_query = "
-          SELECT TABLE_NAME
-          FROM INFORMATION_SCHEMA.COLUMNS
-          WHERE column_name LIKE '%coords_geo%'
-        ";
-        $result = db_query(db_rewrite_sql($table_name_query));
-        while ($data = db_result($result)) {
-          if (preg_match("/^($db_prefix)(.+)$/", $data, $matches)) {
-              $table_name = $matches[2];
-          }
-          else {
-            $table_name = $data;
-          }
-        }
-        $update_geo_query = "UPDATE {%s}
-          SET field_research_site_pt_coords_geo=(SELECT GeomFromText('%s'))
-          WHERE nid=%d";
-        $db_result = db_query($update_geo_query, $table_name, $coordinates, $nid);
+      $coordinates_value = $value['Coordinates'];
+      if (preg_match("/(.+),\s*(.+)/", $coordinates_value, $matches)) {
+        add_geo_to_node(&$node, $coordinates_value, $matches);
       }
     }
   }
   return $ref_nids;
+}
+
+function add_geo_to_node($node, $coordinates_value, $matches) {
+  $coord1      = $matches[1];
+  $coord2      = $matches[2];
+  $title       = $node->title;
+  $coordinates = "POINT(" . $coord1 . " " . $coord2 . ")";
+  $table_name  = '';
+  global $db_prefix;
+
+  $table_name_query = "
+    SELECT TABLE_NAME
+    FROM INFORMATION_SCHEMA.COLUMNS
+    WHERE column_name LIKE '%coords_geo%'
+  ";
+  $result = db_query(db_rewrite_sql($table_name_query));
+  while ($data = db_result($result)) {
+    if (preg_match("/^($db_prefix)(.+)$/", $data, $matches)) {
+        $table_name = $matches[2];
+    }
+    else {
+      $table_name = $data;
+    }
+  }
+  $update_geo_query = "UPDATE {%s}
+    SET field_research_site_pt_coords_geo=(SELECT GeomFromText('%s'))
+    WHERE nid=%d";
+  $db_result = db_query($update_geo_query, $table_name, $coordinates, $nid);
+
 }
 
 function create_file_object($file) {
