@@ -277,27 +277,44 @@ function add_geo_to_node($node, $matches){
     $table_name = '';
     global $db_prefix;
 
-    $table_name_query = "
-      SELECT TABLE_NAME
-      FROM INFORMATION_SCHEMA.COLUMNS
-      WHERE column_name LIKE '%coords_geo%'
-    ";
-    $result = db_query(db_rewrite_sql($table_name_query));
-    while ($data = db_result($result)) {
-      if (preg_match("/^($db_prefix)(.+)$/", $data, $matches)) {
-          $table_name = $matches[2];
-      }
-      else {
-        $table_name = $data;
-      }
-    }
+    $table_name = get_table_name();
+//    $table_name_query = "
+//      SELECT TABLE_NAME
+//      FROM INFORMATION_SCHEMA.COLUMNS
+//      WHERE column_name LIKE '%coords_geo%'
+//    ";
+//    $result = db_query(db_rewrite_sql($table_name_query));
+//    while ($data = db_result($result)) {
+//      if (preg_match("/^($db_prefix)(.+)$/", $data, $matches)) {
+//          $table_name = $matches[2];
+//      }
+//      else {
+//        $table_name = $data;
+//      }
+//    }
     $update_geo_query = "UPDATE {%s}
       SET field_research_site_pt_coords_geo=(SELECT GeomFromText('%s'))
       WHERE nid=%d";
-    $db_result = db_query($update_geo_query, $table_name, $coordinates, $nid);
-    
+    db_query($update_geo_query, $table_name, $coordinates, $nid);    
 }
 
+function get_table_name() {
+  $table_name_query = "
+    SELECT TABLE_NAME
+    FROM INFORMATION_SCHEMA.COLUMNS
+    WHERE column_name LIKE '%coords_geo%'
+  ";
+  $result = db_query(db_rewrite_sql($table_name_query));
+  while ($data = db_result($result)) {
+    if (preg_match("/^($db_prefix)(.+)$/", $data, $matches)) {
+        $table_name = $matches[2];
+    }
+    else {
+      $table_name = $data;
+    }
+  }
+  return $table_name;
+}
 
 function create_file_object($file) {
   $details = stat($file);
