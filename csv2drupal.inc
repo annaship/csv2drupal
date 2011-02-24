@@ -272,7 +272,7 @@ function create_site_node($content, &$ref_nids) {
 //        # warning: mysql_num_rows(): supplied argument is not a valid MySQL
 //         result resource in /data/drupal/sites/all/modules/csv2drupal/csv2drupal.inc on line 273.
 //        remove this:
-        $table_name = 'content_field_research_site_pt_coords';
+//        $table_name = 'content_field_research_site_pt_coords';
 /*
    while ($node = db_fetch_object($result)) {
     $output .= node_view(node_load($node->nid), 1);
@@ -289,15 +289,39 @@ FROM INFORMATION_SCHEMA.COLUMNS
 WHERE column_name LIKE 'employee%'
 AND TABLE_SCHEMA='YourDatabase'
  */
+//        global $db_url;
+//
+//  $url = parse_url($db_url);
+//        $aa = db_status_report();
+//  dpm('db_status_report	= ');
+//  dpm($aa);
+/*
+ $result = db_query(db_rewrite_sql($sql));
+
+while ($data = db_fetch_object($result)) {
+$node = node_load( $data->nid );
+print node_view( $node, TRUE );
+}
+
+
+ */
+        $table_name = '';
+        global $db_prefix;
+
         $table_name_query = "
-          SELECT DISTINCT TABLE_NAME, COLUMN_NAME
+          SELECT TABLE_NAME
           FROM INFORMATION_SCHEMA.COLUMNS
           WHERE column_name LIKE '%coords_geo%'
         ";
-        $table_name = db_result(db_query($table_name_query));
-          dpm('$table_name = ');
-          dpm($table_name);
-
+        $result = db_query(db_rewrite_sql($table_name_query));
+        while ($data = db_result($result)) {
+          if (preg_match("/^($db_prefix)(.+)$/", $data, $matches)) {
+              $table_name = $matches[2];
+          }
+          else {
+            $table_name = $data;
+          }
+        }
         $update_geo_query = "UPDATE {%s}
           SET field_research_site_pt_coords_geo=(SELECT GeomFromText('%s'))
           WHERE nid=%d";
