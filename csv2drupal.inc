@@ -93,15 +93,15 @@ function add_node_value(&$node, $value, $fields_names) {
   return $node;
 }
 
-function validate_uniqness($value, $fields_names, $content_type) {
-  $sql = $query = $nid = "";
-  if (!empty ($value)) {
-    $sql   = create_sql($value, $fields_names, $content_type);
-    $query = db_query($sql);
-    $nid   = db_result($query);
-  }
-  return $nid;
-}
+//function validate_uniqness($value, $fields_names, $content_type) {
+//  $sql = $query = $nid = "";
+//  if (!empty ($value)) {
+//    $sql   = create_sql($value, $fields_names, $content_type);
+//    $query = db_query($sql);
+//    $nid   = db_result($query);
+//  }
+//  return $nid;
+//}
 
 //function check_unique($table, $field, $compared) {
 ////  db_connect ();
@@ -123,7 +123,21 @@ function validate_uniqness($value, $fields_names, $content_type) {
  SELECT nid
    FROM content_type_data_set
    WHERE field_dataset_short_name_value = "BEN-PR-Flux"
- */
+
+ * function create_sql($value, $fields_names, $content_type) {
+  if ($content_type == 'data_file') {
+    $node = node_load(array(
+  //      'title' => $title_value_to_check,
+  //      'field_dataset_short_name' => $value['Short Name'],
+        'title' => $value['Data File Structure Name'],
+        ));
+  dpm('$node = ');
+  dpm($node);
+  }
+  return $nide->nid;
+}
+
+ *  */
 
 function check_unique($table, $field, $compared) {
 //  db_connect ();
@@ -142,19 +156,53 @@ function check_unique($table, $field, $compared) {
     return $not_uniq_nids;
 }
 
-function create_sql($value, $fields_names, $content_type) {
-  $what_to_check = array(
-    'data_file'     => array('Data File Structure Name'),
-    'data_set'      => array('field_dataset_short_name' => 'Short Name'),
-    'person'        => array('Full Name', 'Organization'),
+
+//function create_sql($value, $fields_names, $content_type) {
+function validate_uniqness($value, $fields_names, $content_type) {
+  $content_type_table_name    = "content_type_" . $content_type;
+/*    'data_file'     => array('node.title' => 'Data File Structure Name'),
+    'data_set'      => array($content_type_table_name . '.field_dataset_short_name' => 'Short Name'),
+    'person'        => array('node.title' => 'Full Name', 
+                             $content_type_table_name . '.field_person_organization' => 'Organization'),
 //    'variable'      => 'Label',
-    'research_site' => array('Location', 'Coordinates'),
+    'research_site' => array('node.title' => 'Location',
+                             $content_type_table_name . '.field_research_site_pt_coords' => 'Coordinates'),
+
+ */
+
+  $what_to_check = array(
+    'data_file'     =>
+      array(
+        array('table' => 'node', 'field' => 'title', 'label' => 'Data File Structure Name'),
+      ),
+    'data_set'      =>
+      array(
+        array('table' => $content_type_table_name, 'field' => 'field_dataset_short_name',
+            'label' => 'Short Name'),
+      ),
+    'person'        =>
+      array(
+        array('table' => 'node', 'field' => 'title', 'label' => 'Full Name'),
+        array('table' => $content_type_table_name, 'field' => 'field_person_organization',
+            'label' => 'Organization'),
+      ),
+    'research_site' => array(
+        array('table' => 'node', 'field' => 'title', 'label' => 'Location'),
+        array('table' => $content_type_table_name, 'field' => 'field_research_site_pt_coords',
+            'label' => 'Coordinates'),
+        ),
+//    'variable'      => 'Label',
   );
-  $table    = "content_type_" . $content_type;
-  if(!empty($what_to_check[$content_type])) {
+
+$aa = $what_to_check[$content_type];
+  
+
+  if (!empty($what_to_check[$content_type])) {
     $field    = array_search('Short Name', $what_to_check[$content_type]);
     dpm('$field = ' . $field);
   }
+
+  $table    = "content_type_" . $content_type;
   $compared = $value['Short Name'];
 
   $not_uniq_nids = check_unique($table, $field, $compared);
@@ -185,25 +233,57 @@ function checkUnique ($table, $field, $compared) {
  *
  *
  */
+//
+//  //datafile
+//  $condition = 'node.title = \'' .  $value['Data File Structure Name'] . '\'';
+//  //dataset
+//  $condition = 'content_type.field_dataset_short_name = \'' .  $value['Short Name'] . '\'';
+//  //person
+//  $condition = 'node.title = \'' .  $value['Full Name'] . '\' AND
+//    content_type.field_person_organization = \'' .  $value['Organization'] . '\'';
+//  //research_site
+//  $condition = 'node.title = \'' .  $value['Location'] . '\' AND
+//    content_type.field_research_site_pt_coords = \'' .  $value['Coordinates'] . '\'';
 
-  //datafile
-  $condition = 'node.title = \'' .  $value['Data File Structure Name'] . '\'';
-  //dataset
-  $condition = 'content_type.field_dataset_short_name = \'' .  $value['Short Name'] . '\'';
-  //person
-  $condition = 'node.title = \'' .  $value['Full Name'] . '\' AND
-    content_type.field_person_organization = \'' .  $value['Organization'] . '\'';
-  //research_site
-  $condition = 'node.title = \'' .  $value['Location'] . '\' AND
-    content_type.field_research_site_pt_coords = \'' .  $value['Coordinates'] . '\'';
 
+//  $sql = "SELECT {node}.nid FROM {content_type_" . $content_type . "} as content_type
+//        JOIN {node} on content_type.nid = {node}.nid
+//        WHERE " . $condition . ";";
+////dpm($condition);
 
-  $sql = "SELECT {node}.nid FROM {content_type_" . $content_type . "} as content_type
-        JOIN {node} on content_type.nid = {node}.nid
-        WHERE " . $condition . ";";
-//dpm($condition);
+  return $not_uniq_nids;
 }
 
+
+/*
+ *
+ *     'data_file'     => array('node.title' => 'Data File Structure Name'),
+    'data_set'      => array($content_type_table_name . '.field_dataset_short_name' => 'Short Name'),
+    'person'        => array('node.title' => 'Full Name',
+                             $content_type_table_name . '.field_person_organization' => 'Organization'),
+//    'variable'      => 'Label',
+    'research_site' => array('node.title' => 'Location',
+                             $content_type_table_name . '.field_research_site_pt_coords' => 'Coordinates'),
+
+ * $arr = array(0 => array('id'=>1,'name'=>"cat 1"),
+             1 => array(array('id'=>3,'name'=>"cat 1")),
+             2 => array('id'=>2,'name'=>"cat 2")
+);
+
+//here's the code:
+
+  $arrIt = new RecursiveIteratorIterator(new RecursiveArrayIterator($what_to_check));
+
+ foreach ($arrIt as $sub) {
+    $subArray = $arrIt->getSubIterator();
+    if ($subArray['name'] === 'cat 1') {
+        $outputArray[] = iterator_to_array($subArray);
+    }
+}
+dpm('$outputArray = ');
+dpm($outputArray);
+
+ */
 
 /*
 function create_sql($value, $fields_names, $content_type) {
