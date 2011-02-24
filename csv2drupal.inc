@@ -282,13 +282,13 @@ function get_table_name() {
   global $db_prefix;
   $table_name_query = "
     SELECT TABLE_NAME
-    FROM INFORMATION_SCHEMA.COLUMNS
-    WHERE column_name LIKE '%coords_geo%'
+      FROM INFORMATION_SCHEMA.COLUMNS
+      WHERE column_name LIKE '%coords_geo%'
   ";
   $result = db_query(db_rewrite_sql($table_name_query));
   while ($data = db_result($result)) {
     if (preg_match("/^($db_prefix)(.+)$/", $data, $matches)) {
-        $table_name = $matches[2];
+      $table_name = $matches[2];
     }
     else {
       $table_name = $data;
