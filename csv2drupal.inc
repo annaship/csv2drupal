@@ -103,20 +103,106 @@ function validate_uniqness($value, $fields_names, $content_type) {
   return $nid;
 }
 
+//function check_unique($table, $field, $compared) {
+////  db_connect ();
+//  $query = mysql_query(' SELECT ' . mysql_real_escape_string($field) . '
+//   FROM ' . mysql_real_escape_string($table) . '
+//   WHERE "' . mysql_real_escape_string($field) . '" = "' . mysql_real_escape_string($compared) . '"');
+//
+//  if ($query == FALSE) {
+////    @mysql_close ();
+//    return TRUE;
+//  }
+//  else {
+////    @mysql_close ();
+//    return FALSE;
+//  }
+//}
+
+/*
+ SELECT nid
+   FROM content_type_data_set
+   WHERE field_dataset_short_name_value = "BEN-PR-Flux"
+ */
+
+function check_unique($table, $field, $compared) {
+//  db_connect ();
+
+  $sql = ' SELECT nid
+    FROM ' . mysql_real_escape_string($table) . '
+    WHERE ' . mysql_real_escape_string($field) . '_value IS NOT NULL
+    AND ' . mysql_real_escape_string($field) . '_value = "' . mysql_real_escape_string($compared) . '"';
+  $result = db_query(db_rewrite_sql($sql));
+  while ($res = db_result($result)) {
+    $not_uniq_nids[] = $res;
+  }
+    dpm('$not_uniq_nids = ');
+    dpm($not_uniq_nids);
+    return $not_uniq_nids;
+}
+
 function create_sql($value, $fields_names, $content_type) {
+  $table    = 'content_type_data_set';
+//  "content_type_" . $content_type;
+  $field    = 'field_dataset_short_name';
+  $compared = $value['Short Name'];
+  $aaa = check_unique($table, $field, $compared);
+  dpm('$aaa = ');
+  dpm($aaa);
   $what_to_check = array(
+    'data_file'     => array('Data File Structure Name'),
+    'data_set'      => array('Short Name'),
     'person'        => array('Full Name', 'Organization'),
 //    'variable'      => 'Label',
     'research_site' => array('Location', 'Coordinates'),
-    'data_file'     => array('Data File Structure Name'),
-    'data_set'      => array('Data File Structure'),
   );
-dpm($value);
-  
+//  dpm($fields_names);
+//  field_person_first_name (String, 10 characters ) First Name
+//field_person_last_name (String, 9 characters ) Last Name
+/*
+ SELECT node.nid FROM content_type_data_file as content_type
+        JOIN node on content_type.nid = node.nid
+        WHERE node.title = ""
+
+ *
+function checkUnique ($table, $field, $compared) {
+  db_connect ();
+  $query = mysql_query(' SELECT ' . mysql_real_escape_string($field) . '
+ FROM ' . mysql_real_escape_string($table) . ' WHERE "' . mysql_real_escape_string($field) . '" = "' . mysql_real_escape_string($compared) . '"');
+  if ($query == FALSE) { @mysql_close ();
+    return TRUE;
+  }
+  else {
+    @mysql_close ();
+    return FALSE;
+  }
+}
+ *
+ *
+ *
+ */
+
+  //datafile
+  $condition = 'node.title = \'' .  $value['Data File Structure Name'] . '\'';
+  //dataset
+  $condition = 'content_type.field_dataset_short_name = \'' .  $value['Short Name'] . '\'';
+  //person
+  $condition = 'node.title = \'' .  $value['Full Name'] . '\' AND
+    content_type.field_person_organization = \'' .  $value['Organization'] . '\'';
+  //research_site
+  $condition = 'node.title = \'' .  $value['Location'] . '\' AND
+    content_type.field_research_site_pt_coords = \'' .  $value['Coordinates'] . '\'';
+
+
+  $sql = "SELECT {node}.nid FROM {content_type_" . $content_type . "} as content_type
+        JOIN {node} on content_type.nid = {node}.nid
+        WHERE " . $condition . ";";
+//dpm($condition);
 }
 
 
 /*
+function create_sql($value, $fields_names, $content_type) {
 
   $full_field_name = "";
   $i = 0;
@@ -152,7 +238,7 @@ dpm($value);
           WHERE " . $condition . ";";
   }
   return $sql;
-
+}
  */
 
 //TODO: add check for single vs. range
@@ -268,7 +354,8 @@ function create_site_node($content, &$ref_nids) {
       $node = new stdClass();
       $node->type  = $content_type;
       $node->uid   =  get_uid();
-      !empty($value['Title']) ? $node->title = $value['Title'] : $node->title = $value['Location'];
+//      !empty($value['Title']) ? $node->title = $value['Title'] : $node->title = $value['Location'];
+      $node->title = $value['Location'];
       $node        = add_node_value($node, $value, $fields_names);
       
       node_save(&$node);
