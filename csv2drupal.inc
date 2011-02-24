@@ -240,7 +240,6 @@ function create_variable_node($content, &$ref_nids) {
 }
 
 function create_site_node($content, &$ref_nids) {
-//  TODO: 2000 has "location" and "coordinates". Include!
   $content_type = 'research_site';
   $research_site_values = create_values($content);
   $fields_names = research_site_fields();
@@ -249,7 +248,7 @@ function create_site_node($content, &$ref_nids) {
     if (!empty($nid)) {
       $ref_nids[$content_type][] = $nid;
     }
-//    'Location' is used as a 'Title' if latter is absent
+//    'Location' is used as a 'Title' if the latter is absent
     elseif (!empty($value['Title']) or !empty($value['Location'])) {
       $node = new stdClass();
       $node->type  = $content_type;
@@ -265,8 +264,6 @@ function create_site_node($content, &$ref_nids) {
       }
     }
   }
-  dpm('$ref_nids = ');
-  dpm($ref_nids);
   return $ref_nids;
 }
 
