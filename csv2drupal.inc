@@ -282,20 +282,26 @@ function create_site_node($content, &$ref_nids) {
   if ($num_rows) {
     $output .= theme('pager', NULL, variable_get('default_nodes_main', 10), 0);
   }
-!!! if/else doesn't work!
+!!! if/else doesn't work on serever!
+ *
+ SELECT DISTINCT TABLE_NAME, COLUMN_NAME
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE column_name LIKE 'employee%'
+AND TABLE_SCHEMA='YourDatabase'
  */
+        $table_name_query = "
+          SELECT DISTINCT TABLE_NAME, COLUMN_NAME
+          FROM INFORMATION_SCHEMA.COLUMNS
+          WHERE column_name LIKE '%coords_geo%'
+        ";
+        $table_name = db_result(db_query($table_name_query));
+          dpm('$table_name = ');
+          dpm($table_name);
 
-        if (db_result(db_query("SHOW TABLES LIKE 'content_field_research_site_pt_coords'"))) {
-//          $table = '%content_field_research_site_pt_coords';
-          $table_name = 'content_field_research_site_pt_coords';
-        }
-        elseif (db_result(db_query("SHOW TABLES LIKE 'content_type_research_site'"))) {
-          $table_name = 'content_type_research_site';
-        }
-        $sql = "UPDATE {%s}
+        $update_geo_query = "UPDATE {%s}
           SET field_research_site_pt_coords_geo=(SELECT GeomFromText('%s'))
           WHERE nid=%d";
-        $db_result = db_query($sql, $table_name, $coordinates, $nid);
+        $db_result = db_query($update_geo_query, $table_name, $coordinates, $nid);
       }
     }
   }
