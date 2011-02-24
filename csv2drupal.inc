@@ -274,24 +274,7 @@ function add_geo_to_node($node, $matches){
     $coord1 = $matches[1];
     $coord2 = $matches[2];
     $coordinates = "POINT(" . $coord1 . " " . $coord2 . ")";
-    $table_name = '';
-    global $db_prefix;
-
-    $table_name = get_table_name();
-//    $table_name_query = "
-//      SELECT TABLE_NAME
-//      FROM INFORMATION_SCHEMA.COLUMNS
-//      WHERE column_name LIKE '%coords_geo%'
-//    ";
-//    $result = db_query(db_rewrite_sql($table_name_query));
-//    while ($data = db_result($result)) {
-//      if (preg_match("/^($db_prefix)(.+)$/", $data, $matches)) {
-//          $table_name = $matches[2];
-//      }
-//      else {
-//        $table_name = $data;
-//      }
-//    }
+    $table_name  = get_table_name();
     $update_geo_query = "UPDATE {%s}
       SET field_research_site_pt_coords_geo=(SELECT GeomFromText('%s'))
       WHERE nid=%d";
@@ -299,6 +282,7 @@ function add_geo_to_node($node, $matches){
 }
 
 function get_table_name() {
+  global $db_prefix;
   $table_name_query = "
     SELECT TABLE_NAME
     FROM INFORMATION_SCHEMA.COLUMNS

@@ -100,6 +100,17 @@
 	<td>storeText</td>
 	<td>//h2[@class=&quot;with-tabs&quot;]</td>
 	<td>r_site_title</td>
+</tr>                                     
+<!-- check if coordinates are created --> 
+<tr>
+	<td>verifyTextPresent</td>
+	<td>exact:Coordinates:</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>exact:Coordinates: <br /> POINT(42.702635 -70.866069)</td>
+	<td></td>
 </tr>
 <!-- shouldn't create a new node if already exists, but to be in a ref -->
 <tr>
@@ -126,7 +137,8 @@
 	<td>verifyTextNotPresent</td>
 	<td>Type = research_site</td>
 	<td></td>
-</tr>
+</tr>                 
+
 <!-- go to dataset -->
 <tr>
 	<td>open</td>
