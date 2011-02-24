@@ -261,42 +261,36 @@ function create_site_node($content, &$ref_nids) {
       $nid = $node->nid;
       $ref_nids[$content_type][] = $nid;
 
-      $coordinates_value = $value['Coordinates'];
-      if (preg_match("/(.+),\s*(.+)/", $coordinates_value, $matches)) {
-        add_geo_to_node(&$node, $coordinates_value, $matches);
+      if (preg_match("/(.+),\s*(.+)/", $value['Coordinates'], $matches)) {
+        $coord1 = $matches[1];
+        $coord2 = $matches[2];
+        $title = $node->title;
+        $coordinates = "POINT(" . $coord1 . " " . $coord2 . ")";
+        $table_name = '';
+        global $db_prefix;
+
+        $table_name_query = "
+          SELECT TABLE_NAME
+          FROM INFORMATION_SCHEMA.COLUMNS
+          WHERE column_name LIKE '%coords_geo%'
+        ";
+        $result = db_query(db_rewrite_sql($table_name_query));
+        while ($data = db_result($result)) {
+          if (preg_match("/^($db_prefix)(.+)$/", $data, $matches)) {
+              $table_name = $matches[2];
+          }
+          else {
+            $table_name = $data;
+          }
+        }
+        $update_geo_query = "UPDATE {%s}
+          SET field_research_site_pt_coords_geo=(SELECT GeomFromText('%s'))
+          WHERE nid=%d";
+        $db_result = db_query($update_geo_query, $table_name, $coordinates, $nid);
       }
     }
   }
   return $ref_nids;
-}
-
-function add_geo_to_node($node, $coordinates_value, $matches) {
-  $coord1      = $matches[1];
-  $coord2      = $matches[2];
-  $title       = $node->title;
-  $coordinates = "POINT(" . $coord1 . " " . $coord2 . ")";
-  $table_name  = '';
-  global $db_prefix;
-
-  $table_name_query = "
-    SELECT TABLE_NAME
-    FROM INFORMATION_SCHEMA.COLUMNS
-    WHERE column_name LIKE '%coords_geo%'
-  ";
-  $result = db_query(db_rewrite_sql($table_name_query));
-  while ($data = db_result($result)) {
-    if (preg_match("/^($db_prefix)(.+)$/", $data, $matches)) {
-        $table_name = $matches[2];
-    }
-    else {
-      $table_name = $data;
-    }
-  }
-  $update_geo_query = "UPDATE {%s}
-    SET field_research_site_pt_coords_geo=(SELECT GeomFromText('%s'))
-    WHERE nid=%d";
-  $db_result = db_query($update_geo_query, $table_name, $coordinates, $nid);
-
 }
 
 function create_file_object($file) {
