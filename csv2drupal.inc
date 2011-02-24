@@ -258,19 +258,19 @@ function create_site_node($content, &$ref_nids) {
       $node        = add_node_value($node, $value, $fields_names);
       
       node_save(&$node);
+      $nid = $node->nid;
       $ref_nids[$content_type][] = $nid;
-
-
       if (preg_match("/(.+),\s*(.+)/", $value['Coordinates'], $matches)) {
-        add_geo_to_node($node, $matches);
+        add_geo_to_node($nid, $matches);
       }
     }
   }
+  dpm('$ref_nids = ');
+  dpm($ref_nids);
   return $ref_nids;
 }
 
-function add_geo_to_node($node, $matches){
-    $nid    = $node->nid;
+function add_geo_to_node($nid, $matches){
     $coord1 = $matches[1];
     $coord2 = $matches[2];
     $coordinates = "POINT(" . $coord1 . " " . $coord2 . ")";
