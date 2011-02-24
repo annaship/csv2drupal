@@ -104,6 +104,20 @@ function validate_uniqness($value, $fields_names, $content_type) {
 }
 
 function create_sql($value, $fields_names, $content_type) {
+  $what_to_check = array(
+    'person'        => array('Full Name', 'Organization'),
+//    'variable'      => 'Label',
+    'research_site' => array('Location', 'Coordinates'),
+    'data_file'     => array('Data File Structure Name'),
+    'data_set'      => array('Data File Structure'),
+  );
+dpm($value);
+  
+}
+
+
+/*
+
   $full_field_name = "";
   $i = 0;
   $tags_to_title = tags_to_title();
@@ -138,7 +152,8 @@ function create_sql($value, $fields_names, $content_type) {
           WHERE " . $condition . ";";
   }
   return $sql;
-}
+
+ */
 
 //TODO: add check for single vs. range
 function convert_date_range($date_range) {
