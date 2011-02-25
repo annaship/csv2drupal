@@ -64,7 +64,7 @@ function create_nodes($content, $file_object) {
   return $ref_nids;
 }
 
-function get_uid() {
+function _get_uid() {
   global $user;
   return $user->uid;
 }
@@ -210,7 +210,7 @@ function create_person_node($content, &$ref_nids) {
     elseif (!empty($value['Last Name'])) {
       $node = new stdClass();
       $node->type  = $content_type;
-      $node->uid   = get_uid();
+      $node->uid   = _get_uid();
       $full_name   = $value['Full Name'];
       $node->title = $full_name;
       $node = add_node_value($node, $value, $fields_names);
@@ -239,7 +239,7 @@ function create_variable_node($content, &$ref_nids) {
     elseif (!empty($value[$title_label])) {
       $node        = new stdClass();
       $node->type  = $content_type;
-      $node->uid   =  get_uid();
+      $node->uid   =  _get_uid();
       $node->title = $value[$title_label];
       $node = add_node_value($node, $value, $fields_names);
       node_save(&$node);
@@ -261,7 +261,7 @@ function create_site_node($content, &$ref_nids) {
     elseif (!empty($value['Location'])) {
       $node = new stdClass();
       $node->type  = $content_type;
-      $node->uid   =  get_uid();
+      $node->uid   =  _get_uid();
 //      !empty($value['Title']) ? $node->title = $value['Title'] : $node->title = $value['Location'];
       $node->title = $value['Location'];
       $node        = add_node_value($node, $value, $fields_names);
@@ -289,7 +289,7 @@ function create_datafile_node($content, &$ref_nids, $file_object) {
     elseif (!empty($value['Data File Structure Name'])) {
       $node = new stdClass();
       $node->type   = $content_type;
-      $node->uid    =  get_uid();
+      $node->uid    =  _get_uid();
       $node->title  = $value['Data File Structure Name'];
       $node = add_node_value($node, $value, $fields_names);
       $node->field_beg_end_date[0] = create_beg_end_date_arr(convert_date_range($value['Date Range']));
@@ -330,7 +330,7 @@ function create_dataset_node($content, &$ref_nids) {
     elseif (!empty($value['Title'])) {
       $node = new stdClass();
       $node->type                                       = $content_type;
-      $node->uid                                        =  get_uid();
+      $node->uid                                        =  _get_uid();
       $node->title                                      = $value['Title'];
       $node = add_node_value($node, $value, $fields_names);
       $node->field_beg_end_date[0]                      = create_beg_end_date_arr(convert_date_range($value['Date Range']));
@@ -485,7 +485,7 @@ function create_file_object($file) {
   $file_obj->filemime   = file_get_mimetype($name);
   $file_obj->filesize   = $filesize;
   $file_obj->filesource = $name;
-  $file_obj->uid        = get_uid();
+  $file_obj->uid        = _get_uid();
   $file_obj->status     = FILE_STATUS_TEMPORARY;
   $file_obj->timestamp  = time();
   $file_obj->list       = 1;
