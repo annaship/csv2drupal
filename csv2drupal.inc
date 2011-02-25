@@ -342,7 +342,7 @@ function _create_dataset_node($content, &$ref_nids) {
       foreach ($ref_nids['data_file'] as $data_file_nid) {
         $node->field_dataset_datafile_ref[]['nid']      = $data_file_nid;
       }
-      $dataset_person_refs = get_person_ref($value, $ref_nids['person']);
+      $dataset_person_refs = _get_dataset_person_ref($value, $ref_nids['person']);
       $add_person_refs     = add_person_refs(&$node, $dataset_person_refs);
       if ($ref_nids['research_site']) {
         foreach ($ref_nids['research_site'] as $dataset_site) {
@@ -499,7 +499,7 @@ function create_file_object($file) {
   return $file_obj;
 }
 
-function get_person_array($data) {
+function _get_person_from_dataset_role($data) {
   $person_names = array();
   if (preg_match_all("/([^,]+)/", $data, $matches, PREG_SET_ORDER)) {
     foreach ($matches as $match) {
@@ -509,12 +509,12 @@ function get_person_array($data) {
   return $person_names;
 }
 
-function get_person_ref($dataset_value, $person_ref_nids) {
+function _get_dataset_person_ref($dataset_value, $person_ref_nids) {
   $dataset_person_refs = array();
   $dataset_person_ref_fields = dataset_person_ref_fields();
   
   foreach ($dataset_person_ref_fields as $dataset_field_name => $dataset_role) {
-    $name = get_person_array($dataset_value[$dataset_role]);
+    $name = _get_person_from_dataset_role($dataset_value[$dataset_role]);
     is_array($name) ? $names = $name : $names = (array) $name;
     if (!empty ($person_ref_nids)) {
       foreach ($person_ref_nids as $person_ref_nid) {
