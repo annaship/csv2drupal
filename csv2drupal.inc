@@ -51,6 +51,44 @@ function get_data_from_excel_file($file) {
   return $content;
 }
 
+function create_file_object($file) {
+  $details = stat($file);
+  $filesize = $details['size'];
+
+  // Get the path to your Drupal site's files directory
+  $dest = file_directory_path();
+
+  // Copy the file to the Drupal files directory
+  if (!file_copy($file, $dest)) {
+      echo "Failed to move file: $file.\n";
+      return;
+  }
+  else {
+      // file_move might change the name of the file
+      $name = basename($file);
+  }
+
+  // Build the file object
+  $file_obj = new stdClass();
+  $file_obj->filename   = $name;
+  $file_obj->filepath   = $file;
+  $file_obj->filemime   = file_get_mimetype($name);
+  $file_obj->filesize   = $filesize;
+  $file_obj->filesource = $name;
+  $file_obj->uid        = _get_uid();
+  $file_obj->status     = FILE_STATUS_TEMPORARY;
+  $file_obj->timestamp  = time();
+  $file_obj->list       = 1;
+  $file_obj->new        = TRUE;
+
+  // Save file to files table
+  drupal_write_record('files', $file_obj);
+  // change file status to permanent
+  file_set_status($file_obj, 1);
+
+  return $file_obj;
+}
+
 /* begin node creating */
 
 function _get_uid() {
@@ -58,7 +96,7 @@ function _get_uid() {
   return $user->uid;
 }
 
-//restructures arrays from Excel
+//restructure arrays from Excel
 function _create_values($content) {
   $values = array();
   foreach ($content as $key => $value) {
@@ -438,45 +476,6 @@ function _add_geo_to_node($nid, $matches){
 }
 
 /* end referrer */
-
-
-function create_file_object($file) {
-  $details = stat($file);
-  $filesize = $details['size'];
-
-  // Get the path to your Drupal site's files directory
-  $dest = file_directory_path();
-
-  // Copy the file to the Drupal files directory
-  if (!file_copy($file, $dest)) {
-      echo "Failed to move file: $file.\n";
-      return;
-  }
-  else {
-      // file_move might change the name of the file
-      $name = basename($file);
-  }
-
-  // Build the file object
-  $file_obj = new stdClass();
-  $file_obj->filename   = $name;
-  $file_obj->filepath   = $file;
-  $file_obj->filemime   = file_get_mimetype($name);
-  $file_obj->filesize   = $filesize;
-  $file_obj->filesource = $name;
-  $file_obj->uid        = _get_uid();
-  $file_obj->status     = FILE_STATUS_TEMPORARY;
-  $file_obj->timestamp  = time();
-  $file_obj->list       = 1;
-  $file_obj->new        = TRUE;
-
-  // Save file to files table
-  drupal_write_record('files', $file_obj);
-  // change file status to permanent
-  file_set_status($file_obj, 1);
-
-  return $file_obj;
-}
 
 /* begin dataset ref to person */
 
