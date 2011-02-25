@@ -139,23 +139,74 @@ function add_node_value(&$node, $value, $fields_names) {
 
  *  */
 
-function check_unique($table, $field, $compared) {
-//  db_connect ();
-  if (!empty($field)) {
-    $sql = ' SELECT nid
-      FROM ' . mysql_real_escape_string($table) . '
-      WHERE ' . mysql_real_escape_string($field) . '_value IS NOT NULL
-      AND ' . mysql_real_escape_string($field) . '_value = "' . mysql_real_escape_string($compared) . '"';
-      dpm('$sql = ');
-      dpm($sql);
-    $result = db_query(db_rewrite_sql($sql));
-    while ($res = db_result($result)) {
-      $not_uniq_nids[] = $res;
-    }
-  }
-    return $not_uniq_nids;
-}
+//function check_unique($table, $field, $compared) {
+////  db_connect ();
+//  if (!empty($field)) {
+//    $sql = ' SELECT nid
+//      FROM ' . mysql_real_escape_string($table) . '
+//      WHERE ' . mysql_real_escape_string($field) . '_value IS NOT NULL
+//      AND ' . mysql_real_escape_string($field) . '_value = "' . mysql_real_escape_string($compared) . '"';
+//      dpm('$sql = ');
+//      dpm($sql);
+//    $result = db_query(db_rewrite_sql($sql));
+//    while ($res = db_result($result)) {
+//      $not_uniq_nids[] = $res;
+//    }
+//  }
+//    return $not_uniq_nids;
+//}
 
+function get_not_uniq_ids($value, $data) {
+  dpm($data);
+  $arr_size = count($data);
+  dpm('$arr_size = ' . $arr_size);
+
+  switch ($arr_size) {
+    case 1:
+      $sql = ' SELECT nid
+        FROM ' . mysql_real_escape_string($data[0]['table']) . '
+        WHERE ' . mysql_real_escape_string($data[0]['field']) . '_value IS NOT NULL
+        AND ' . mysql_real_escape_string($data[0]['field']) . '_value = "' . mysql_real_escape_string($value[$data[0]['label']]) . '"';
+        dpm('$sql = ');
+        dpm($sql);
+      echo "i equals 1";
+      break;
+    case 2:
+      echo "i equals 2";
+      break;
+  }
+
+  /*
+   *  (Array, 1 element)
+0 (Array, 3 elements)
+table (String, 4 characters ) node
+field (String, 5 characters ) title
+label (String, 24 characters ) Data File Structure Name
+   * ... (Array, 2 elements)
+0 (Array, 3 elements)
+table (String, 4 characters ) node
+field (String, 5 characters ) title
+label (String, 9 characters ) Full Name
+1 (Array, 3 elements)
+table (String, 19 characters ) content_type_person
+field (String, 25 characters ) field_person_organization
+label (String, 12 characters ) Organization
+   */
+  
+//  if (!empty($field)) {
+//    $sql = ' SELECT nid
+//      FROM ' . mysql_real_escape_string($table) . '
+//      WHERE ' . mysql_real_escape_string($field) . '_value IS NOT NULL
+//      AND ' . mysql_real_escape_string($field) . '_value = "' . mysql_real_escape_string($compared) . '"';
+//      dpm('$sql = ');
+//      dpm($sql);
+//    $result = db_query(db_rewrite_sql($sql));
+//    while ($res = db_result($result)) {
+//      $not_uniq_nids[] = $res;
+//    }
+//  }
+//    return $not_uniq_nids;
+}
 
 //function create_sql($value, $fields_names, $content_type) {
 function validate_uniqness($value, $fields_names, $content_type) {
@@ -194,20 +245,24 @@ function validate_uniqness($value, $fields_names, $content_type) {
 //    'variable'      => 'Label',
   );
 
-$aa = $what_to_check[$content_type];
-  
-
-  if (!empty($what_to_check[$content_type])) {
-    $field    = array_search('Short Name', $what_to_check[$content_type]);
-    dpm('$field = ' . $field);
+  $data_array = $what_to_check[$content_type];
+  if (count($data_array)) {
+    $not_uniq_ids = get_not_uniq_ids($value, $data_array);
   }
 
-  $table    = "content_type_" . $content_type;
-  $compared = $value['Short Name'];
-
-  $not_uniq_nids = check_unique($table, $field, $compared);
-    dpm('$not_uniq_nids = ');
-    dpm($not_uniq_nids);
+  
+//
+//  if (!empty($what_to_check[$content_type])) {
+//    $field    = array_search('Short Name', $what_to_check[$content_type]);
+//    dpm('$field = ' . $field);
+//  }
+//
+//  $table    = "content_type_" . $content_type;
+//  $compared = $value['Short Name'];
+//
+//  $not_uniq_nids = check_unique($table, $field, $compared);
+//    dpm('$not_uniq_nids = ');
+//    dpm($not_uniq_nids);
 //  dpm($fields_names);
 //  field_person_first_name (String, 10 characters ) First Name
 //field_person_last_name (String, 9 characters ) Last Name
