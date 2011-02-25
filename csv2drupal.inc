@@ -161,19 +161,30 @@ function get_not_uniq_ids($value, $data) {
   $arr_size = count($data);
   dpm('$arr_size = ' . $arr_size);
 
-  switch ($arr_size) {
-    case 1:
-      $sql = ' SELECT nid
-        FROM ' . mysql_real_escape_string($data[0]['table']) . '
-        WHERE ' . mysql_real_escape_string($data[0]['field']) . '_value IS NOT NULL
-        AND ' . mysql_real_escape_string($data[0]['field']) . '_value = "' . mysql_real_escape_string($value[$data[0]['label']]) . '"';
-        dpm('$sql = ');
-        dpm($sql);
-      echo "i equals 1";
-      break;
-    case 2:
-      echo "i equals 2";
-      break;
+  if (!empty($value[$data[0]['label']])) {
+    switch ($arr_size) {
+      case 1:
+        $sql = ' SELECT nid
+          FROM {' . mysql_real_escape_string($data[0]['table']) . '}
+          WHERE ' . mysql_real_escape_string($data[0]['field']) . ' = "' . mysql_real_escape_string($value[$data[0]['label']]) . '"';
+          dpm('$sql = ');
+          dpm($sql);
+        echo "i equals 1";
+        break;
+      case 2:
+//        "SELECT {node}.nid FROM {content_type_" . $content_type . "} as content_type
+//        JOIN {node} on content_type.nid = {node}.nid
+//        WHERE {node}.title = \"" . $title_value . "\";";
+//
+//        $sql = ' SELECT nid
+//          FROM ' . mysql_real_escape_string($data[0]['table']) . '
+//          WHERE ' . mysql_real_escape_string($data[0]['field']) . '_value IS NOT NULL
+//          AND ' . mysql_real_escape_string($data[0]['field']) . '_value = "' . mysql_real_escape_string($value[$data[0]['label']]) . '"';
+//          dpm('$sql = ');
+//          dpm($sql);
+        echo "i equals 2";
+        break;
+    }
   }
 
   /*
@@ -228,13 +239,13 @@ function validate_uniqness($value, $fields_names, $content_type) {
       ),
     'data_set'      =>
       array(
-        array('table' => $content_type_table_name, 'field' => 'field_dataset_short_name',
+        array('table' => $content_type_table_name, 'field' => 'field_dataset_short_name_value',
             'label' => 'Short Name'),
       ),
     'person'        =>
       array(
         array('table' => 'node', 'field' => 'title', 'label' => 'Full Name'),
-        array('table' => $content_type_table_name, 'field' => 'field_person_organization',
+        array('table' => $content_type_table_name, 'field' => 'field_person_organization_value',
             'label' => 'Organization'),
       ),
     'research_site' => array(
