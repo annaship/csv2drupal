@@ -343,7 +343,7 @@ function _create_dataset_node($content, &$ref_nids) {
         $node->field_dataset_datafile_ref[]['nid']      = $data_file_nid;
       }
       $dataset_person_refs = _get_dataset_person_ref($value, $ref_nids['person']);
-      $add_person_refs     = add_person_refs(&$node, $dataset_person_refs);
+      $_add_person_refs_to_node     = _add_person_refs_to_node(&$node, $dataset_person_refs);
       if ($ref_nids['research_site']) {
         foreach ($ref_nids['research_site'] as $dataset_site) {
           $node->field_dataset_site_ref[]['nid']        = $dataset_site;
@@ -530,7 +530,7 @@ function _get_dataset_person_ref($dataset_value, $person_ref_nids) {
   return $dataset_person_refs;
 }
 
-function add_person_refs(&$node, $dataset_person_refs) {
+function _add_person_refs_to_node(&$node, $dataset_person_refs) {
   foreach ($dataset_person_refs as $field_name => $value1) {
     $refs = array();
     foreach ($value1 as $ref) {
