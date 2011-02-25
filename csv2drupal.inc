@@ -13,7 +13,7 @@ function get_data_from_excel_file($file) {
   } catch (Exception $e) {
     $emes = $e->getMessage();
     dpr('Caught exception: ' .  $emes . "\n");
-    dpm('Caught exception: ' .  $emes . "\n");
+    drupal_set_message('Caught exception: ' .  $emes . "\n");
   }
 
   $obj_reader->setLoadSheetsOnly(0);
@@ -58,8 +58,8 @@ function create_nodes($content, $file_object) {
   $ref_nids = create_site_node($content['site'], &$ref_nids);
   $ref_nids = create_datafile_node($content['datafile'], &$ref_nids, $file_object);
   $ref_nids = create_dataset_node($content['dataset'], &$ref_nids);
-  $keywords_taxonomy = create_keywords_node($content['keywords'], &$ref_nids);
-  add_referrers($ref_nids);
+//  $keywords_taxonomy = create_keywords_node($content['keywords'], &$ref_nids);
+  _add_referrers($ref_nids);
   variable_set('ref_nids', $ref_nids);
   return $ref_nids;
 }
@@ -205,8 +205,6 @@ function create_person_node($content, &$ref_nids) {
     $value['Full Name'] = $value['First Name'] . " " . $value['Last Name'];
     $nid = validate_uniqness($value, $content_type);
     if (!empty($nid)) {
-      dpm('person NID = ');
-      dpm($nid);
       $ref_nids[$content_type][] = $nid[0];
     }
     elseif (!empty($value['Last Name'])) {
@@ -237,9 +235,6 @@ function create_variable_node($content, &$ref_nids) {
     $nid = validate_uniqness($value, $content_type);
     if (!empty($nid)) {
       $ref_nids[$content_type][] = $nid[0];
-      dpm('NID variable = ');
-      dpm($nid);
-
     }    
     elseif (!empty($value[$title_label])) {
       $node        = new stdClass();
@@ -261,13 +256,9 @@ function create_site_node($content, &$ref_nids) {
   foreach ($research_site_values as $value) {
     $nid = validate_uniqness($value, $content_type);
     if (!empty($nid)) {
-            dpm('NID research_site = ');
-      dpm($nid);
-
       $ref_nids[$content_type][] = $nid[0];
     }
-//    'Location' is used as a 'Title' if the latter is absent
-    elseif (!empty($value['Title']) or !empty($value['Location'])) {
+    elseif (!empty($value['Location'])) {
       $node = new stdClass();
       $node->type  = $content_type;
       $node->uid   =  get_uid();
@@ -286,74 +277,6 @@ function create_site_node($content, &$ref_nids) {
   return $ref_nids;
 }
 
-function add_geo_to_node($nid, $matches){
-    $coord1 = $matches[1];
-    $coord2 = $matches[2];
-    $coordinates = "POINT(" . $coord1 . " " . $coord2 . ")";
-    $table_name  = get_table_name();
-    $update_geo_query = "UPDATE {%s}
-      SET field_research_site_pt_coords_geo=(SELECT GeomFromText('%s'))
-      WHERE nid=%d";
-    db_query($update_geo_query, $table_name, $coordinates, $nid);    
-}
-
-function get_table_name() {
-  global $db_prefix;
-  $table_name_query = "
-    SELECT TABLE_NAME
-      FROM INFORMATION_SCHEMA.COLUMNS
-      WHERE column_name LIKE '%coords_geo%'
-  ";
-  $result = db_query(db_rewrite_sql($table_name_query));
-  while ($data = db_result($result)) {
-    if (preg_match("/^($db_prefix)(.+)$/", $data, $matches)) {
-      $table_name = $matches[2];
-    }
-    else {
-      $table_name = $data;
-    }
-  }
-  return $table_name;
-}
-
-function create_file_object($file) {
-  $details = stat($file);
-  $filesize = $details['size'];
-
-  // Get the path to your Drupal site's files directory
-  $dest = file_directory_path();
-
-  // Copy the file to the Drupal files directory
-  if (!file_copy($file, $dest)) {
-      echo "Failed to move file: $file.\n";
-      return;
-  }
-  else {
-      // file_move might change the name of the file
-      $name = basename($file);
-  }
-
-  // Build the file object
-  $file_obj = new stdClass();
-  $file_obj->filename   = $name;
-  $file_obj->filepath   = $file;
-  $file_obj->filemime   = file_get_mimetype($name);
-  $file_obj->filesize   = $filesize;
-  $file_obj->filesource = $name;
-  $file_obj->uid        = get_uid();
-  $file_obj->status     = FILE_STATUS_TEMPORARY;
-  $file_obj->timestamp  = time();
-  $file_obj->list       = 1;
-  $file_obj->new        = TRUE;
-
-  // Save file to files table
-  drupal_write_record('files', $file_obj);
-  // change file status to permanent
-  file_set_status($file_obj, 1);
-
-  return $file_obj;
-}
-
 function create_datafile_node($content, &$ref_nids, $file_object) {
   $content_type     = 'data_file';
   $data_file_values = create_values($content);
@@ -361,9 +284,6 @@ function create_datafile_node($content, &$ref_nids, $file_object) {
   foreach ($data_file_values as $value) {
     $nid = validate_uniqness($value, $content_type);
     if (!empty($nid)) {
-      dpm('NID data_file = ');
-      dpm($nid);
-
       $ref_nids[$content_type][] = $nid[0];
     }
     elseif (!empty($value['Data File Structure Name'])) {
@@ -405,9 +325,6 @@ function create_dataset_node($content, &$ref_nids) {
   foreach ($dataset_values as $value) {
     $nid = validate_uniqness($value, $content_type);
     if (!empty($nid)) {
-      dpm('NID data_set = ');
-      dpm($nid);
-
       $ref_nids[$content_type][] = $nid[0];
     }
     elseif (!empty($value['Title'])) {
@@ -439,7 +356,7 @@ function create_dataset_node($content, &$ref_nids) {
   return $ref_nids;
 }
 
-function add_referrers($ref_nids) {
+function _add_referrers($ref_nids) {
   $data_file_nids = $ref_nids['data_file'];
 
   save_ref_node($ref_nids['variable'], create_referrer($data_file_nids), 'field_datafile_variable_ref');
@@ -511,6 +428,75 @@ function _trim_text($str) {
     $str = trim($str);
     $str = preg_replace('/ +/', ' ', $str);
     return $str;
+}
+
+
+function add_geo_to_node($nid, $matches){
+    $coord1 = $matches[1];
+    $coord2 = $matches[2];
+    $coordinates = "POINT(" . $coord1 . " " . $coord2 . ")";
+    $table_name  = get_table_name();
+    $update_geo_query = "UPDATE {%s}
+      SET field_research_site_pt_coords_geo=(SELECT GeomFromText('%s'))
+      WHERE nid=%d";
+    db_query($update_geo_query, $table_name, $coordinates, $nid);
+}
+
+function get_table_name() {
+  global $db_prefix;
+  $table_name_query = "
+    SELECT TABLE_NAME
+      FROM INFORMATION_SCHEMA.COLUMNS
+      WHERE column_name LIKE '%coords_geo%'
+  ";
+  $result = db_query(db_rewrite_sql($table_name_query));
+  while ($data = db_result($result)) {
+    if (preg_match("/^($db_prefix)(.+)$/", $data, $matches)) {
+      $table_name = $matches[2];
+    }
+    else {
+      $table_name = $data;
+    }
+  }
+  return $table_name;
+}
+
+function create_file_object($file) {
+  $details = stat($file);
+  $filesize = $details['size'];
+
+  // Get the path to your Drupal site's files directory
+  $dest = file_directory_path();
+
+  // Copy the file to the Drupal files directory
+  if (!file_copy($file, $dest)) {
+      echo "Failed to move file: $file.\n";
+      return;
+  }
+  else {
+      // file_move might change the name of the file
+      $name = basename($file);
+  }
+
+  // Build the file object
+  $file_obj = new stdClass();
+  $file_obj->filename   = $name;
+  $file_obj->filepath   = $file;
+  $file_obj->filemime   = file_get_mimetype($name);
+  $file_obj->filesize   = $filesize;
+  $file_obj->filesource = $name;
+  $file_obj->uid        = get_uid();
+  $file_obj->status     = FILE_STATUS_TEMPORARY;
+  $file_obj->timestamp  = time();
+  $file_obj->list       = 1;
+  $file_obj->new        = TRUE;
+
+  // Save file to files table
+  drupal_write_record('files', $file_obj);
+  // change file status to permanent
+  file_set_status($file_obj, 1);
+
+  return $file_obj;
 }
 
 function get_person_array($data) {

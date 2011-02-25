@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="selenium.base" href="http://127.0.0.1/" />
+<link rel="selenium.base" href="http://localhost/" />
+<!-- <link rel="selenium.base" href="http://127.0.0.1/" /> -->
 <title>test_home_person</title>
 </head>
 <body>
@@ -19,7 +20,7 @@
 <!-- remove all new nodes -->
 <tr>
 	<td>open</td>
-	<td>/drupal6-local/?q=csv2drupal</td>
+	<td>/drupal6/?q=csv2drupal</td>
 	<td></td>
 </tr>
 <!-- <tr>
@@ -58,7 +59,7 @@
 <!-- check if new nodes are created -->
 <tr>
 	<td>open</td>
-	<td>/drupal6-local/?q=csv2drupal</td>
+	<td>/drupal6/?q=csv2drupal</td>
 	<td></td>
 </tr>
 <tr>
@@ -66,11 +67,11 @@
 	<td>edit-submit</td>
 	<td></td>
 </tr>
-<tr>
-	<td>waitForTextPresent</td>
-	<td>Type = research_site</td>
-	<td></td>
-</tr>
+<!-- <tr>
+  <td>waitForTextPresent</td>
+  <td>Type = research_site</td>
+  <td></td>
+</tr> -->
 <tr>
 	<td>verifyTextPresent</td>
 	<td>Type = research_site</td>
@@ -107,15 +108,15 @@
 	<td>exact:Coordinates:</td>
 	<td></td>
 </tr>
-<tr>
-	<td>verifyTextPresent</td>
-	<td>exact:Coordinates: <br /> POINT(42.702635 -70.866069)</td>
-	<td></td>
-</tr>
+<!-- <tr>
+  <td>verifyTextPresent</td>
+  <td>exact:Coordinates: <br /> POINT(42.702635 -70.866069)</td>
+  <td></td>
+</tr> -->
 <!-- shouldn't create a new node if already exists, but to be in a ref -->
 <tr>
 	<td>open</td>
-	<td>/drupal6-local/?q=csv2drupal</td>
+	<td>/drupal6/?q=csv2drupal</td>
 	<td></td>
 </tr>
 <tr>
@@ -123,14 +124,24 @@
 	<td>edit-submit</td>
 	<td></td>
 </tr>
+<!-- <tr>
+  <td>waitForTextPresent</td>
+  <td>No new nodes was saved</td>
+  <td></td>
+</tr> -->
+<!-- <tr>
+  <td>verifyTextPresent</td>
+  <td>No new nodes was saved</td>
+  <td></td>
+</tr> -->
 <tr>
-	<td>waitForTextPresent</td>
-	<td>No new nodes was saved</td>
+	<td>verifyTextNotPresent</td>
+	<td>Type = data_set</td>
 	<td></td>
 </tr>
 <tr>
 	<td>verifyTextPresent</td>
-	<td>No new nodes was saved</td>
+	<td>Type = variable</td>
 	<td></td>
 </tr>
 <tr>
@@ -141,7 +152,7 @@
 <!-- go to dataset -->
 <tr>
 	<td>open</td>
-	<td>/drupal6-local/?q=node/${dataset1}</td>
+	<td>/drupal6/?q=node/${dataset1}</td>
 	<td></td>
 </tr>
 <tr>

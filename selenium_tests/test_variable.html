@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="selenium.base" href="http://127.0.0.1/" />
+<link rel="selenium.base" href="http://localhost/" />
+<!-- <link rel="selenium.base" href="http://127.0.0.1/" /> -->
 <title>test_home_person</title>
 </head>
 <body>
@@ -12,12 +13,11 @@
 <tr><td rowspan="1" colspan="3">test_home_person</td></tr>
 </thead><tbody>                                                                                                       
   <tr>
-  	<td>setTimeout</td>
-  	<td>45000</td>
-  	<td></td>
-  </tr>
-  
-  <!-- remove all new nodes -->
+	<td>setTimeout</td>
+	<td>45000</td>
+	<td></td>
+</tr>
+<!-- remove all new nodes -->
 <tr>
 	<td>open</td>
 	<td>/drupal6/?q=csv2drupal</td>
@@ -63,12 +63,12 @@
 	<td>clickAndWait</td>
 	<td>edit-submit</td>
 	<td></td>
-</tr>                                           
-<tr>
-	<td>waitForText</td>
-	<td>Type = variable</td>
-	<td></td>
 </tr>
+<!-- <tr>
+  <td>waitForText</td>
+  <td>Type = variable</td>
+  <td></td>
+</tr> -->
 <tr>
 	<td>verifyTextPresent</td>
 	<td>Type = variable</td>
@@ -88,25 +88,25 @@
 	<td>clickAndWait</td>
 	<td>link=${var_nid}</td>
 	<td></td>
-</tr>     
-<tr>
-	<td>waitForText</td>
-	<td>Associated Data Files:</td>
-	<td></td>
 </tr>
+<!-- <tr>
+  <td>waitForText</td>
+  <td>Associated Data Files:</td>
+  <td></td>
+</tr> -->
 <tr>
 	<td>verifyTextPresent</td>
 	<td>Associated Data Files:</td>
 	<td></td>
-</tr>     
-<tr>                             
+</tr>
+<tr>
 	<td>storeText</td>
-	<td>//div[@class="field-label"]/../div[@class="field-items"]</td>
+	<td>//div[@class=&quot;field-label&quot;]/../div[@class=&quot;field-items&quot;]</td>
 	<td>var_name</td>
 </tr>
 <tr>
 	<td>storeText</td>
-	<td>//div[contains(text(), 'Associated Data Files:')]/../div[@class="field-items"]</td>
+	<td>//div[contains(text(), 'Associated Data Files:')]/../div[@class=&quot;field-items&quot;]</td>
 	<td>file_name</td>
 </tr>
 <!-- check if new person not created if already esists,
@@ -122,50 +122,56 @@ but is in dataset -->
 	<td></td>
 </tr>
 <tr>
-	<td>waitForText</td>
-	<td>No new nodes was saved</td>
+	<td>verifyTextNotPresent</td>
+	<td>Type = data_set</td>
 	<td></td>
 </tr>
 <tr>
 	<td>verifyTextPresent</td>
-	<td>No new nodes was saved</td>
+	<td>Type = variable</td>
 	<td></td>
 </tr>
+<!-- <tr>
+  <td>waitForText</td>
+  <td>No new nodes was saved</td>
+  <td></td>
+</tr>
+<tr>
+  <td>verifyTextPresent</td>
+  <td>No new nodes was saved</td>
+  <td></td>
+</tr> -->
 <!-- go to data_file -->
 <tr>
 	<td>open</td>
 	<td>/drupal6/?q=node/${file_nid}</td>
 	<td></td>
 </tr>
+<!-- <tr>
+  <td>waitForText</td>
+  <td>exact:Variables:</td>
+  <td></td>
+</tr> -->
 <tr>
-	<td>waitForText</td>
+	<td>verifyTextPresent</td>
 	<td>exact:Variables:</td>
 	<td></td>
 </tr>
 <tr>
-	<td>verifyTextPresent</td>
-	<td>exact:Variables:</td>
-	<td></td>
-</tr>                                       
-<tr>
 	<td>verifyElementPresent</td>
-	<td>//a[@href="/drupal6/?q=node/${var_nid}"]</td>
+	<td>//a[@href=&quot;/drupal6/?q=node/${var_nid}&quot;]</td>
 	<td></td>
-</tr>                                       
-  <td>clickAndWait</td>
-  <td>//a[@href="/drupal6/?q=node/${var_nid}"]</td>
-  <td></td>
-</tr>   
+</tr>
 <tr>
 	<td>verifyTextPresent</td>
 	<td>${var_name}</td>
 	<td></td>
-</tr>     
+</tr>
 <tr>
 	<td>verifyTextPresent</td>
 	<td>${file_name}</td>
 	<td></td>
-</tr>     
+</tr>
 </tbody></table>
 </body>
 </html>

@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="selenium.base" href="http://127.0.0.1/" />
+<link rel="selenium.base" href="http://localhost/" />
+<!-- <link rel="selenium.base" href="http://127.0.0.1/" /> -->
 <title>test_home_person</title>
 </head>
 <body>
@@ -63,11 +64,11 @@
 	<td>edit-submit</td>
 	<td></td>
 </tr>
-<tr>
-	<td>waitForTextPresent</td>
-	<td>Type = person</td>
-	<td></td>
-</tr>
+<!-- <tr>
+  <td>waitForTextPresent</td>
+  <td>Type = person</td>
+  <td></td>
+</tr> -->
 <tr>
 	<td>verifyTextPresent</td>
 	<td>Type = person</td>
@@ -100,11 +101,11 @@
 	<td>/drupal6/?q=node/${data_set_nid}</td>
 	<td></td>
 </tr>
-<tr>
-	<td>waitForText</td>
-	<td>${person_name}</td>
-	<td></td>
-</tr>
+<!-- <tr>
+  <td>waitForText</td>
+  <td>${person_name}</td>
+  <td></td>
+</tr> -->
 <tr>
 	<td>verifyTextPresent</td>
 	<td>${person_name}</td>
@@ -122,14 +123,24 @@
 	<td>edit-submit</td>
 	<td></td>
 </tr>
+<!-- <tr>
+  <td>waitForTextPresent</td>
+  <td>No new nodes was saved</td>
+  <td></td>
+</tr> -->
+<!-- <tr>
+  <td>verifyTextPresent</td>
+  <td>No new nodes was saved</td>
+  <td></td>
+</tr> -->
 <tr>
-	<td>waitForTextPresent</td>
-	<td>No new nodes was saved</td>
+	<td>verifyTextNotPresent</td>
+	<td>Type = data_set</td>
 	<td></td>
 </tr>
 <tr>
 	<td>verifyTextPresent</td>
-	<td>No new nodes was saved</td>
+	<td>Type = variable</td>
 	<td></td>
 </tr>
 <tr>
@@ -137,11 +148,11 @@
 	<td>/drupal6/?q=node/${data_set_nid}</td>
 	<td></td>
 </tr>
-<tr>
-	<td>waitForText</td>
-	<td>Associated Researcher</td>
-	<td></td>
-</tr>
+<!-- <tr>
+  <td>waitForText</td>
+  <td>Associated Researcher</td>
+  <td></td>
+</tr> -->
 <tr>
 	<td>verifyTextPresent</td>
 	<td>Associated Researcher</td>
@@ -162,11 +173,11 @@
 	<td>${person_name}</td>
 	<td></td>
 </tr>
-<tr>
-	<td>open</td>
-	<td>/drupal6/?q=csv2drupal</td>
-	<td></td>
-</tr>
+<!-- <tr>
+  <td>open</td>
+  <td>/drupal6/?q=csv2drupal</td>
+  <td></td>
+</tr> -->
 </tbody></table>
 </body>
 </html>
