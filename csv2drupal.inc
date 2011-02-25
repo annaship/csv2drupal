@@ -3,7 +3,6 @@
 
 require_once 'includes/PHPExcel/IOFactory.php';
 require_once 'csv2drupal_field_name_arrays.inc';
-//module_load_include('module', 'geo', 'geo');
 
 function get_data_from_excel_file($file) {
   $sheet_names = sheet_names();
@@ -52,17 +51,7 @@ function get_data_from_excel_file($file) {
   return $content;
 }
 
-function create_nodes($content, $file_object) {
-  $ref_nids = _create_person_node($content['person'], &$ref_nids);
-  $ref_nids = _create_variable_node($content['variable'], &$ref_nids);
-  $ref_nids = _create_site_node($content['site'], &$ref_nids);
-  $ref_nids = _create_datafile_node($content['datafile'], &$ref_nids, $file_object);
-  $ref_nids = _create_dataset_node($content['dataset'], &$ref_nids);
-//  $keywords_taxonomy = _create_keywords_node($content['keywords'], &$ref_nids);
-  _add_referrers($ref_nids);
-  variable_set('ref_nids', $ref_nids);
-  return $ref_nids;
-}
+/* begin node creating */
 
 function _get_uid() {
   global $user;
@@ -88,112 +77,16 @@ function _add_node_value(&$node, $value, $fields_names) {
   return $node;
 }
 
-function _create_uniq_data_sql($value, $data) {
-  $arr_size    = count($data);
-
-  $coordinates = $value['Coordinates'];
-  if (!empty($coordinates)) {
-    if (preg_match("/(.+),\s*(.+)/", $coordinates, $matches)) {
-      $coord1 = $matches[1];
-      $coord2 = $matches[2];
-      $coordinates = "POINT(" . $coord1 . " " . $coord2 . ")";
-    }
-  }
-
-  if (!empty($value[$data[0]['label']])) {
-    if ($arr_size == 1) {
-        $uniq_data_sql = ' SELECT nid
-          FROM {' . mysql_real_escape_string($data[0]['table']) . '}
-          WHERE ' . mysql_real_escape_string($data[0]['field']) . ' = "' . mysql_real_escape_string($value[$data[0]['label']]) . '"';
-    }
-    elseif ($arr_size == 2 AND $data[1]['field'] == 'field_research_site_pt_coords_geo') {
-        $uniq_data_sql = ' SELECT t1.nid
-          FROM {' . mysql_real_escape_string($data[0]['table']) . '} as t1
-            JOIN {' . mysql_real_escape_string($data[1]['table']) . '} as t2
-              ON t1.nid = t2.nid
-          WHERE t1.' . mysql_real_escape_string($data[0]['field']) . ' = \'' . mysql_real_escape_string($value[$data[0]['label']]) . '\'
-           AND t2.' . mysql_real_escape_string($data[1]['field']) . ' = (SELECT GeomFromText(\'' . $coordinates . '\'))';
-    }
-    else {
-        $uniq_data_sql = ' SELECT t1.nid
-          FROM {' . mysql_real_escape_string($data[0]['table']) . '} as t1
-            JOIN {' . mysql_real_escape_string($data[1]['table']) . '} as t2
-              ON t1.nid = t2.nid
-          WHERE t1.' . mysql_real_escape_string($data[0]['field']) . ' = \'' . mysql_real_escape_string($value[$data[0]['label']]) . '\'
-           AND t2.' . mysql_real_escape_string($data[1]['field']) . ' = \'' . mysql_real_escape_string($value[$data[1]['label']]) .
-          '\'';
-    }
-  }
-    return $uniq_data_sql;
-}
-
-function _get_not_uniq_ids($uniq_data_sql) {
-  $_get_not_uniq_ids = array();
-  $result = db_query(db_rewrite_sql($uniq_data_sql));
-  while ($res = db_result($result)) {
-    $not_uniq_nids[] = $res;
-  }
-  return $not_uniq_nids;
-}
-
-function _validate_uniqness($value, $content_type) {
-  $not_uniq_nids               = array();
-  $validate_for_uniqness_array = validate_for_uniqness();
-
-  $data_array = $validate_for_uniqness_array[$content_type];
-  if (count($data_array)) {
-    $uniq_data_sql = _create_uniq_data_sql($value, $data_array);
-    if (!empty($uniq_data_sql)) {
-      $not_uniq_nids = _get_not_uniq_ids($uniq_data_sql);
-    }
-  }
-  return $not_uniq_nids;
-}
-
-//TODO: add check for single vs. range
-function _convert_date_range($date_range) {
-   if (preg_match_all("/(\w{1,3}).(\d{1,2}).(\d{2,4})/", $date_range, $matches, PREG_SET_ORDER)) {
-    foreach ($matches as $match) {
-      $date = str_replace('-', ' ', $match[0]);
-      $dates[] = strftime("%G-%m-%d 00:00:00", strtotime($date));
-    }
-  }
-  elseif (preg_match_all("/(\d{1,2}).(\d{1,2}).(\d{2,4})/", $date_range, $matches, PREG_SET_ORDER)) {
-    foreach ($matches as $match) {
-      $date = str_replace('-', '/', $match[0]);
-      $dates[] = strftime("%G-%m-%d 00:00:00", strtotime($date));
-    }
-  }
-  elseif (preg_match_all("/^(\d{4})$/", $date_range, $matches, PREG_SET_ORDER)) {
-    foreach ($matches as $match) {
-      $date = preg_replace("/^(\d{4})$/", "12/12/$1", $match[0]);
-      $dates[] = strftime("%G-%m-%d 00:00:00", strtotime($date));
-    }
-  }
-  return $dates;
-}
-
-function _create_beg_end_date_arr($date_range_values) {
-  $beg_end_date = array();
-  $beg_end_date['value']  = $date_range_values[0];
-  $beg_end_date['value2'] = $date_range_values[1];
-  $beg_end_date += _add_timezone_to_date_arr($beg_end_date);
-  return $beg_end_date;
-}
-
-function _create_single_date_arr($date_value) {
-  $date_arr = array();
-  $converted_value = _convert_date_range($date_value);
-  $date_arr['value'] = $converted_value[0];
-  $date_arr += _add_timezone_to_date_arr($date_arr);
-  return $date_arr;
-}
-
-function _add_timezone_to_date_arr(&$date_arr) {
-  $date_arr['timezone']     = 'America/New_York';
-  $date_arr['timezone_db']  = 'America/New_York';
-  $date_arr['date_type']    = 'datetime';
-  return $date_arr;
+function create_nodes($content, $file_object) {
+  $ref_nids = _create_person_node($content['person'], &$ref_nids);
+  $ref_nids = _create_variable_node($content['variable'], &$ref_nids);
+  $ref_nids = _create_site_node($content['site'], &$ref_nids);
+  $ref_nids = _create_datafile_node($content['datafile'], &$ref_nids, $file_object);
+  $ref_nids = _create_dataset_node($content['dataset'], &$ref_nids);
+//  $keywords_taxonomy = _create_keywords_node($content['keywords'], &$ref_nids);
+  _add_referrers_to_nodes($ref_nids);
+  variable_set('ref_nids', $ref_nids);
+  return $ref_nids;
 }
 
 function _create_person_node($content, &$ref_nids) {
@@ -270,7 +163,7 @@ function _create_site_node($content, &$ref_nids) {
       $nid = $node->nid;
       $ref_nids[$content_type][] = $nid;
       if (preg_match("/(.+),\s*(.+)/", $value['Coordinates'], $matches)) {
-        add_geo_to_node($nid, $matches);
+        _add_geo_to_node($nid, $matches);
       }
     }
   }
@@ -356,11 +249,129 @@ function _create_dataset_node($content, &$ref_nids) {
   return $ref_nids;
 }
 
-function _add_referrers($ref_nids) {
+/* end node creating */
+
+
+/* begin validate uniqueness */
+function _create_uniq_data_sql($value, $data) {
+  $arr_size    = count($data);
+
+  $coordinates = $value['Coordinates'];
+  if (!empty($coordinates)) {
+    if (preg_match("/(.+),\s*(.+)/", $coordinates, $matches)) {
+      $coord1 = $matches[1];
+      $coord2 = $matches[2];
+      $coordinates = "POINT(" . $coord1 . " " . $coord2 . ")";
+    }
+  }
+
+  if (!empty($value[$data[0]['label']])) {
+    if ($arr_size == 1) {
+        $uniq_data_sql = ' SELECT nid
+          FROM {' . mysql_real_escape_string($data[0]['table']) . '}
+          WHERE ' . mysql_real_escape_string($data[0]['field']) . ' = "' . mysql_real_escape_string($value[$data[0]['label']]) . '"';
+    }
+    elseif ($arr_size == 2 AND $data[1]['field'] == 'field_research_site_pt_coords_geo') {
+        $uniq_data_sql = ' SELECT t1.nid
+          FROM {' . mysql_real_escape_string($data[0]['table']) . '} as t1
+            JOIN {' . mysql_real_escape_string($data[1]['table']) . '} as t2
+              ON t1.nid = t2.nid
+          WHERE t1.' . mysql_real_escape_string($data[0]['field']) . ' = \'' . mysql_real_escape_string($value[$data[0]['label']]) . '\'
+           AND t2.' . mysql_real_escape_string($data[1]['field']) . ' = (SELECT GeomFromText(\'' . $coordinates . '\'))';
+    }
+    else {
+        $uniq_data_sql = ' SELECT t1.nid
+          FROM {' . mysql_real_escape_string($data[0]['table']) . '} as t1
+            JOIN {' . mysql_real_escape_string($data[1]['table']) . '} as t2
+              ON t1.nid = t2.nid
+          WHERE t1.' . mysql_real_escape_string($data[0]['field']) . ' = \'' . mysql_real_escape_string($value[$data[0]['label']]) . '\'
+           AND t2.' . mysql_real_escape_string($data[1]['field']) . ' = \'' . mysql_real_escape_string($value[$data[1]['label']]) .
+          '\'';
+    }
+  }
+    return $uniq_data_sql;
+}
+
+function _get_not_uniq_ids($uniq_data_sql) {
+  $_get_not_uniq_ids = array();
+  $result = db_query(db_rewrite_sql($uniq_data_sql));
+  while ($res = db_result($result)) {
+    $not_uniq_nids[] = $res;
+  }
+  return $not_uniq_nids;
+}
+
+function _validate_uniqness($value, $content_type) {
+  $not_uniq_nids               = array();
+  $validate_for_uniqness_array = validate_for_uniqness();
+
+  $data_array = $validate_for_uniqness_array[$content_type];
+  if (count($data_array)) {
+    $uniq_data_sql = _create_uniq_data_sql($value, $data_array);
+    if (!empty($uniq_data_sql)) {
+      $not_uniq_nids = _get_not_uniq_ids($uniq_data_sql);
+    }
+  }
+  return $not_uniq_nids;
+}
+/* end validate uniqueness */
+
+/* begin date */
+
+//TODO: add check for single vs. range
+function _convert_date_range($date_range) {
+   if (preg_match_all("/(\w{1,3}).(\d{1,2}).(\d{2,4})/", $date_range, $matches, PREG_SET_ORDER)) {
+    foreach ($matches as $match) {
+      $date = str_replace('-', ' ', $match[0]);
+      $dates[] = strftime("%G-%m-%d 00:00:00", strtotime($date));
+    }
+  }
+  elseif (preg_match_all("/(\d{1,2}).(\d{1,2}).(\d{2,4})/", $date_range, $matches, PREG_SET_ORDER)) {
+    foreach ($matches as $match) {
+      $date = str_replace('-', '/', $match[0]);
+      $dates[] = strftime("%G-%m-%d 00:00:00", strtotime($date));
+    }
+  }
+  elseif (preg_match_all("/^(\d{4})$/", $date_range, $matches, PREG_SET_ORDER)) {
+    foreach ($matches as $match) {
+      $date = preg_replace("/^(\d{4})$/", "12/12/$1", $match[0]);
+      $dates[] = strftime("%G-%m-%d 00:00:00", strtotime($date));
+    }
+  }
+  return $dates;
+}
+
+function _create_beg_end_date_arr($date_range_values) {
+  $beg_end_date = array();
+  $beg_end_date['value']  = $date_range_values[0];
+  $beg_end_date['value2'] = $date_range_values[1];
+  $beg_end_date += _add_timezone_to_date_arr($beg_end_date);
+  return $beg_end_date;
+}
+
+function _create_single_date_arr($date_value) {
+  $date_arr = array();
+  $converted_value = _convert_date_range($date_value);
+  $date_arr['value'] = $converted_value[0];
+  $date_arr += _add_timezone_to_date_arr($date_arr);
+  return $date_arr;
+}
+
+function _add_timezone_to_date_arr(&$date_arr) {
+  $date_arr['timezone']     = 'America/New_York';
+  $date_arr['timezone_db']  = 'America/New_York';
+  $date_arr['date_type']    = 'datetime';
+  return $date_arr;
+}
+/* end date */
+
+/* begin referrer */
+
+function _add_referrers_to_nodes($ref_nids) {
   $data_file_nids = $ref_nids['data_file'];
 
-  _save_ref_node($ref_nids['variable'], create_referrer($data_file_nids), 'field_datafile_variable_ref');
-  _save_ref_node($data_file_nids, create_referrer($ref_nids['data_set']), 'field_dataset_referrer');
+  _save_ref_node($ref_nids['variable'], _create_referrer($data_file_nids), 'field_datafile_variable_ref');
+  _save_ref_node($data_file_nids, _create_referrer($ref_nids['data_set']), 'field_dataset_referrer');
 }
 
 function _save_ref_node($nids, $referrers, $field_name) {
@@ -375,7 +386,7 @@ function _save_ref_node($nids, $referrers, $field_name) {
   }
 }
 
-function create_referrer($nids) {
+function _create_referrer($nids) {
   $reffers = array();
   if ($nids) {
     foreach ($nids as $nid) {
@@ -392,57 +403,11 @@ function create_referrer($nids) {
   return $reffers;
 }
 
-function display_report_page() {
-  $csv2drupal_submit_time = variable_get(csv2drupal_submit_time, time());
+/* end referrer */
 
-  $sql = "SELECT nid FROM {node} WHERE created >= %d ORDER BY nid DESC";
-  $db_result = db_query($sql, $csv2drupal_submit_time);
+/* begin geo */
 
-  $header       = array('Title', 'Nid');
-  $rows['data'] = array();
-  while ($res   = db_fetch_object($db_result)) {
-    $nid        = $res->nid;
-    $node       = node_load($nid);
-    $node_nid   = $node->nid;
-    $node_title = $node->title;
-    $node_type  = $node->type;
-    $node_link  = l($nid, 'node/' . $nid);
-    if ($node_type != $old_node_type) {
-      $rows[] = long_cell('Type = ' . $node_type);
-      $old_node_type = $node_type;
-    }
-    $rows[] = array('Title = ' . $node_title, $node_link);
-  }
-  count($rows) == 1 ? $rows[] = long_cell('No new nodes was saved') : drupal_set_message('Followed nodes were just created:');
-  variable_del(csv2drupal_submit_time);
-  return theme_table($header, $rows);
-}
-
-function long_cell($long_cell_value) {
-  $long_cell = array(array('data' => $long_cell_value, 'colspan' => 2,
-          'font size' => 4, 'align' => 'center'));
-  return $long_cell;
-}
-
-function _trim_text($str) {
-    $str = trim($str);
-    $str = preg_replace('/ +/', ' ', $str);
-    return $str;
-}
-
-
-function add_geo_to_node($nid, $matches){
-    $coord1 = $matches[1];
-    $coord2 = $matches[2];
-    $coordinates = "POINT(" . $coord1 . " " . $coord2 . ")";
-    $table_name  = get_table_name();
-    $update_geo_query = "UPDATE {%s}
-      SET field_research_site_pt_coords_geo=(SELECT GeomFromText('%s'))
-      WHERE nid=%d";
-    db_query($update_geo_query, $table_name, $coordinates, $nid);
-}
-
-function get_table_name() {
+function _get_geo_table_name() {
   global $db_prefix;
   $table_name_query = "
     SELECT TABLE_NAME
@@ -460,6 +425,20 @@ function get_table_name() {
   }
   return $table_name;
 }
+
+function _add_geo_to_node($nid, $matches){
+    $coord1 = $matches[1];
+    $coord2 = $matches[2];
+    $coordinates = "POINT(" . $coord1 . " " . $coord2 . ")";
+    $table_name  = _get_geo_table_name();
+    $update_geo_query = "UPDATE {%s}
+      SET field_research_site_pt_coords_geo=(SELECT GeomFromText('%s'))
+      WHERE nid=%d";
+    db_query($update_geo_query, $table_name, $coordinates, $nid);
+}
+
+/* end referrer */
+
 
 function create_file_object($file) {
   $details = stat($file);
@@ -499,6 +478,8 @@ function create_file_object($file) {
   return $file_obj;
 }
 
+/* begin dataset ref to person */
+
 function _get_person_from_dataset_role($data) {
   $person_names = array();
   if (preg_match_all("/([^,]+)/", $data, $matches, PREG_SET_ORDER)) {
@@ -507,6 +488,12 @@ function _get_person_from_dataset_role($data) {
     }
   }
   return $person_names;
+}
+
+function _trim_text($str) {
+    $str = trim($str);
+    $str = preg_replace('/ +/', ' ', $str);
+    return $str;
 }
 
 function _get_dataset_person_ref($dataset_value, $person_ref_nids) {
@@ -540,3 +527,41 @@ function _add_person_refs_to_node(&$node, $dataset_person_refs) {
   }
   return $node;
 }
+
+/* end dataset ref to person */
+
+/* begin display report page */
+
+function display_report_page() {
+  $csv2drupal_submit_time = variable_get(csv2drupal_submit_time, time());
+
+  $sql = "SELECT nid FROM {node} WHERE created >= %d ORDER BY nid DESC";
+  $db_result = db_query($sql, $csv2drupal_submit_time);
+
+  $header       = array('Title', 'Nid');
+  $rows['data'] = array();
+  while ($res   = db_fetch_object($db_result)) {
+    $nid        = $res->nid;
+    $node       = node_load($nid);
+    $node_nid   = $node->nid;
+    $node_title = $node->title;
+    $node_type  = $node->type;
+    $node_link  = l($nid, 'node/' . $nid);
+    if ($node_type != $old_node_type) {
+      $rows[] = _long_cell('Type = ' . $node_type);
+      $old_node_type = $node_type;
+    }
+    $rows[] = array('Title = ' . $node_title, $node_link);
+  }
+  count($rows) == 1 ? $rows[] = _long_cell('No new nodes was saved') : drupal_set_message('Followed nodes were just created:');
+  variable_del(csv2drupal_submit_time);
+  return theme_table($header, $rows);
+}
+
+function _long_cell($long_cell_value) {
+  $_long_cell = array(array('data' => $long_cell_value, 'colspan' => 2,
+          'font size' => 4, 'align' => 'center'));
+  return $_long_cell;
+}
+
+/* end display report page */
