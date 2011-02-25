@@ -53,12 +53,12 @@ function get_data_from_excel_file($file) {
 }
 
 function create_nodes($content, $file_object) {
-  $ref_nids = create_person_node($content['person'], &$ref_nids);
-  $ref_nids = create_variable_node($content['variable'], &$ref_nids);
-  $ref_nids = create_site_node($content['site'], &$ref_nids);
-  $ref_nids = create_datafile_node($content['datafile'], &$ref_nids, $file_object);
-  $ref_nids = create_dataset_node($content['dataset'], &$ref_nids);
-//  $keywords_taxonomy = create_keywords_node($content['keywords'], &$ref_nids);
+  $ref_nids = _create_person_node($content['person'], &$ref_nids);
+  $ref_nids = _create_variable_node($content['variable'], &$ref_nids);
+  $ref_nids = _create_site_node($content['site'], &$ref_nids);
+  $ref_nids = _create_datafile_node($content['datafile'], &$ref_nids, $file_object);
+  $ref_nids = _create_dataset_node($content['dataset'], &$ref_nids);
+//  $keywords_taxonomy = _create_keywords_node($content['keywords'], &$ref_nids);
   _add_referrers($ref_nids);
   variable_set('ref_nids', $ref_nids);
   return $ref_nids;
@@ -70,7 +70,7 @@ function _get_uid() {
 }
 
 //restructures arrays from Excel
-function create_values($content) {
+function _create_values($content) {
   $values = array();
   foreach ($content as $key => $value) {
     foreach ($value as $number => $data) {
@@ -81,14 +81,14 @@ function create_values($content) {
   return $values;
 }
 
-function add_node_value(&$node, $value, $fields_names) {
+function _add_node_value(&$node, $value, $fields_names) {
   foreach ($fields_names as $node_field_name => $csv_title) {
     $node->$node_field_name = array(array('value' => $value[$csv_title]));
   }
   return $node;
 }
 
-function create_uniq_data_sql($value, $data) {
+function _create_uniq_data_sql($value, $data) {
   $arr_size    = count($data);
 
   $coordinates = $value['Coordinates'];
@@ -127,8 +127,8 @@ function create_uniq_data_sql($value, $data) {
     return $uniq_data_sql;
 }
 
-function get_not_uniq_ids($uniq_data_sql) {
-  $get_not_uniq_ids = array();
+function _get_not_uniq_ids($uniq_data_sql) {
+  $_get_not_uniq_ids = array();
   $result = db_query(db_rewrite_sql($uniq_data_sql));
   while ($res = db_result($result)) {
     $not_uniq_nids[] = $res;
@@ -136,22 +136,22 @@ function get_not_uniq_ids($uniq_data_sql) {
   return $not_uniq_nids;
 }
 
-function validate_uniqness($value, $content_type) {
+function _validate_uniqness($value, $content_type) {
   $not_uniq_nids               = array();
   $validate_for_uniqness_array = validate_for_uniqness();
 
   $data_array = $validate_for_uniqness_array[$content_type];
   if (count($data_array)) {
-    $uniq_data_sql = create_uniq_data_sql($value, $data_array);
+    $uniq_data_sql = _create_uniq_data_sql($value, $data_array);
     if (!empty($uniq_data_sql)) {
-      $not_uniq_nids = get_not_uniq_ids($uniq_data_sql);
+      $not_uniq_nids = _get_not_uniq_ids($uniq_data_sql);
     }
   }
   return $not_uniq_nids;
 }
 
 //TODO: add check for single vs. range
-function convert_date_range($date_range) {
+function _convert_date_range($date_range) {
    if (preg_match_all("/(\w{1,3}).(\d{1,2}).(\d{2,4})/", $date_range, $matches, PREG_SET_ORDER)) {
     foreach ($matches as $match) {
       $date = str_replace('-', ' ', $match[0]);
@@ -173,37 +173,37 @@ function convert_date_range($date_range) {
   return $dates;
 }
 
-function create_beg_end_date_arr($date_range_values) {
+function _create_beg_end_date_arr($date_range_values) {
   $beg_end_date = array();
   $beg_end_date['value']  = $date_range_values[0];
   $beg_end_date['value2'] = $date_range_values[1];
-  $beg_end_date += add_timezone_to_date_arr($beg_end_date);
+  $beg_end_date += _add_timezone_to_date_arr($beg_end_date);
   return $beg_end_date;
 }
 
-function create_single_date_arr($date_value) {
+function _create_single_date_arr($date_value) {
   $date_arr = array();
-  $converted_value = convert_date_range($date_value);
+  $converted_value = _convert_date_range($date_value);
   $date_arr['value'] = $converted_value[0];
-  $date_arr += add_timezone_to_date_arr($date_arr);
+  $date_arr += _add_timezone_to_date_arr($date_arr);
   return $date_arr;
 }
 
-function add_timezone_to_date_arr(&$date_arr) {
+function _add_timezone_to_date_arr(&$date_arr) {
   $date_arr['timezone']     = 'America/New_York';
   $date_arr['timezone_db']  = 'America/New_York';
   $date_arr['date_type']    = 'datetime';
   return $date_arr;
 }
 
-function create_person_node($content, &$ref_nids) {
+function _create_person_node($content, &$ref_nids) {
   $content_type  = 'person';
   $persons_arr   = array();
-  $person_values = create_values($content);
+  $person_values = _create_values($content);
   $fields_names  = person_fields();
   foreach ($person_values as $value) {
     $value['Full Name'] = $value['First Name'] . " " . $value['Last Name'];
-    $nid = validate_uniqness($value, $content_type);
+    $nid = _validate_uniqness($value, $content_type);
     if (!empty($nid)) {
       $ref_nids[$content_type][] = $nid[0];
     }
@@ -213,7 +213,7 @@ function create_person_node($content, &$ref_nids) {
       $node->uid   = _get_uid();
       $full_name   = $value['Full Name'];
       $node->title = $full_name;
-      $node = add_node_value($node, $value, $fields_names);
+      $node = _add_node_value($node, $value, $fields_names);
       $node->field_person_email[0]['email'] = $value['Email'];
       $node->field_person_uid[0]['uid'] = $value['person_uid'];
       $node->field_person_pubs[0]['nid'] = $value['Publications'];
@@ -225,14 +225,14 @@ function create_person_node($content, &$ref_nids) {
   return $ref_nids;
 }
 
-function create_variable_node($content, &$ref_nids) {
+function _create_variable_node($content, &$ref_nids) {
   $content_type = 'variable';
-  $variable_values = create_values($content);
+  $variable_values = _create_values($content);
   $tags_to_title   = tags_to_title();
   $title_label = $tags_to_title['variable'];
   $fields_names    = variable_fields();
   foreach ($variable_values as $value) {
-    $nid = validate_uniqness($value, $content_type);
+    $nid = _validate_uniqness($value, $content_type);
     if (!empty($nid)) {
       $ref_nids[$content_type][] = $nid[0];
     }    
@@ -241,7 +241,7 @@ function create_variable_node($content, &$ref_nids) {
       $node->type  = $content_type;
       $node->uid   =  _get_uid();
       $node->title = $value[$title_label];
-      $node = add_node_value($node, $value, $fields_names);
+      $node = _add_node_value($node, $value, $fields_names);
       node_save(&$node);
       $ref_nids[$content_type][] = $node->nid;
     }
@@ -249,12 +249,12 @@ function create_variable_node($content, &$ref_nids) {
   return $ref_nids;
 }
 
-function create_site_node($content, &$ref_nids) {
+function _create_site_node($content, &$ref_nids) {
   $content_type = 'research_site';
-  $research_site_values = create_values($content);
+  $research_site_values = _create_values($content);
   $fields_names = research_site_fields();
   foreach ($research_site_values as $value) {
-    $nid = validate_uniqness($value, $content_type);
+    $nid = _validate_uniqness($value, $content_type);
     if (!empty($nid)) {
       $ref_nids[$content_type][] = $nid[0];
     }
@@ -264,7 +264,7 @@ function create_site_node($content, &$ref_nids) {
       $node->uid   =  _get_uid();
 //      !empty($value['Title']) ? $node->title = $value['Title'] : $node->title = $value['Location'];
       $node->title = $value['Location'];
-      $node        = add_node_value($node, $value, $fields_names);
+      $node        = _add_node_value($node, $value, $fields_names);
       
       node_save(&$node);
       $nid = $node->nid;
@@ -277,12 +277,12 @@ function create_site_node($content, &$ref_nids) {
   return $ref_nids;
 }
 
-function create_datafile_node($content, &$ref_nids, $file_object) {
+function _create_datafile_node($content, &$ref_nids, $file_object) {
   $content_type     = 'data_file';
-  $data_file_values = create_values($content);
+  $data_file_values = _create_values($content);
   $fields_names     = datafile_fields();
   foreach ($data_file_values as $value) {
-    $nid = validate_uniqness($value, $content_type);
+    $nid = _validate_uniqness($value, $content_type);
     if (!empty($nid)) {
       $ref_nids[$content_type][] = $nid[0];
     }
@@ -291,8 +291,8 @@ function create_datafile_node($content, &$ref_nids, $file_object) {
       $node->type   = $content_type;
       $node->uid    =  _get_uid();
       $node->title  = $value['Data File Structure Name'];
-      $node = add_node_value($node, $value, $fields_names);
-      $node->field_beg_end_date[0] = create_beg_end_date_arr(convert_date_range($value['Date Range']));
+      $node = _add_node_value($node, $value, $fields_names);
+      $node->field_beg_end_date[0] = _create_beg_end_date_arr(_convert_date_range($value['Date Range']));
       $node->field_beg_end_date[0]['date_type'] = 'datetime';
       if (!empty($ref_nids['variable'])) {
         foreach ($ref_nids['variable'] as $variable) {
@@ -313,17 +313,17 @@ function create_datafile_node($content, &$ref_nids, $file_object) {
   return $ref_nids;
 }
 
-function create_keywords_node($content, &$ref_nids) {
-//    dpr("create_keywords_node");
+function _create_keywords_node($content, &$ref_nids) {
+//    dpr("_create_keywords_node");
     return $ref_nids;
 }
 
-function create_dataset_node($content, &$ref_nids) {
+function _create_dataset_node($content, &$ref_nids) {
   $content_type   = 'data_set';
-  $dataset_values = create_values($content);
+  $dataset_values = _create_values($content);
   $fields_names   = dataset_fields();
   foreach ($dataset_values as $value) {
-    $nid = validate_uniqness($value, $content_type);
+    $nid = _validate_uniqness($value, $content_type);
     if (!empty($nid)) {
       $ref_nids[$content_type][] = $nid[0];
     }
@@ -332,10 +332,10 @@ function create_dataset_node($content, &$ref_nids) {
       $node->type                                       = $content_type;
       $node->uid                                        =  _get_uid();
       $node->title                                      = $value['Title'];
-      $node = add_node_value($node, $value, $fields_names);
-      $node->field_beg_end_date[0]                      = create_beg_end_date_arr(convert_date_range($value['Date Range']));
+      $node = _add_node_value($node, $value, $fields_names);
+      $node->field_beg_end_date[0]                      = _create_beg_end_date_arr(_convert_date_range($value['Date Range']));
       $node->field_beg_end_date[0]['date_type']         = 'datetime';
-      $node->field_dataset_publication_date[0]          = create_single_date_arr($value['Publication Date']);
+      $node->field_dataset_publication_date[0]          = _create_single_date_arr($value['Publication Date']);
       $node->field_dataset_publication_date[0]['date_type'] = 'date';
 //TODO: take ref for biblio
 //    $node->field_dataset_biblio_ref[0]['value']       = $related_bibliography;
@@ -359,11 +359,11 @@ function create_dataset_node($content, &$ref_nids) {
 function _add_referrers($ref_nids) {
   $data_file_nids = $ref_nids['data_file'];
 
-  save_ref_node($ref_nids['variable'], create_referrer($data_file_nids), 'field_datafile_variable_ref');
-  save_ref_node($data_file_nids, create_referrer($ref_nids['data_set']), 'field_dataset_referrer');
+  _save_ref_node($ref_nids['variable'], create_referrer($data_file_nids), 'field_datafile_variable_ref');
+  _save_ref_node($data_file_nids, create_referrer($ref_nids['data_set']), 'field_dataset_referrer');
 }
 
-function save_ref_node($nids, $referrers, $field_name) {
+function _save_ref_node($nids, $referrers, $field_name) {
   if (!empty ($nids) AND !empty ($refferers)) {
     foreach ($nids as $nid) {
       foreach ($refferers as $refferer) {
