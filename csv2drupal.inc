@@ -156,91 +156,57 @@ function add_node_value(&$node, $value, $fields_names) {
 //    return $not_uniq_nids;
 //}
 
-function get_not_uniq_ids($value, $data) {
-//  dpm($data);
-  $arr_size = count($data);
-//  dpm('$arr_size = ' . $arr_size);
+function create_uniq_data_sql($value, $data) {
+  $arr_size    = count($data);
   $coordinates = $value['Coordinates'];
-        dpm('$coordinates = ');
-        dpr('$coordinates = ');
-        dpr($coordinates);
-        dpm($coordinates);
   if (!empty($coordinates)) {
     if (preg_match("/(.+),\s*(.+)/", $coordinates, $matches)) {
       $coord1 = $matches[1];
       $coord2 = $matches[2];
       $coordinates = "POINT(" . $coord1 . " " . $coord2 . ")";
-      $geo_q   = "SELECT GeomFromText('%s')";
-      $geo_res = db_query(db_rewrite_sql($geo_q), $coordinates);
-      while ($geo_data = db_result($geo_res)) {
-        dpm('$geo_data = ');
-        dpr('$geo_data = ');
-        print_r($geo_data);
-      }
     }
   }
 
   if (!empty($value[$data[0]['label']])) {
-    switch ($arr_size) {
-      case 1:
-        $sql = ' SELECT nid
+    if ($arr_size == 1) {
+        $uniq_data_sql = ' SELECT nid
           FROM {' . mysql_real_escape_string($data[0]['table']) . '}
           WHERE ' . mysql_real_escape_string($data[0]['field']) . ' = "' . mysql_real_escape_string($value[$data[0]['label']]) . '"';
-//          dpm('$sql1 = ');
-//          dpm($sql);
-        break;
-      case 2:
-//        "SELECT {node}.nid FROM {content_type_" . $content_type . "} as content_type
-//        JOIN {node} on content_type.nid = {node}.nid
-//        WHERE {node}.title = \"" . $title_value . "\";";
-//        SELECT nid
-//          FROM {node}
-//          WHERE title = 'Laura Gough'
-//           AND field_person_organization_value = 'Department of Biology'
-//
-        $sql = ' SELECT t1.nid
+//          dpm('$uniq_data_sql1 = ');
+//          dpm($uniq_data_sql);
+    }
+    elseif ($arr_size == 2 AND $data[1]['field'] == 'field_research_site_pt_coords_geo') {
+        $uniq_data_sql = ' SELECT t1.nid
+          FROM {' . mysql_real_escape_string($data[0]['table']) . '} as t1
+            JOIN {' . mysql_real_escape_string($data[1]['table']) . '} as t2
+              ON t1.nid = t2.nid
+          WHERE t1.' . mysql_real_escape_string($data[0]['field']) . ' = \'' . mysql_real_escape_string($value[$data[0]['label']]) . '\'
+           AND t2.' . mysql_real_escape_string($data[1]['field']) . ' = (SELECT GeomFromText(\'' . $coordinates . '\'))';
+    }
+    else {
+        $uniq_data_sql = ' SELECT t1.nid
           FROM {' . mysql_real_escape_string($data[0]['table']) . '} as t1
             JOIN {' . mysql_real_escape_string($data[1]['table']) . '} as t2
               ON t1.nid = t2.nid
           WHERE t1.' . mysql_real_escape_string($data[0]['field']) . ' = \'' . mysql_real_escape_string($value[$data[0]['label']]) . '\'
            AND t2.' . mysql_real_escape_string($data[1]['field']) . ' = \'' . mysql_real_escape_string($value[$data[1]['label']]) .
           '\'';
-          dpm('$sql2 = ');
-          dpm($sql);
-        break;
+//          dpm('$uniq_data_sql3 = ');
+//          dpm($uniq_data_sql);
     }
   }
+          dpm('$uniq_data_sql = ');
+          dpm($uniq_data_sql);
+    return $uniq_data_sql;
+}
 
-  /*
-   *  (Array, 1 element)
-0 (Array, 3 elements)
-table (String, 4 characters ) node
-field (String, 5 characters ) title
-label (String, 24 characters ) Data File Structure Name
-   * ... (Array, 2 elements)
-0 (Array, 3 elements)
-table (String, 4 characters ) node
-field (String, 5 characters ) title
-label (String, 9 characters ) Full Name
-1 (Array, 3 elements)
-table (String, 19 characters ) content_type_person
-field (String, 25 characters ) field_person_organization
-label (String, 12 characters ) Organization
-   */
-  
-//  if (!empty($field)) {
-//    $sql = ' SELECT nid
-//      FROM ' . mysql_real_escape_string($table) . '
-//      WHERE ' . mysql_real_escape_string($field) . '_value IS NOT NULL
-//      AND ' . mysql_real_escape_string($field) . '_value = "' . mysql_real_escape_string($compared) . '"';
-//      dpm('$sql = ');
-//      dpm($sql);
-//    $result = db_query(db_rewrite_sql($sql));
-//    while ($res = db_result($result)) {
-//      $not_uniq_nids[] = $res;
-//    }
-//  }
-//    return $not_uniq_nids;
+function get_not_uniq_ids($uniq_data_sql) {
+  $get_not_uniq_ids = array();
+  $result = db_query(db_rewrite_sql($uniq_data_sql));
+  while ($res = db_result($result)) {
+    $not_uniq_nids[] = $res;
+  }
+  return $not_uniq_nids;
 }
 
 //function create_sql($value, $fields_names, $content_type) {
@@ -282,9 +248,12 @@ function validate_uniqness($value, $fields_names, $content_type) {
 
   $data_array = $what_to_check[$content_type];
   if (count($data_array)) {
-    $not_uniq_ids = get_not_uniq_ids($value, $data_array);
+    $uniq_data_sql = create_uniq_data_sql($value, $data_array);
+    $not_uniq_nids = get_not_uniq_ids($uniq_data_sql);
   }
 
+  dpm('$not_uniq_nids = ');
+  dpm($not_uniq_nids);
   
 //
 //  if (!empty($what_to_check[$content_type])) {
