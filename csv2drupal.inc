@@ -157,9 +157,28 @@ function add_node_value(&$node, $value, $fields_names) {
 //}
 
 function get_not_uniq_ids($value, $data) {
-  dpm($data);
+//  dpm($data);
   $arr_size = count($data);
-  dpm('$arr_size = ' . $arr_size);
+//  dpm('$arr_size = ' . $arr_size);
+  $coordinates = $value['Coordinates'];
+        dpm('$coordinates = ');
+        dpr('$coordinates = ');
+        dpr($coordinates);
+        dpm($coordinates);
+  if (!empty($coordinates)) {
+    if (preg_match("/(.+),\s*(.+)/", $coordinates, $matches)) {
+      $coord1 = $matches[1];
+      $coord2 = $matches[2];
+      $coordinates = "POINT(" . $coord1 . " " . $coord2 . ")";
+      $geo_q   = "SELECT GeomFromText('%s')";
+      $geo_res = db_query(db_rewrite_sql($geo_q), $coordinates);
+      while ($geo_data = db_result($geo_res)) {
+        dpm('$geo_data = ');
+        dpr('$geo_data = ');
+        print_r($geo_data);
+      }
+    }
+  }
 
   if (!empty($value[$data[0]['label']])) {
     switch ($arr_size) {
@@ -167,22 +186,27 @@ function get_not_uniq_ids($value, $data) {
         $sql = ' SELECT nid
           FROM {' . mysql_real_escape_string($data[0]['table']) . '}
           WHERE ' . mysql_real_escape_string($data[0]['field']) . ' = "' . mysql_real_escape_string($value[$data[0]['label']]) . '"';
-          dpm('$sql = ');
-          dpm($sql);
-        echo "i equals 1";
+//          dpm('$sql1 = ');
+//          dpm($sql);
         break;
       case 2:
 //        "SELECT {node}.nid FROM {content_type_" . $content_type . "} as content_type
 //        JOIN {node} on content_type.nid = {node}.nid
 //        WHERE {node}.title = \"" . $title_value . "\";";
+//        SELECT nid
+//          FROM {node}
+//          WHERE title = 'Laura Gough'
+//           AND field_person_organization_value = 'Department of Biology'
 //
-//        $sql = ' SELECT nid
-//          FROM ' . mysql_real_escape_string($data[0]['table']) . '
-//          WHERE ' . mysql_real_escape_string($data[0]['field']) . '_value IS NOT NULL
-//          AND ' . mysql_real_escape_string($data[0]['field']) . '_value = "' . mysql_real_escape_string($value[$data[0]['label']]) . '"';
-//          dpm('$sql = ');
-//          dpm($sql);
-        echo "i equals 2";
+        $sql = ' SELECT t1.nid
+          FROM {' . mysql_real_escape_string($data[0]['table']) . '} as t1
+            JOIN {' . mysql_real_escape_string($data[1]['table']) . '} as t2
+              ON t1.nid = t2.nid
+          WHERE t1.' . mysql_real_escape_string($data[0]['field']) . ' = \'' . mysql_real_escape_string($value[$data[0]['label']]) . '\'
+           AND t2.' . mysql_real_escape_string($data[1]['field']) . ' = \'' . mysql_real_escape_string($value[$data[1]['label']]) .
+          '\'';
+          dpm('$sql2 = ');
+          dpm($sql);
         break;
     }
   }
@@ -250,7 +274,7 @@ function validate_uniqness($value, $fields_names, $content_type) {
       ),
     'research_site' => array(
         array('table' => 'node', 'field' => 'title', 'label' => 'Location'),
-        array('table' => $content_type_table_name, 'field' => 'field_research_site_pt_coords',
+        array('table' => $content_type_table_name, 'field' => 'field_research_site_pt_coords_geo',
             'label' => 'Coordinates'),
         ),
 //    'variable'      => 'Label',
