@@ -122,8 +122,6 @@ function create_uniq_data_sql($value, $data) {
           WHERE t1.' . mysql_real_escape_string($data[0]['field']) . ' = \'' . mysql_real_escape_string($value[$data[0]['label']]) . '\'
            AND t2.' . mysql_real_escape_string($data[1]['field']) . ' = \'' . mysql_real_escape_string($value[$data[1]['label']]) .
           '\'';
-//          dpm('$uniq_data_sql3 = ');
-//          dpm($uniq_data_sql);
     }
   }
     return $uniq_data_sql;
@@ -139,44 +137,16 @@ function get_not_uniq_ids($uniq_data_sql) {
 }
 
 function validate_uniqness($value, $content_type) {
-  $not_uniq_nids           = array();
-  $content_type_table_name = "content_type_" . $content_type;
+  $not_uniq_nids               = array();
+  $validate_for_uniqness_array = validate_for_uniqness();
 
-  $what_to_check = array(
-    'data_file'     =>
-      array(
-        array('table' => 'node', 'field' => 'title', 'label' => 'Data File Structure Name'),
-      ),
-    'data_set'      =>
-      array(
-        array('table' => $content_type_table_name, 'field' => 'field_dataset_short_name_value',
-            'label' => 'Short Name'),
-      ),
-    'person'        =>
-      array(
-        array('table' => 'node', 'field' => 'title', 'label' => 'Full Name'),
-        array('table' => $content_type_table_name, 'field' => 'field_person_organization_value',
-            'label' => 'Organization'),
-      ),
-    'research_site' => array(
-        array('table' => 'node', 'field' => 'title', 'label' => 'Location'),
-        array('table' => $content_type_table_name, 'field' => 'field_research_site_pt_coords_geo',
-            'label' => 'Coordinates'),
-        ),
-//    'variable'      => 'Label',
-  );
-
-  $data_array = $what_to_check[$content_type];
+  $data_array = $validate_for_uniqness_array[$content_type];
   if (count($data_array)) {
     $uniq_data_sql = create_uniq_data_sql($value, $data_array);
     if (!empty($uniq_data_sql)) {
       $not_uniq_nids = get_not_uniq_ids($uniq_data_sql);
     }
   }
-
-//  dpm('$not_uniq_nids = ');
-//  dpm($not_uniq_nids);
-
   return $not_uniq_nids;
 }
 

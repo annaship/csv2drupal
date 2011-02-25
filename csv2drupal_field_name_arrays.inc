@@ -222,19 +222,29 @@ function tags_to_title() {
   return $tags_to_title;
 }
 
-function forbiddenf_fields() {
-  $forbiddenf_fields = array(
-    'field_person_phone',
-    'field_person_email',
-    'field_var_missingvalues',
-    'field_code_definition',
-    'field_research_site_image',
-    'field_beg_end_date',
-    'field_methods',
-    'field_instrumentation',
-    'field_quality',
-    'field_dataset_related_links',
-    'field_var_definition_value',
+function validate_for_uniqness() {
+  $validate_for_uniqness = array(
+    'data_file'     =>
+      array(
+        array('table' => 'node', 'field' => 'title', 'label' => 'Data File Structure Name'),
+      ),
+    'data_set'      =>
+      array(
+        array('table' => 'content_type_data_set', 'field' => 'field_dataset_short_name_value',
+            'label' => 'Short Name'),
+      ),
+    'person'        =>
+      array(
+        array('table' => 'node', 'field' => 'title', 'label' => 'Full Name'),
+        array('table' => 'content_type_person', 'field' => 'field_person_organization_value',
+            'label' => 'Organization'),
+      ),
+    'research_site' => array(
+        array('table' => 'node', 'field' => 'title', 'label' => 'Location'),
+        array('table' => 'content_type_research_site', 'field' => 'field_research_site_pt_coords_geo',
+            'label' => 'Coordinates'),
+        ),
+//    'variable'      => 'Label',
   );
-  return $forbiddenf_fields;
+  return $validate_for_uniqness;
 }
