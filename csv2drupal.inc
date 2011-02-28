@@ -19,9 +19,6 @@ function get_data_from_excel_file($file) {
   ini_set("memory_limit", "10240M");
   ini_set('post_max_size', '10240M');
   ini_set('upload_max_filesize', '10240M');
-//  ini_set("memory_limit", "5120M");
-//  ini_set('post_max_size', '5120M');
-//  ini_set('upload_max_filesize', '5120M');
 //  dpr('Changed: '.ini_get("memory_limit"));
 //  dpm('Changed: '.ini_get("memory_limit"));
 //  print_r('Changed: '.ini_get("memory_limit"));
@@ -312,14 +309,7 @@ function _create_dataset_node($content, &$ref_nids) {
 /* end node creating */
 
 
-/* begin validate uniqueness
- * +  $geo_table_name = _get_geo_table_name();
-+  dpr($geo_table_name);
-+  dpm($geo_table_name);
-+  $validate_for_uniqness_array = validate_for_uniqness($geo_table_name);
-
- *
- */
+/* begin validate uniqueness */
 function _create_uniq_data_sql($value, $data) {
 
   $arr_size    = count($data);
@@ -373,29 +363,11 @@ function _get_not_uniq_ids($uniq_data_sql) {
 function _validate_uniqness($value, $content_type) {
   $not_uniq_nids               = array();
   $geo_table                   = _get_geo_table_name();
-//    if ($content_type = 'research_site') {
-//      dpr('$geo_table in _validate_uniqness = ');
-//      dpm('$geo_table in _validate_uniqness = ');
-//      dpm($geo_table);
-//      dpr($geo_table);
-//    }
   $validate_for_uniqness_array = validate_for_uniqness($geo_table);
 
   $data_array = $validate_for_uniqness_array[$content_type];
   if (count($data_array)) {
-//    if ($content_type = 'research_site') {
-//      dpr('$data_array in _validate_uniqness = ');
-//      dpm('$data_array in _validate_uniqness = ');
-//      dpm($data_array);
-//      dpr($data_array);
-//    }
     $uniq_data_sql = _create_uniq_data_sql($value, $data_array);
-//      if ($content_type = 'research_site') {
-//        dpr('$uniq_data_sql in _validate_uniqness = ');
-//        dpm('$uniq_data_sql in _validate_uniqness = ');
-//        dpm($uniq_data_sql);
-//        dpr($uniq_data_sql);
-//      }
     if (!empty($uniq_data_sql)) {
       $not_uniq_nids = _get_not_uniq_ids($uniq_data_sql);
     }
@@ -506,23 +478,9 @@ function _get_geo_table_name() {
   $result = db_query(db_rewrite_sql($table_name_query));
   while ($data = db_result($result)) {
     if (preg_match("/^($db_prefix)(content.+)$/", $data, $matches)) {
-//      dpr('$matches = ');
-//      dpr($matches);
-//      dpr('$db_prefix = ');
-//      dpr($db_prefix);
       $table_name = $matches[2];
     }
-//    else {
-//      dpr('IN else::_get_geo_table_name: $data = ');
-//      dpr($data);
-//      $table_name = $data;
-//    }
   }
-//  mysql_free_result($result);
-//      dpr('IN _get_geo_table_name: $table_name = ');
-//      dpr($table_name);
-//      dpr('$table_name = ');
-//      dpr($table_name);
   return $table_name;
 }
 
