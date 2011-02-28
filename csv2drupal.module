@@ -87,7 +87,9 @@ function csv2drupal_form_submit($form, $form_state) {
   else {
   $file = file_save_upload('upload');
     if ($file) {
-      $dest_path = file_directory_path() . '/upload';
+//      to keep files in upload dir one have to create it on the server and give x permissions to all
+//      $dest_path = file_directory_path() . '/upload';
+      $dest_path = file_directory_path();
       $result = file_copy($file, $dest_path, FILE_EXISTS_RENAME);
 //      $result = file_copy($file, $dest_path, FILE_EXISTS_REPLACE);
 
