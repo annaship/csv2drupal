@@ -222,7 +222,7 @@ function tags_to_title() {
   return $tags_to_title;
 }
 
-function validate_for_uniqness() {
+function validate_for_uniqness($geo_table) {
   $validate_for_uniqness = array(
     'data_file'     =>
       array(
@@ -241,7 +241,7 @@ function validate_for_uniqness() {
       ),
     'research_site' => array(
         array('table' => 'node', 'field' => 'title', 'label' => 'Location'),
-        array('table' => 'content_type_research_site', 'field' => 'field_research_site_pt_coords_geo',
+        array('table' => $geo_table, 'field' => 'field_research_site_pt_coords_geo',
             'label' => 'Coordinates'),
         ),
 //    'variable'      => 'Label',
