@@ -6,6 +6,7 @@ require_once 'csv2drupal_field_name_arrays.inc';
 
 function get_data_from_excel_file($file) {
   $sheet_names = sheet_names();
+  $obj_reader  = $obj_php_excel = $obj_worksheet = '';
 
   try {
     $obj_reader = PHPExcel_IOFactory::createReaderForFile($file);
@@ -15,9 +16,21 @@ function get_data_from_excel_file($file) {
     drupal_set_message('Caught exception: ' .  $emes . "\n");
   }
 
+  ini_set("memory_limit", "10240M");
+  ini_set('post_max_size', '10240M');
+  ini_set('upload_max_filesize', '10240M');
+//  ini_set("memory_limit", "5120M");
+//  ini_set('post_max_size', '5120M');
+//  ini_set('upload_max_filesize', '5120M');
+//  dpr('Changed: '.ini_get("memory_limit"));
+//  dpm('Changed: '.ini_get("memory_limit"));
+//  print_r('Changed: '.ini_get("memory_limit"));
+
   $obj_reader->setLoadSheetsOnly(0);
   $obj_reader->setReadDataOnly(true);
   $obj_php_excel = PHPExcel_IOFactory::load($file);
+
+  var_dump(memory_get_peak_usage());
 
   $loaded_sheet_names = $obj_php_excel->getSheetNames();
   foreach ($loaded_sheet_names as $sheet_index => $loaded_sheet_name) {
@@ -48,6 +61,13 @@ function get_data_from_excel_file($file) {
     }
     $content[$sheet_names[$lowloaded_sheet_name]] = ${$sheet_names[$lowloaded_sheet_name]};
   }
+
+//  $obj_reader->__destruct(); // Do what PHP should be doing on it's own.
+	unset($obj_reader);
+//  $obj_php_excel->__destruct(); // Do what PHP should be doing on it's own.
+	unset($obj_php_excel);
+//  $obj_worksheet->__destruct(); // Do what PHP should be doing on it's own.
+	unset($obj_worksheet);
   return $content;
 }
 
@@ -99,10 +119,12 @@ function _get_uid() {
 //restructure arrays from Excel
 function _create_values($content) {
   $values = array();
-  foreach ($content as $key => $value) {
-    foreach ($value as $number => $data) {
-      $clean_data = htmlspecialchars($data);
-      $values[$number][$key] = $clean_data;
+  if (!empty($content)) {
+    foreach ($content as $key => $value) {
+      foreach ($value as $number => $data) {
+        $clean_data = htmlspecialchars($data);
+        $values[$number][$key] = $clean_data;
+      }
     }
   }
   return $values;
@@ -336,6 +358,7 @@ function _get_not_uniq_ids($uniq_data_sql) {
   while ($res = db_result($result)) {
     $not_uniq_nids[] = $res;
   }
+  mysql_free_result($result);
   return $not_uniq_nids;
 }
 
@@ -461,6 +484,7 @@ function _get_geo_table_name() {
       $table_name = $data;
     }
   }
+  mysql_free_result($result);
   return $table_name;
 }
 
@@ -554,6 +578,7 @@ function display_report_page() {
   }
   count($rows) == 1 ? $rows[] = _long_cell('No new nodes was saved') : drupal_set_message('Followed nodes were just created:');
   variable_del(csv2drupal_submit_time);
+  mysql_free_result($db_result);
   return theme_table($header, $rows);
 }
 

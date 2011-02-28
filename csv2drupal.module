@@ -68,7 +68,6 @@ function csv2drupal_form($form_state) {
 
 
 function csv2drupal_form_submit($form, $form_state) {
-
 //  set submit time, to use on the report page to take only more recent nodes
   variable_set(csv2drupal_submit_time, time());
   $dir_name = $form_state['values']['dir_name'];
