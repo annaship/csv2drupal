@@ -30,7 +30,7 @@ function get_data_from_excel_file($file) {
   $obj_reader->setReadDataOnly(true);
   $obj_php_excel = PHPExcel_IOFactory::load($file);
 
-  var_dump(memory_get_peak_usage());
+//  var_dump(memory_get_peak_usage());
 
   $loaded_sheet_names = $obj_php_excel->getSheetNames();
   foreach ($loaded_sheet_names as $sheet_index => $loaded_sheet_name) {
@@ -358,7 +358,7 @@ function _get_not_uniq_ids($uniq_data_sql) {
   while ($res = db_result($result)) {
     $not_uniq_nids[] = $res;
   }
-  mysql_free_result($result);
+//  mysql_free_result($result);
   return $not_uniq_nids;
 }
 
@@ -484,7 +484,7 @@ function _get_geo_table_name() {
       $table_name = $data;
     }
   }
-  mysql_free_result($result);
+//  mysql_free_result($result);
   return $table_name;
 }
 
@@ -578,7 +578,7 @@ function display_report_page() {
   }
   count($rows) == 1 ? $rows[] = _long_cell('No new nodes was saved') : drupal_set_message('Followed nodes were just created:');
   variable_del(csv2drupal_submit_time);
-  mysql_free_result($db_result);
+//  mysql_free_result($db_result);
   return theme_table($header, $rows);
 }
 
