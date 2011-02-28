@@ -328,24 +328,24 @@ function _create_uniq_data_sql($value, $data) {
   if (!empty($value[$data[0]['label']])) {
     if ($arr_size == 1) {
         $uniq_data_sql = ' SELECT nid
-          FROM {' . mysql_real_escape_string($data[0]['table']) . '}
-          WHERE ' . mysql_real_escape_string($data[0]['field']) . ' = "' . mysql_real_escape_string($value[$data[0]['label']]) . '"';
+          FROM {' . mysql_escape_string($data[0]['table']) . '}
+          WHERE ' . mysql_escape_string($data[0]['field']) . ' = "' . mysql_escape_string($value[$data[0]['label']]) . '"';
     }
     elseif ($arr_size == 2 AND $data[1]['field'] == 'field_research_site_pt_coords_geo') {
         $uniq_data_sql = ' SELECT t1.nid
-          FROM {' . mysql_real_escape_string($data[0]['table']) . '} as t1
-            JOIN {' . mysql_real_escape_string($data[1]['table']) . '} as t2
+          FROM {' . mysql_escape_string($data[0]['table']) . '} as t1
+            JOIN {' . mysql_escape_string($data[1]['table']) . '} as t2
               ON t1.nid = t2.nid
-          WHERE t1.' . mysql_real_escape_string($data[0]['field']) . ' = \'' . mysql_real_escape_string($value[$data[0]['label']]) . '\'
-           AND t2.' . mysql_real_escape_string($data[1]['field']) . ' = (SELECT GeomFromText(\'' . $coordinates . '\'))';
+          WHERE t1.' . mysql_escape_string($data[0]['field']) . ' = \'' . mysql_escape_string($value[$data[0]['label']]) . '\'
+           AND t2.' . mysql_escape_string($data[1]['field']) . ' = (SELECT GeomFromText(\'' . $coordinates . '\'))';
     }
     else {
         $uniq_data_sql = ' SELECT t1.nid
-          FROM {' . mysql_real_escape_string($data[0]['table']) . '} as t1
-            JOIN {' . mysql_real_escape_string($data[1]['table']) . '} as t2
+          FROM {' . mysql_escape_string($data[0]['table']) . '} as t1
+            JOIN {' . mysql_escape_string($data[1]['table']) . '} as t2
               ON t1.nid = t2.nid
-          WHERE t1.' . mysql_real_escape_string($data[0]['field']) . ' = \'' . mysql_real_escape_string($value[$data[0]['label']]) . '\'
-           AND t2.' . mysql_real_escape_string($data[1]['field']) . ' = \'' . mysql_real_escape_string($value[$data[1]['label']]) .
+          WHERE t1.' . mysql_escape_string($data[0]['field']) . ' = \'' . mysql_escape_string($value[$data[0]['label']]) . '\'
+           AND t2.' . mysql_escape_string($data[1]['field']) . ' = \'' . mysql_escape_string($value[$data[1]['label']]) .
           '\'';
     }
   }
